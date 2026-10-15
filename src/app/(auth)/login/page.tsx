@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Building2, Mail, Lock, ArrowRight, ShieldCheck, UserCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -12,7 +13,7 @@ import { SEEDED_PROFILES } from '@/lib/data/store'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { loginAs, setProfile } = useAppStore()
+  const { authenticate, loginAs } = useAppStore()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -25,37 +26,30 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // Check seeded demo accounts
-      const success = loginAs(email)
-      if (success) {
+      // 1. Try store-level authenticate (handles both demo and newly registered users)
+      const res = authenticate(email, password)
+      if (res.success) {
         router.push('/home')
+        router.refresh()
         return
       }
 
-      // If user typed custom credentials, check if matches any seeded demo user or create session
-      const found = SEEDED_PROFILES.find((p) => p.email.toLowerCase() === email.toLowerCase())
-      if (found) {
-        setProfile(found)
+      // 2. If Supabase configured, try Supabase auth
+      const supabase = createClient()
+      const { error: sbError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (!sbError) {
+        loginAs(email)
         router.push('/home')
+        router.refresh()
         return
       }
 
-      // If neither, fallback to student profile for smooth demo testing
-      if (email.includes('@')) {
-        const customProfile = {
-          ...SEEDED_PROFILES[0],
-          id: `usr-${Date.now()}`,
-          email,
-          fullName: email.split('@')[0],
-          username: email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '_'),
-        }
-        setProfile(customProfile)
-        router.push('/home')
-        return
-      }
-
-      setError('Please enter a valid college email address.')
-    } catch (err) {
+      setError(res.error || 'Invalid credentials. Please verify your email and password.')
+    } catch {
       setError('An unexpected error occurred during sign-in.')
     } finally {
       setLoading(false)
@@ -71,12 +65,16 @@ export default function LoginPage() {
     <Card className="border shadow-card w-full">
       <CardHeader className="space-y-1">
         <div className="flex items-center gap-2 lg:hidden mb-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
-            <Building2 className="h-4 w-4" aria-hidden="true" />
-          </div>
-          <span className="font-bold text-lg text-foreground">CampusConnect</span>
+          <Image
+            src="/unicon-logo.png"
+            alt="UNICON"
+            width={120}
+            height={26}
+            className="h-7 w-auto object-contain dark:brightness-110"
+            priority
+          />
         </div>
-        <CardTitle className="text-xl font-bold">Sign In to CampusConnect</CardTitle>
+        <CardTitle className="text-xl font-bold">Sign In to UNICON</CardTitle>
         <CardDescription>
           Enter your registered college email and password to access your campus dashboard.
         </CardDescription>

@@ -24,8 +24,9 @@ function OnboardingContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const email = searchParams.get('email') || 'new.student@demo.campusconnect.app'
-  const { setProfile, profiles } = useAppStore()
+  const { registerUser, profiles } = useAppStore()
 
+  const [collegeId, setCollegeId] = useState<string>('col-003')
   const [fullName, setFullName] = useState('')
   const [username, setUsername] = useState('')
   const [rollNumber, setRollNumber] = useState('')
@@ -36,6 +37,24 @@ function OnboardingContent() {
   const [bio, setBio] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  const [pendingPassword, setPendingPassword] = useState<string | undefined>()
+
+  // Retrieve pending registration info if available
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = sessionStorage.getItem('cc_pending_registration')
+        if (stored) {
+          const parsed = JSON.parse(stored)
+          if (parsed.collegeId) setCollegeId(parsed.collegeId)
+          if (parsed.password) setPendingPassword(parsed.password)
+        }
+      } catch {
+        // Ignore JSON errors
+      }
+    }
+  }, [])
 
   // Auto-suggest graduation year based on joining year
   useEffect(() => {
@@ -69,10 +88,11 @@ function OnboardingContent() {
 
     setLoading(true)
 
+    const selectedCollege = SEEDED_COLLEGES.find((c) => c.id === collegeId) || SEEDED_COLLEGES[2]
     const selectedDept = SEEDED_DEPARTMENTS.find((d) => d.id === departmentId)
     const newProfile: Profile = {
       id: `usr-${Date.now()}`,
-      collegeId: 'col-003',
+      collegeId: selectedCollege.id,
       departmentId,
       role: 'student',
       fullName: fullName.trim(),
@@ -81,18 +101,21 @@ function OnboardingContent() {
       email,
       phoneNumber: phoneNumber.trim() || null,
       avatarUrl: null,
-      bio: bio.trim() || 'College student collaborating on CampusConnect.',
+      bio: bio.trim() || 'College student collaborating on UNICON.',
       yearOfJoining: Number(yearOfJoining),
       expectedGraduationYear: Number(expectedGraduationYear),
       isEmailVerified: true,
       isOnboarded: true,
       theme: 'light',
       createdAt: new Date().toISOString(),
-      college: SEEDED_COLLEGES[2],
+      college: selectedCollege,
       department: selectedDept,
     }
 
-    setProfile(newProfile)
+    registerUser(newProfile, pendingPassword)
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('cc_pending_registration')
+    }
 
     setTimeout(() => {
       setLoading(false)

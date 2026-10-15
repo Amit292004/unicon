@@ -5,12 +5,12 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'CampusConnect',
-    template: '%s | CampusConnect',
+    default: 'UNICON',
+    template: '%s | UNICON',
   },
   description: 'The student community platform for your college — notices, academics, lost & found, transport, and more.',
   keywords: ['college', 'students', 'campus', 'notices', 'academics', 'lost and found', 'transport'],
-  authors: [{ name: 'CampusConnect' }],
+  authors: [{ name: 'UNICON' }],
   robots: 'noindex, nofollow', // private platform
 }
 

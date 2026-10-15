@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
   Bell,
@@ -16,6 +17,7 @@ import { createClient } from '@/lib/supabase/client'
 import { UserAvatar } from '@/components/shared/user-avatar'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useAppStore } from '@/lib/data/client-store'
 import type { Profile } from '@/types'
 import { useState, useRef, useEffect } from 'react'
 
@@ -28,6 +30,7 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const { logout } = useAppStore()
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -40,8 +43,13 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
   }, [])
 
   async function handleLogout() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
+    try {
+      const supabase = createClient()
+      await supabase.auth.signOut()
+    } catch {
+      // Ignore if supabase not configured
+    }
+    logout()
     router.push('/login')
     router.refresh()
   }
@@ -53,7 +61,14 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
     >
       {/* Mobile brand */}
       <Link href="/home" className="lg:hidden flex items-center gap-2">
-        <span className="font-bold text-base tracking-tight">CampusConnect</span>
+        <Image
+          src="/unicon-logo.png"
+          alt="UNICON"
+          width={110}
+          height={24}
+          className="h-6 w-auto object-contain dark:brightness-110"
+          priority
+        />
       </Link>
 
       {/* Spacer */}

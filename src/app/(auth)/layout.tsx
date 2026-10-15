@@ -1,4 +1,6 @@
 import React from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
 import { Building2, ShieldCheck, GraduationCap, Compass } from 'lucide-react'
 
 export default function AuthLayout({
@@ -11,19 +13,19 @@ export default function AuthLayout({
       {/* Left branding panel - desktop only */}
       <div className="hidden lg:flex flex-col justify-between bg-card border-r p-12 relative overflow-hidden">
         <div>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
-              <Building2 className="h-6 w-6" aria-hidden="true" />
-            </div>
-            <div>
-              <span className="font-bold text-xl tracking-tight text-foreground block">
-                CampusConnect
-              </span>
-              <span className="text-xs text-muted-foreground">
-                College Utility & Academic Platform
-              </span>
-            </div>
-          </div>
+          <Link href="/" className="inline-block">
+            <Image
+              src="/unicon-logo.png"
+              alt="UNICON"
+              width={160}
+              height={36}
+              className="h-9 w-auto object-contain dark:brightness-110 mb-1"
+              priority
+            />
+            <span className="text-xs text-muted-foreground block">
+              College Utility & Academic Platform
+            </span>
+          </Link>
         </div>
 
         <div className="space-y-6 max-w-md">
@@ -59,7 +61,7 @@ export default function AuthLayout({
         </div>
 
         <div className="text-xs text-muted-foreground border-t pt-4">
-          CampusConnect Platform &bull; Built with academic precision
+          UNICON Platform &bull; Built with academic precision
         </div>
       </div>
 

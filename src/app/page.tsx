@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Building2,
   Bell,
@@ -27,19 +28,19 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Top Navigation Bar */}
       <header className="h-[60px] border-b bg-card/80 backdrop-blur sticky top-0 z-30 px-6 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
-            <Building2 className="h-5 w-5" aria-hidden="true" />
-          </div>
-          <div>
-            <span className="font-bold text-base tracking-tight text-foreground">
-              CampusConnect
-            </span>
-            <span className="hidden sm:inline-block text-2xs text-muted-foreground ml-2 px-2 py-0.5 border rounded-full">
-              College Utility Platform
-            </span>
-          </div>
-        </div>
+        <Link href="/" className="flex items-center gap-3">
+          <Image
+            src="/unicon-logo.png"
+            alt="UNICON"
+            width={130}
+            height={28}
+            className="h-7 w-auto object-contain dark:brightness-110"
+            priority
+          />
+          <span className="hidden sm:inline-block text-2xs text-muted-foreground px-2 py-0.5 border rounded-full">
+            College Utility Platform
+          </span>
+        </Link>
 
         <div className="flex items-center gap-3">
           <Link href="/login">
@@ -225,7 +226,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t py-6 px-6 bg-card text-center text-xs text-muted-foreground">
-        <p>CampusConnect &bull; College Student Community and Utility Web Application</p>
+        <p>UNICON &bull; College Student Community and Utility Web Application</p>
       </footer>
     </div>
   )

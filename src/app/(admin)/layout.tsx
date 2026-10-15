@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   ShieldCheck,
@@ -50,17 +51,19 @@ export default function AdminLayout({
           {/* Brand & Role Badge */}
           <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-md bg-brand-600 text-white flex items-center justify-center">
-                <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-              </div>
-              <div>
-                <span className="font-bold text-sm tracking-tight text-foreground block">
-                  CampusConnect
-                </span>
-                <span className="text-2xs text-brand-600 font-semibold uppercase tracking-wider">
-                  Admin Console
-                </span>
-              </div>
+              <Link href="/home" className="flex items-center gap-2">
+                <Image
+                  src="/unicon-logo.png"
+                  alt="UNICON"
+                  width={110}
+                  height={24}
+                  className="h-6 w-auto object-contain dark:brightness-110"
+                  priority
+                />
+              </Link>
+              <span className="text-2xs text-brand-600 bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800 px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider">
+                Admin
+              </span>
             </div>
 
             <Link href="/home">

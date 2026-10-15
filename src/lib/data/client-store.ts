@@ -58,11 +58,14 @@ interface AppStore {
   conversations: Conversation[]
   notifications: Notification[]
   savedItemIds: string[]
+  userCredentials: Record<string, string> // email -> password
 
   // Actions
   setProfile: (profile: Profile) => void
+  registerUser: (profile: Profile, password?: string) => void
   setTheme: (theme: Theme) => void
   loginAs: (email: string) => boolean
+  authenticate: (email: string, password?: string) => { success: boolean; error?: string }
   logout: () => void
 
   // Notices
@@ -191,9 +194,37 @@ export const useAppStore = create<AppStore>()(
         },
       ],
       savedItemIds: ['nte-001', 'pyq-001'],
+      userCredentials: {
+        'student@demo.campusconnect.app': 'demo1234',
+        'priya@demo.campusconnect.app': 'demo1234',
+        'admin@demo.campusconnect.app': 'admin1234',
+        'transport@demo.campusconnect.app': 'transport1234',
+      },
 
       setProfile: (profile) => {
-        set({ currentProfile: profile })
+        set((state) => {
+          const exists = state.profiles.some((p) => p.id === profile.id || p.email.toLowerCase() === profile.email.toLowerCase())
+          const updatedProfiles = exists
+            ? state.profiles.map((p) => (p.id === profile.id || p.email.toLowerCase() === profile.email.toLowerCase() ? profile : p))
+            : [profile, ...state.profiles]
+          return {
+            currentProfile: profile,
+            profiles: updatedProfiles,
+          }
+        })
+        if (typeof document !== 'undefined') {
+          document.cookie = `cc_demo_user=${profile.email}; path=/; max-age=86400; SameSite=Lax`
+        }
+      },
+
+      registerUser: (profile, password) => {
+        set((state) => ({
+          currentProfile: profile,
+          profiles: [profile, ...state.profiles.filter((p) => p.email.toLowerCase() !== profile.email.toLowerCase())],
+          userCredentials: password
+            ? { ...state.userCredentials, [profile.email.toLowerCase()]: password }
+            : state.userCredentials,
+        }))
         if (typeof document !== 'undefined') {
           document.cookie = `cc_demo_user=${profile.email}; path=/; max-age=86400; SameSite=Lax`
         }
@@ -218,6 +249,23 @@ export const useAppStore = create<AppStore>()(
           return true
         }
         return false
+      },
+
+      authenticate: (email: string, password?: string) => {
+        const cleanEmail = email.trim().toLowerCase()
+        const user = get().profiles.find((p) => p.email.toLowerCase() === cleanEmail)
+        
+        if (!user) {
+          return { success: false, error: 'No account registered with this email address.' }
+        }
+
+        const storedPassword = get().userCredentials[cleanEmail]
+        if (storedPassword && password && storedPassword !== password) {
+          return { success: false, error: 'Incorrect password entered. Please try again.' }
+        }
+
+        get().setProfile(user)
+        return { success: true }
       },
 
       logout: () => {

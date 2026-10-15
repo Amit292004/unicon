@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Building2, Search, ArrowRight, CheckCircle2, ShieldCheck, Mail, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -63,6 +64,7 @@ export default function RegisterPage() {
           JSON.stringify({
             collegeId: selectedCollegeId,
             email,
+            password,
           })
         )
       }
@@ -78,6 +80,16 @@ export default function RegisterPage() {
   return (
     <Card className="border shadow-card w-full">
       <CardHeader className="space-y-1">
+        <div className="flex items-center gap-2 lg:hidden mb-2">
+          <Image
+            src="/unicon-logo.png"
+            alt="UNICON"
+            width={120}
+            height={26}
+            className="h-7 w-auto object-contain dark:brightness-110"
+            priority
+          />
+        </div>
         <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
           <span>Step {step} of 2</span>
           <span>{step === 1 ? 'Select College' : 'Account Details'}</span>
@@ -87,7 +99,7 @@ export default function RegisterPage() {
         </CardTitle>
         <CardDescription>
           {step === 1
-            ? 'CampusConnect is strictly scoped by institution to keep data private and relevant.'
+            ? 'UNICON is strictly scoped by institution to keep data private and relevant.'
             : `Registering as a student for ${selectedCollege?.name || 'Selected College'}.`}
         </CardDescription>
       </CardHeader>

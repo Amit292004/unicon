@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   Home,
@@ -46,11 +47,17 @@ export function Sidebar({ profile, unreadNotifications = 0, unreadMessages = 0 }
   return (
     <aside className="hidden lg:flex flex-col w-60 min-h-screen border-r bg-card fixed left-0 top-0 z-30">
       {/* Brand */}
-      <div className="flex items-center gap-3 px-4 h-[60px] border-b">
-        <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary">
-          <Building2 className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
-        </div>
-        <span className="font-bold text-base tracking-tight text-foreground">CampusConnect</span>
+      <div className="flex items-center gap-2.5 px-4 h-[60px] border-b">
+        <Link href="/home" className="flex items-center gap-2.5">
+          <Image
+            src="/unicon-logo.png"
+            alt="UNICON"
+            width={120}
+            height={26}
+            className="h-7 w-auto object-contain dark:brightness-110"
+            priority
+          />
+        </Link>
       </div>
 
       {/* Navigation */}
