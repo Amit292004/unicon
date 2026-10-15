@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../../tailwind.config.ts";
 
 :root {
   /* ─── Light Theme Tokens ──────────────────────────────────────── */
@@ -102,5 +103,20 @@ body {
 }
 
 .main-content-mobile {
-  padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 1.5rem);
+  padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 1.25rem);
+}
+
+@media (min-width: 768px) {
+  .main-content-mobile {
+    padding-bottom: 2rem;
+  }
+}
+
+/* ─── Scrollbar Utility for Horizontal Tabs ──────────────────────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
