@@ -68,6 +68,7 @@ export function Sidebar({ profile, unreadNotifications = 0, unreadMessages = 0 }
             <Link
               key={href}
               href={href}
+              prefetch={false}
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors',
                 'hover:bg-accent hover:text-accent-foreground',
@@ -86,6 +87,7 @@ export function Sidebar({ profile, unreadNotifications = 0, unreadMessages = 0 }
         <div className="pt-2 border-t mt-2">
           <Link
             href="/messages"
+            prefetch={false}
             className={cn(
               'flex items-center justify-between gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors',
               'hover:bg-accent hover:text-accent-foreground',
@@ -107,6 +109,7 @@ export function Sidebar({ profile, unreadNotifications = 0, unreadMessages = 0 }
 
           <Link
             href="/ask-campus"
+            prefetch={false}
             className={cn(
               'flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors',
               'hover:bg-accent hover:text-accent-foreground',
@@ -125,6 +128,7 @@ export function Sidebar({ profile, unreadNotifications = 0, unreadMessages = 0 }
       <div className="px-3 py-3 border-t">
         <Link
           href={`/profile/${profile.username}`}
+          prefetch={false}
           className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-accent transition-colors"
         >
           <UserAvatar name={profile.fullName} avatarUrl={profile.avatarUrl} size="sm" />
@@ -155,6 +159,7 @@ export function BottomNav() {
             <Link
               key={href}
               href={href}
+              prefetch={false}
               className={cn(
                 'flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors min-w-0',
                 'hover:bg-accent',

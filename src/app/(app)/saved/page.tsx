@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { EmptyState } from '@/components/shared/empty-state'
 import { ResourceFileIcon } from '@/components/shared/resource-file-icon'
+import { PostCard } from '@/components/feed/post-card'
 import { useAppStore } from '@/lib/data/client-store'
 import { formatDate } from '@/lib/utils'
 
@@ -71,6 +72,15 @@ export default function SavedItemsPage() {
             }`}
           >
             PYQs ({savedPYQs.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterType('posts')}
+            className={`px-3 py-1.5 rounded font-medium transition ${
+              filterType === 'posts' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'
+            }`}
+          >
+            Posts ({savedPosts.length})
           </button>
         </div>
       </div>
@@ -161,6 +171,20 @@ export default function SavedItemsPage() {
                       </Button>
                     </div>
                   </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Saved Community Discussions / Posts Section */}
+          {(filterType === 'all' || filterType === 'posts') && savedPosts.length > 0 && (
+            <div className="space-y-3">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Saved Discussions &amp; Posts ({savedPosts.length})
+              </h2>
+              <div className="space-y-4">
+                {savedPosts.map((post) => (
+                  <PostCard key={post.id} post={post} />
                 ))}
               </div>
             </div>

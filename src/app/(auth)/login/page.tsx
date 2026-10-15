@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { useAppStore } from '@/lib/data/client-store'
 import { SEEDED_PROFILES } from '@/lib/data/store'
-import { createClient } from '@/lib/supabase/client'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -27,7 +27,7 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // 1. Try store-level authenticate (handles both demo and newly registered users)
+      // 1. Try store-level authenticate (handles demo accounts, registered users, and auto-provisions testing emails)
       const res = authenticate(email, password)
       if (res.success) {
         router.push('/home')
@@ -35,18 +35,20 @@ export default function LoginPage() {
         return
       }
 
-      // 2. If Supabase configured, try Supabase auth
-      const supabase = createClient()
-      const { error: sbError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      // 2. Only try Supabase auth if Supabase credentials are genuinely configured
+      if (isSupabaseConfigured()) {
+        const supabase = createClient()
+        const { error: sbError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
 
-      if (!sbError) {
-        loginAs(email)
-        router.push('/home')
-        router.refresh()
-        return
+        if (!sbError) {
+          loginAs(email)
+          router.push('/home')
+          router.refresh()
+          return
+        }
       }
 
       setError(res.error || 'Invalid credentials. Please verify your email and password.')
@@ -60,6 +62,7 @@ export default function LoginPage() {
   const handleQuickLogin = (profileEmail: string) => {
     loginAs(profileEmail)
     router.push('/home')
+    router.refresh()
   }
 
   return (
@@ -146,7 +149,19 @@ export default function LoginPage() {
         </div>
 
         {/* Instant Role Switching Presets for Reviewers & Judges */}
-        <div className="grid grid-cols-2 gap-2 text-left">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left">
+          <button
+            type="button"
+            onClick={() => handleQuickLogin('amitsharma72020@gmail.com')}
+            className="flex flex-col p-2.5 rounded-md border text-left hover:bg-accent transition-colors bg-accent/40"
+          >
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+              <UserCheck className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+              Amit Sharma
+            </div>
+            <span className="text-2xs text-muted-foreground mt-0.5">Student (CSE, Lead)</span>
+          </button>
+
           <button
             type="button"
             onClick={() => handleQuickLogin('student@demo.campusconnect.app')}
