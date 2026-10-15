@@ -203,7 +203,7 @@ export const SEEDED_NOTICES: Notice[] = [
     collegeId: 'col-003',
     authorId: 'usr-admin-001',
     title: 'Department of Computer Science: Annual Codefest Submissions Open',
-    content: 'All B.Tech CSE students are invited to register teams for the Annual Codefest 2026. Categories include System Programming, Distributed Applications, and AI/ML for Regional Development. Mentors from industry will be evaluating final presentations.',
+    content: 'All B.Tech CSE students are invited to register teams for the competition. Categories include System Programming, Distributed Applications, and AI/ML for Regional Development. Mentors from industry will be evaluating final presentations.',
     status: 'published',
     audience: 'department',
     targetDepartmentId: 'dept-001',

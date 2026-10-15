@@ -19,29 +19,12 @@ export async function updateSession(request: NextRequest) {
   // If Supabase credentials are not set or are placeholder, allow demo session cookie
   if (!isValidSupabaseUrl(supabaseUrl) || !supabaseAnonKey || supabaseAnonKey.includes('your_supabase_anon_key')) {
     const demoUserCookie = request.cookies.get('cc_demo_user')?.value
-    const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
-      request.nextUrl.pathname.startsWith('/register') ||
-      request.nextUrl.pathname.startsWith('/verify-email')
-
-    const isProtectedRoute =
-      !request.nextUrl.pathname.startsWith('/login') &&
-      !request.nextUrl.pathname.startsWith('/register') &&
-      !request.nextUrl.pathname.startsWith('/verify-email') &&
-      !request.nextUrl.pathname.startsWith('/onboarding') &&
-      !request.nextUrl.pathname.startsWith('/api') &&
-      request.nextUrl.pathname !== '/'
-
-    if (demoUserCookie && isAuthRoute) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/home'
-      url.search = ''
-      return NextResponse.redirect(url)
-    }
+    const isProtectedRoute = request.nextUrl.pathname.startsWith('/admin')
 
     if (!demoUserCookie && isProtectedRoute) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
-      url.search = ''
+      url.search = `?callbackUrl=${encodeURIComponent(request.nextUrl.pathname)}`
       return NextResponse.redirect(url)
     }
 
@@ -76,29 +59,12 @@ export async function updateSession(request: NextRequest) {
     const demoUserCookie = request.cookies.get('cc_demo_user')?.value
     const activeUser = user || demoUserCookie
 
-    const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
-      request.nextUrl.pathname.startsWith('/register') ||
-      request.nextUrl.pathname.startsWith('/verify-email')
-
-    const isProtectedRoute =
-      !request.nextUrl.pathname.startsWith('/login') &&
-      !request.nextUrl.pathname.startsWith('/register') &&
-      !request.nextUrl.pathname.startsWith('/verify-email') &&
-      !request.nextUrl.pathname.startsWith('/onboarding') &&
-      !request.nextUrl.pathname.startsWith('/api') &&
-      request.nextUrl.pathname !== '/'
-
-    if (activeUser && isAuthRoute) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/home'
-      url.search = ''
-      return NextResponse.redirect(url)
-    }
+    const isProtectedRoute = request.nextUrl.pathname.startsWith('/admin')
 
     if (!activeUser && isProtectedRoute) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
-      url.search = ''
+      url.search = `?callbackUrl=${encodeURIComponent(request.nextUrl.pathname)}`
       return NextResponse.redirect(url)
     }
   } catch (err) {
