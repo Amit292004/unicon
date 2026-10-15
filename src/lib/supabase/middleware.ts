@@ -34,12 +34,14 @@ export async function updateSession(request: NextRequest) {
     if (demoUserCookie && isAuthRoute) {
       const url = request.nextUrl.clone()
       url.pathname = '/home'
+      url.search = ''
       return NextResponse.redirect(url)
     }
 
     if (!demoUserCookie && isProtectedRoute) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
+      url.search = ''
       return NextResponse.redirect(url)
     }
 
@@ -89,12 +91,14 @@ export async function updateSession(request: NextRequest) {
     if (activeUser && isAuthRoute) {
       const url = request.nextUrl.clone()
       url.pathname = '/home'
+      url.search = ''
       return NextResponse.redirect(url)
     }
 
     if (!activeUser && isProtectedRoute) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
+      url.search = ''
       return NextResponse.redirect(url)
     }
   } catch (err) {

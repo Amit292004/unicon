@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { useAppStore } from '@/lib/data/client-store'
 import { SEEDED_PROFILES } from '@/lib/data/store'
+import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const router = useRouter()

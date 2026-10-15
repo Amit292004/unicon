@@ -40,12 +40,21 @@ function MessagesContent() {
 
   const selectedRecipient = profiles.find((p) => p.id === selectedRecipientId)
 
-  // Messages between current user and selected recipient
-  const activeThread = messages.filter(
-    (m) =>
-      (m.senderId === currentProfile.id && selectedRecipientId) ||
-      (m.senderId === selectedRecipientId)
+  // Find active conversation between current user and selected recipient
+  const activeConv = conversations.find(
+    (c) =>
+      c.participants.some((p) => p.id === selectedRecipientId) &&
+      c.participants.some((p) => p.id === currentProfile.id)
   )
+
+  // Messages strictly between current user and selected recipient
+  const activeThread = messages.filter((m) => {
+    if (activeConv && m.conversationId === activeConv.id) return true
+    return (
+      (m.senderId === currentProfile.id && m.conversationId.includes(selectedRecipientId)) ||
+      (m.senderId === selectedRecipientId && m.conversationId.includes(currentProfile.id))
+    )
+  })
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault()
@@ -88,13 +97,14 @@ function MessagesContent() {
           <div className="flex-1 overflow-y-auto divide-y">
             {filteredStudents.map((student) => {
               const isSelected = selectedRecipientId === student.id
-              const lastMsg = messages
-                .filter(
-                  (m) =>
-                    (m.senderId === student.id && currentProfile.id) ||
-                    (m.senderId === currentProfile.id)
-                )
-                .slice(-1)[0]
+              const studentConv = conversations.find(
+                (c) =>
+                  c.participants.some((p) => p.id === student.id) &&
+                  c.participants.some((p) => p.id === currentProfile.id)
+              )
+              const lastMsg = studentConv
+                ? messages.filter((m) => m.conversationId === studentConv.id).slice(-1)[0]
+                : undefined
 
               return (
                 <button

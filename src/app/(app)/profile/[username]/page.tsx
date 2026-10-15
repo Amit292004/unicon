@@ -21,7 +21,8 @@ import {
   Code2,
   Plus,
   Heart,
-  MessageCircle
+  MessageCircle,
+  Trash2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -30,16 +31,30 @@ import { Input } from '@/components/ui/input'
 import { UserAvatar } from '@/components/shared/user-avatar'
 import { EmptyState } from '@/components/shared/empty-state'
 import { ResourceFileIcon } from '@/components/shared/resource-file-icon'
+import { EditProfileModal } from '@/components/profile/edit-profile-modal'
 import { useAppStore } from '@/lib/data/client-store'
 import { formatDate, formatRelativeTime } from '@/lib/utils'
 
 export default function StudentProfilePage() {
   const params = useParams()
-  const username = params?.username as string
-  const { currentProfile, profiles, posts, notes, pyqs, projects, addProject } = useAppStore()
+  const rawUsername = params?.username as string
+  const username = rawUsername ? decodeURIComponent(rawUsername).toLowerCase() : ''
+  const {
+    currentProfile,
+    profiles,
+    posts,
+    notes,
+    pyqs,
+    projects,
+    addProject,
+    deleteProject,
+    deleteNote,
+    deletePYQ,
+  } = useAppStore()
 
   const [activeTab, setActiveTab] = useState<'posts' | 'notes' | 'pyqs' | 'projects'>('posts')
   const [showAddProjectModal, setShowAddProjectModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   // Project form state
   const [projectTitle, setProjectTitle] = useState('')
@@ -48,12 +63,13 @@ export default function StudentProfilePage() {
   const [projectRepo, setProjectRepo] = useState('')
   const [projectLive, setProjectLive] = useState('')
 
-  // Find profile
-  const profile =
-    profiles.find((p) => p.username.toLowerCase() === username.toLowerCase()) ||
-    currentProfile
+  // Find profile: prioritize currentProfile if usernames match, else find in profiles
+  const isMatchCurrent = currentProfile.username.toLowerCase() === username
+  const profile = isMatchCurrent
+    ? currentProfile
+    : profiles.find((p) => p.username.toLowerCase() === username) || currentProfile
 
-  const isOwner = currentProfile.id === profile.id
+  const isOwner = currentProfile.id === profile.id || isMatchCurrent
 
   // Tab data filtered by this profile
   const userPosts = posts.filter((p) => p.authorId === profile.id)
@@ -94,12 +110,25 @@ export default function StudentProfilePage() {
       {/* Profile Header */}
       <Card className="p-6 sm:p-8 border shadow-card">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          <UserAvatar
-            name={profile.fullName}
-            avatarUrl={profile.avatarUrl}
-            size="xl"
-            className="h-24 w-24 sm:h-28 sm:w-28 text-2xl border-4 border-background shadow-md shrink-0"
-          />
+          <div className="relative group shrink-0">
+            <UserAvatar
+              name={profile.fullName}
+              avatarUrl={profile.avatarUrl}
+              size="xl"
+              className="h-24 w-24 sm:h-28 sm:w-28 text-2xl border-4 border-background shadow-md shrink-0"
+            />
+            {isOwner && (
+              <button
+                type="button"
+                onClick={() => setShowEditModal(true)}
+                className="absolute inset-0 rounded-full bg-black/40 text-white opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity text-2xs font-medium cursor-pointer"
+                title="Change Profile Picture"
+              >
+                <Edit3 className="h-5 w-5 mb-0.5" aria-hidden="true" />
+                <span>Edit</span>
+              </button>
+            )}
+          </div>
 
           <div className="space-y-3 flex-1 text-center sm:text-left min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -112,6 +141,15 @@ export default function StudentProfilePage() {
 
               {isOwner ? (
                 <div className="flex items-center justify-center sm:justify-start gap-2">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => setShowEditModal(true)}
+                    className="h-8 gap-1.5 text-xs font-semibold shadow-xs"
+                  >
+                    <Edit3 className="h-3.5 w-3.5" aria-hidden="true" />
+                    Edit Profile
+                  </Button>
                   <Link href="/settings">
                     <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
                       <Settings className="h-3.5 w-3.5" aria-hidden="true" />
@@ -284,12 +322,30 @@ export default function StudentProfilePage() {
                   </div>
                 </div>
 
-                <a href={note.fileUrl} download={note.fileName} target="_blank" rel="noopener noreferrer">
-                  <Button size="sm" variant="outline" className="h-8 gap-1 text-xs">
-                    <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                    Download
-                  </Button>
-                </a>
+                <div className="flex items-center gap-1.5">
+                  {(isOwner || currentProfile.role === 'admin' || currentProfile.role === 'moderator') && (
+                    <Button
+                      size="icon-sm"
+                      variant="ghost"
+                      className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                      onClick={() => {
+                        if (typeof window !== 'undefined' && window.confirm(`Delete note "${note.title}"?`)) {
+                          deleteNote(note.id)
+                        }
+                      }}
+                      title="Delete Note"
+                      aria-label="Delete note"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Button>
+                  )}
+                  <a href={note.fileUrl} download={note.fileName} target="_blank" rel="noopener noreferrer">
+                    <Button size="sm" variant="outline" className="h-8 gap-1 text-xs">
+                      <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                      Download
+                    </Button>
+                  </a>
+                </div>
               </Card>
             ))
           )}
@@ -318,12 +374,30 @@ export default function StudentProfilePage() {
                   </div>
                 </div>
 
-                <a href={pyq.fileUrl} download={pyq.fileName} target="_blank" rel="noopener noreferrer">
-                  <Button size="sm" variant="outline" className="h-8 gap-1 text-xs">
-                    <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                    Download
-                  </Button>
-                </a>
+                <div className="flex items-center gap-1.5">
+                  {(isOwner || currentProfile.role === 'admin' || currentProfile.role === 'moderator') && (
+                    <Button
+                      size="icon-sm"
+                      variant="ghost"
+                      className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                      onClick={() => {
+                        if (typeof window !== 'undefined' && window.confirm(`Delete question paper "${pyq.title}"?`)) {
+                          deletePYQ(pyq.id)
+                        }
+                      }}
+                      title="Delete Question Paper"
+                      aria-label="Delete question paper"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Button>
+                  )}
+                  <a href={pyq.fileUrl} download={pyq.fileName} target="_blank" rel="noopener noreferrer">
+                    <Button size="sm" variant="outline" className="h-8 gap-1 text-xs">
+                      <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                      Download
+                    </Button>
+                  </a>
+                </div>
               </Card>
             ))
           )}
@@ -401,6 +475,23 @@ export default function StudentProfilePage() {
                         </a>
                       )}
                     </div>
+
+                    {(isOwner || currentProfile.role === 'admin' || currentProfile.role === 'moderator') && (
+                      <Button
+                        size="icon-sm"
+                        variant="ghost"
+                        className="h-7 w-7 text-destructive hover:bg-destructive/10"
+                        onClick={() => {
+                          if (typeof window !== 'undefined' && window.confirm(`Delete project "${proj.title}"?`)) {
+                            deleteProject(proj.id)
+                          }
+                        }}
+                        title="Delete Project"
+                        aria-label="Delete project"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      </Button>
+                    )}
                   </div>
                 </Card>
               ))}
@@ -500,6 +591,12 @@ export default function StudentProfilePage() {
           </Card>
         </div>
       )}
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+      />
     </div>
   )
 }

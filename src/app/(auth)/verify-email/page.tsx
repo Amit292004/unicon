@@ -88,7 +88,7 @@ function VerifyEmailContent() {
         </div>
         <CardTitle className="text-xl font-bold">Verify Your College Email</CardTitle>
         <CardDescription className="text-xs">
-          We have dispatched a 6-digit verification code to: <br />
+          Check your email for your access code. We have dispatched a 6-digit verification code to: <br />
           <span className="font-semibold text-foreground">{email}</span>
         </CardDescription>
       </CardHeader>
@@ -136,7 +136,7 @@ function VerifyEmailContent() {
               onClick={handleUseDemoOtp}
               className="text-primary font-semibold hover:underline"
             >
-              Autofill Valid Code (842190)
+              Autofill 842190
             </button>
           </div>
           <p className="text-2xs text-muted-foreground leading-relaxed">

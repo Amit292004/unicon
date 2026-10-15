@@ -15,7 +15,8 @@ import {
   User,
   CheckCircle2,
   Clock,
-  ArrowRight
+  ArrowRight,
+  Trash2
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -24,108 +25,22 @@ import { Badge } from '@/components/ui/badge'
 import { UserAvatar } from '@/components/shared/user-avatar'
 import { useAppStore } from '@/lib/data/client-store'
 import { formatRelativeTime } from '@/lib/utils'
+import type { CampusQuestion } from '@/types'
 
-interface CampusQuestion {
-  id: string
-  authorName: string
-  authorUsername: string
-  avatarUrl: string | null
-  category: 'Academics' | 'Hostel & Mess' | 'Transit & Bus' | 'Administrative' | 'Campus Life'
-  question: string
-  details: string
-  answersCount: number
-  upvotes: number
-  createdAt: string
-  hasUpvoted?: boolean
-  answers: {
-    id: string
-    authorName: string
-    role: string
-    content: string
-    createdAt: string
-  }[]
-}
-
-const INITIAL_QUESTIONS: CampusQuestion[] = [
-  {
-    id: 'q-1',
-    authorName: 'Alex Chen',
-    authorUsername: 'alex_chen',
-    avatarUrl: null,
-    category: 'Academics',
-    question: 'Where can we verify the end-semester evaluation weightage for OS and DBMS lab practicals?',
-    details: 'The syllabus document indicates continuous assessment is 40% and final viva is 60%, but the department notice board had an updated circular.',
-    answersCount: 2,
-    upvotes: 8,
-    createdAt: '2026-10-14T10:30:00Z',
-    answers: [
-      {
-        id: 'ans-1',
-        authorName: 'Priya Sharma',
-        role: 'Class Representative',
-        content: 'Dr. Jamir confirmed in yesterday lecture that continuous internal assessment is 40 marks and the university practical exam is 60 marks with external viva.',
-        createdAt: '2026-10-14T11:15:00Z',
-      },
-      {
-        id: 'ans-2',
-        authorName: 'Academic Cell',
-        role: 'Faculty Support',
-        content: 'Official circular No. AC/2026/04 has been uploaded to the Notices tab with the complete rubric.',
-        createdAt: '2026-10-14T12:00:00Z',
-      }
-    ]
-  },
-  {
-    id: 'q-2',
-    authorName: 'Rohan Verma',
-    authorUsername: 'rohan_v',
-    avatarUrl: null,
-    category: 'Transit & Bus',
-    question: 'Does Bus Route 1 run additional evening trips during examination weeks?',
-    details: 'Regular departure from campus terminal is 04:30 PM, but labs often extend until 05:15 PM during practicals.',
-    answersCount: 1,
-    upvotes: 14,
-    createdAt: '2026-10-13T16:00:00Z',
-    answers: [
-      {
-        id: 'ans-3',
-        authorName: 'Vikram Singh',
-        role: 'Transit Officer',
-        content: 'Yes! A special exam-clearance bus leaves Academic Block 1 terminal at 05:45 PM on all scheduled lab test dates.',
-        createdAt: '2026-10-13T17:20:00Z',
-      }
-    ]
-  },
-  {
-    id: 'q-3',
-    authorName: 'Imlirenla Jamir',
-    authorUsername: 'imlirenla',
-    avatarUrl: null,
-    category: 'Campus Life',
-    question: 'How do student technical clubs apply for campus auditorium booking for hackathons?',
-    details: 'We are organizing the annual inter-college 24h coding sprint and need sound facilities and high-speed Wi-Fi access.',
-    answersCount: 1,
-    upvotes: 5,
-    createdAt: '2026-10-12T09:00:00Z',
-    answers: [
-      {
-        id: 'ans-4',
-        authorName: 'Dean Student Affairs',
-        role: 'Administration',
-        content: 'Submit requisition form Form-SA7 signed by your faculty advisor at least 10 working days prior to the event.',
-        createdAt: '2026-10-12T14:10:00Z',
-      }
-    ]
-  }
-]
 
 export default function AskCampusPage() {
-  const { currentProfile } = useAppStore()
+  const {
+    currentProfile,
+    campusQuestions,
+    addCampusQuestion,
+    toggleUpvoteCampusQuestion,
+    addCampusAnswer,
+    deleteCampusQuestion,
+  } = useAppStore()
 
-  const [questions, setQuestions] = useState<CampusQuestion[]>(INITIAL_QUESTIONS)
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [searchQuery, setSearchQuery] = useState('')
-  const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>('q-1')
+  const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(campusQuestions[0]?.id || null)
 
   // New question form
   const [showAskModal, setShowAskModal] = useState(false)
@@ -139,7 +54,9 @@ export default function AskCampusPage() {
 
   const categories = ['All', 'Academics', 'Hostel & Mess', 'Transit & Bus', 'Administrative', 'Campus Life']
 
-  const filteredQuestions = questions.filter((q) => {
+  const collegeQuestions = campusQuestions.filter((q) => !q.collegeId || q.collegeId === currentProfile.collegeId)
+
+  const filteredQuestions = collegeQuestions.filter((q) => {
     if (selectedCategory !== 'All' && q.category !== selectedCategory) return false
     if (searchQuery) {
       const match =
@@ -154,67 +71,25 @@ export default function AskCampusPage() {
     e.preventDefault()
     if (!questionText.trim()) return
 
-    const newQ: CampusQuestion = {
-      id: `q-${Date.now()}`,
-      authorName: currentProfile.fullName,
-      authorUsername: currentProfile.username,
-      avatarUrl: currentProfile.avatarUrl,
+    addCampusQuestion({
       category,
       question: questionText.trim(),
       details: detailsText.trim(),
-      answersCount: 0,
-      upvotes: 1,
-      createdAt: new Date().toISOString(),
-      hasUpvoted: true,
-      answers: []
-    }
+    })
 
-    setQuestions([newQ, ...questions])
     setQuestionText('')
     setDetailsText('')
     setShowAskModal(false)
-    setExpandedQuestionId(newQ.id)
   }
 
   const handleToggleUpvote = (id: string) => {
-    setQuestions(
-      questions.map((q) => {
-        if (q.id === id) {
-          const upvoted = q.hasUpvoted ?? false
-          return {
-            ...q,
-            hasUpvoted: !upvoted,
-            upvotes: upvoted ? q.upvotes - 1 : q.upvotes + 1
-          }
-        }
-        return q
-      })
-    )
+    toggleUpvoteCampusQuestion(id)
   }
 
   const handlePostAnswer = (questionId: string) => {
     if (!replyText.trim()) return
 
-    setQuestions(
-      questions.map((q) => {
-        if (q.id === questionId) {
-          const newAns = {
-            id: `ans-${Date.now()}`,
-            authorName: currentProfile.fullName,
-            role: currentProfile.role === 'student' ? 'Student Peer' : 'Institutional Staff',
-            content: replyText.trim(),
-            createdAt: new Date().toISOString()
-          }
-          return {
-            ...q,
-            answersCount: q.answersCount + 1,
-            answers: [...q.answers, newAns]
-          }
-        }
-        return q
-      })
-    )
-
+    addCampusAnswer(questionId, replyText.trim())
     setReplyText('')
     setActiveReplyId(null)
   }
@@ -346,17 +221,35 @@ export default function AskCampusPage() {
                     <span>{q.answers.length} verified answers</span>
                   </button>
 
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 text-xs"
-                    onClick={() => {
-                      setExpandedQuestionId(q.id)
-                      setActiveReplyId(q.id)
-                    }}
-                  >
-                    Reply / Answer
-                  </Button>
+                  <div className="flex items-center gap-1.5">
+                    {(currentProfile.username === q.authorUsername || currentProfile.role === 'admin' || currentProfile.role === 'moderator') && (
+                      <Button
+                        size="icon-sm"
+                        variant="ghost"
+                        className="h-7 w-7 text-destructive hover:bg-destructive/10"
+                        onClick={() => {
+                          if (typeof window !== 'undefined' && window.confirm(`Delete question "${q.question}"?`)) {
+                            deleteCampusQuestion(q.id)
+                          }
+                        }}
+                        title="Delete Question"
+                        aria-label="Delete question"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 text-xs"
+                      onClick={() => {
+                        setExpandedQuestionId(q.id)
+                        setActiveReplyId(q.id)
+                      }}
+                    >
+                      Reply / Answer
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Expanded Answers Thread */}

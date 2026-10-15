@@ -13,7 +13,8 @@ import {
   Calendar,
   CheckCircle2,
   ChevronRight,
-  Info
+  Info,
+  Trash2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -23,7 +24,7 @@ import { useAppStore } from '@/lib/data/client-store'
 import { formatRelativeTime } from '@/lib/utils'
 
 export default function TransportPage() {
-  const { currentProfile, routes, buses, complaints, addComplaint } = useAppStore()
+  const { currentProfile, routes, buses, complaints, addComplaint, deleteComplaint } = useAppStore()
 
   const [selectedRouteId, setSelectedRouteId] = useState<string>(routes[0]?.id || '')
   const [complaintSubject, setComplaintSubject] = useState('')
@@ -272,12 +273,27 @@ export default function TransportPage() {
                     <div key={c.id} className="p-2.5 rounded border bg-card space-y-1">
                       <div className="flex items-center justify-between">
                         <span className="font-semibold text-foreground">{c.subject}</span>
-                        <Badge
-                          variant={c.status === 'resolved' ? 'success' : 'warning'}
-                          className="text-2xs uppercase"
-                        >
-                          {c.status}
-                        </Badge>
+                        <div className="flex items-center gap-1.5">
+                          <Badge
+                            variant={c.status === 'resolved' ? 'success' : 'warning'}
+                            className="text-2xs uppercase"
+                          >
+                            {c.status}
+                          </Badge>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (typeof window !== 'undefined' && window.confirm('Delete this complaint ticket?')) {
+                                deleteComplaint(c.id)
+                              }
+                            }}
+                            className="text-muted-foreground hover:text-destructive p-0.5"
+                            title="Delete Ticket"
+                            aria-label="Delete ticket"
+                          >
+                            <Trash2 className="h-3 w-3" aria-hidden="true" />
+                          </button>
+                        </div>
                       </div>
                       <p className="text-2xs text-muted-foreground">{c.description}</p>
                       {c.responseMessage && (

@@ -10,10 +10,13 @@ import {
   FileText,
   ClipboardList,
   AlertCircle,
-  ShieldCheck,
   ArrowRight,
-  CheckCircle2,
-  Activity
+  Activity,
+  BookOpen,
+  Phone,
+  Settings,
+  Building2,
+  Calendar
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -23,6 +26,8 @@ import { useAppStore } from '@/lib/data/client-store'
 export default function AdminDashboardPage() {
   const {
     currentProfile,
+    college,
+    departments,
     profiles,
     notices,
     lostFoundReports,
@@ -30,11 +35,16 @@ export default function AdminDashboardPage() {
     routes,
     complaints,
     notes,
-    pyqs
+    pyqs,
+    timetableSlots,
+    examSchedules,
+    calendarEvents,
+    campusContacts
   } = useAppStore()
 
   // Real database metrics calculation
   const totalStudents = profiles.filter((p) => p.role === 'student').length
+  const totalFaculty = profiles.filter((p) => p.role === 'faculty').length
   const publishedNotices = notices.filter((n) => n.status === 'published').length
   const activeLostFound = lostFoundReports.filter((r) => r.status === 'active').length
   const pendingClaims = lostFoundReports.reduce(
@@ -44,6 +54,73 @@ export default function AdminDashboardPage() {
   const openComplaints = complaints.filter((c) => c.status === 'open' || c.status === 'in_progress').length
   const totalNotes = notes.length
   const totalPYQs = pyqs.length
+
+  const managementModules = [
+    {
+      title: 'Notices Engine',
+      href: '/admin/notices',
+      icon: Bell,
+      stat: `${publishedNotices} Published`,
+      desc: 'Publish, draft, edit & archive institutional announcements',
+      color: 'text-primary',
+    },
+    {
+      title: 'Transit & Fleet',
+      href: '/admin/transport',
+      icon: Bus,
+      stat: `${buses.length} Buses, ${routes.length} Routes`,
+      desc: 'Vehicle telemetry, route schedules, driver assignments & complaints',
+      color: 'text-brand-600',
+    },
+    {
+      title: 'Students & Users',
+      href: '/admin/students',
+      icon: Users,
+      stat: `${profiles.length} Accounts`,
+      desc: 'Enrollment verification, role permissions & directory management',
+      color: 'text-indigo-600',
+    },
+    {
+      title: 'Lost & Found Hub',
+      href: '/admin/lost-found',
+      icon: Search,
+      stat: `${activeLostFound} Active (${pendingClaims} Claims)`,
+      desc: 'Item moderation, automated claim verification & handovers',
+      color: 'text-amber-600',
+    },
+    {
+      title: 'Timetable & Exams',
+      href: '/admin/academics',
+      icon: BookOpen,
+      stat: `${timetableSlots.length} Classes, ${examSchedules.length} Exams`,
+      desc: 'Weekly class grids, exam hall allocations & academic milestones',
+      color: 'text-emerald-600',
+    },
+    {
+      title: 'Notes & PYQ Archive',
+      href: '/admin/resources',
+      icon: FileText,
+      stat: `${totalNotes} Notes, ${totalPYQs} PYQs`,
+      desc: 'Course materials repository & previous years question papers',
+      color: 'text-sky-600',
+    },
+    {
+      title: 'Campus Contacts',
+      href: '/admin/contacts',
+      icon: Phone,
+      stat: `${campusContacts.length} Listings`,
+      desc: 'Helplines, emergency responders, health unit & office directory',
+      color: 'text-rose-600',
+    },
+    {
+      title: 'College & Depts',
+      href: '/admin/settings',
+      icon: Settings,
+      stat: `${departments.length} Departments`,
+      desc: 'Campus metadata, portal domain & department configurations',
+      color: 'text-purple-600',
+    },
+  ]
 
   const auditLogs = [
     { id: '1', action: 'Notice Published', detail: 'Spring 2026 Mid-Semester Timetable', time: '1 hour ago', user: 'Dean Academic' },
@@ -59,13 +136,16 @@ export default function AdminDashboardPage() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Badge variant="outline" className="text-2xs uppercase">
-              {currentProfile.college?.name}
+              {college?.name || currentProfile.college?.name}
             </Badge>
             <span className="text-2xs text-muted-foreground">&bull; Live System Metrics</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Administrative Operations Dashboard
           </h1>
+          <p className="text-xs text-muted-foreground">
+            Centralized portal management across academics, fleet operations, student affairs, and institutional records.
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -75,10 +155,10 @@ export default function AdminDashboardPage() {
               Compose Notice
             </Button>
           </Link>
-          <Link href="/admin/transport">
+          <Link href="/admin/students">
             <Button size="sm" variant="outline" className="h-8 text-xs gap-1">
-              <Bus className="h-3.5 w-3.5" aria-hidden="true" />
-              Fleet Status
+              <Users className="h-3.5 w-3.5" aria-hidden="true" />
+              Add User
             </Button>
           </Link>
         </div>
@@ -92,7 +172,7 @@ export default function AdminDashboardPage() {
             <Users className="h-4 w-4 text-primary" aria-hidden="true" />
           </div>
           <p className="text-2xl font-bold text-foreground">{totalStudents}</p>
-          <p className="text-2xs text-muted-foreground">Verified accounts</p>
+          <p className="text-2xs text-muted-foreground">{totalFaculty} faculty accounts</p>
         </Card>
 
         <Card className="p-4 border shadow-card space-y-1">
@@ -107,20 +187,59 @@ export default function AdminDashboardPage() {
         <Card className="p-4 border shadow-card space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-2xs font-semibold uppercase tracking-wider">Missing Items</span>
-            <Search className="h-4 w-4 text-warning-600" aria-hidden="true" />
+            <Search className="h-4 w-4 text-amber-600" aria-hidden="true" />
           </div>
           <p className="text-2xl font-bold text-foreground">{activeLostFound}</p>
-          <p className="text-2xs text-warning-600 font-medium">{pendingClaims} claims pending</p>
+          <p className="text-2xs text-amber-600 font-medium">{pendingClaims} claims pending</p>
         </Card>
 
         <Card className="p-4 border shadow-card space-y-1">
           <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-2xs font-semibold uppercase tracking-wider">Transit Complaints</span>
-            <AlertCircle className="h-4 w-4 text-destructive-600" aria-hidden="true" />
+            <AlertCircle className="h-4 w-4 text-rose-600" aria-hidden="true" />
           </div>
           <p className="text-2xl font-bold text-foreground">{openComplaints}</p>
           <p className="text-2xs text-muted-foreground">Requiring investigation</p>
         </Card>
+      </div>
+
+      {/* Administrative Operations Hub Grid */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            Management &amp; CRUD Operations Hub
+          </h2>
+          <span className="text-2xs text-muted-foreground">8 Dedicated Consoles</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {managementModules.map((m) => {
+            const Icon = m.icon
+            return (
+              <Link key={m.href} href={m.href} className="group">
+                <Card className="p-4 border shadow-card hover:border-primary/50 transition flex flex-col justify-between h-full bg-card hover:bg-muted/10">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className={`p-2 rounded-md bg-muted/30 ${m.color}`}>
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                      </div>
+                      <Badge variant="outline" className="text-2xs font-mono">
+                        {m.stat}
+                      </Badge>
+                    </div>
+                    <h3 className="font-bold text-xs text-foreground group-hover:text-primary transition flex items-center justify-between">
+                      <span>{m.title}</span>
+                      <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                    </h3>
+                    <p className="text-2xs text-muted-foreground line-clamp-2">
+                      {m.desc}
+                    </p>
+                  </div>
+                </Card>
+              </Link>
+            )
+          })}
+        </div>
       </div>
 
       {/* Secondary Metrics & Quick Actions */}
@@ -155,7 +274,7 @@ export default function AdminDashboardPage() {
         <div className="space-y-4">
           <Card className="p-5 border shadow-card space-y-3">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Academic Resources Inventory
+              Repository Quick Stats
             </h2>
             <div className="space-y-2.5">
               <div className="flex items-center justify-between p-2.5 rounded-md border bg-secondary/30 text-xs">
@@ -175,6 +294,16 @@ export default function AdminDashboardPage() {
                 </div>
                 <Badge variant="default" className="text-2xs font-mono">
                   {totalPYQs}
+                </Badge>
+              </div>
+
+              <div className="flex items-center justify-between p-2.5 rounded-md border bg-secondary/30 text-xs">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary" aria-hidden="true" />
+                  <span className="font-medium">Calendar Milestones</span>
+                </div>
+                <Badge variant="default" className="text-2xs font-mono">
+                  {calendarEvents.length}
                 </Badge>
               </div>
             </div>

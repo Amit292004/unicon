@@ -13,7 +13,8 @@ import {
   ShieldCheck,
   Tag,
   AlertCircle,
-  FileText
+  FileText,
+  Trash2
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -31,6 +32,7 @@ export default function LostFoundPage() {
     currentProfile,
     lostFoundReports,
     addLostFoundReport,
+    deleteLostFoundReport,
     submitClaim,
     resolveClaim,
     updateReportStatus
@@ -309,8 +311,14 @@ export default function LostFoundPage() {
                           {report.category}
                         </Badge>
                         {report.status === 'resolved' && (
-                          <Badge variant="secondary" className="text-2xs">
-                            Resolved
+                          <Badge variant="secondary" className="text-2xs bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 flex items-center gap-1 font-semibold">
+                            <CheckCircle2 className="h-3 w-3" />
+                            {report.type === 'lost' ? 'Found & Recovered' : 'Returned to Owner'}
+                          </Badge>
+                        )}
+                        {report.status === 'claimed' && (
+                          <Badge variant="secondary" className="text-2xs bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-800 flex items-center gap-1 font-semibold">
+                            Claimed
                           </Badge>
                         )}
                       </div>
@@ -361,28 +369,113 @@ export default function LostFoundPage() {
                     <span>{report.reporter?.fullName}</span>
                   </div>
 
-                  <div>
+                  <div className="flex items-center gap-1.5">
+                    {(isOwner || currentProfile.role === 'admin' || currentProfile.role === 'moderator') && (
+                      <Button
+                        size="icon-sm"
+                        variant="ghost"
+                        className="h-7 w-7 text-destructive hover:bg-destructive/10"
+                        onClick={() => {
+                          if (typeof window !== 'undefined' && window.confirm(`Delete report for "${report.itemName}"?`)) {
+                            deleteLostFoundReport(report.id)
+                          }
+                        }}
+                        title="Delete Report"
+                        aria-label="Delete report"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      </Button>
+                    )}
+
                     {isOwner ? (
                       <div className="flex items-center gap-2">
-                        {report.status !== 'resolved' && (
+                        {report.status !== 'resolved' ? (
                           <Button
                             size="sm"
                             variant="outline"
-                            className="h-7 text-2xs"
+                            className="h-7 text-2xs gap-1 border-emerald-500/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/50"
                             onClick={() => updateReportStatus(report.id, 'resolved')}
                           >
-                            Mark Recovered
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            {report.type === 'lost' ? 'Mark Found / Recovered' : 'Mark Returned to Owner'}
                           </Button>
+                        ) : (
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-2xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              {report.type === 'lost' ? 'Item Recovered' : 'Returned'}
+                            </span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 text-3xs text-muted-foreground hover:text-foreground"
+                              onClick={() => updateReportStatus(report.id, 'active')}
+                            >
+                              Reopen
+                            </Button>
+                          </div>
                         )}
                       </div>
                     ) : (
-                      report.status === 'active' && (
+                      // Non-owner view:
+                      // If the item has been marked found / resolved / claimed by the owner, NEVER show claim!
+                      report.status === 'resolved' || report.status === 'claimed' ? (
+                        <span className="text-2xs font-medium text-muted-foreground flex items-center gap-1">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                          {report.type === 'lost' ? 'Recovered by owner' : 'Claimed & returned'}
+                        </span>
+                      ) : report.type === 'found' ? (
+                        // If it is a FOUND item, check if this user already claimed it:
+                        (() => {
+                          const userClaim = report.claims?.find((c) => c.claimantId === currentProfile.id)
+                          if (!userClaim) {
+                            return (
+                              <Button
+                                size="sm"
+                                className="h-7 text-2xs"
+                                onClick={() => setClaimingItem(report)}
+                              >
+                                Submit Claim
+                              </Button>
+                            )
+                          }
+                          if (userClaim.status === 'pending') {
+                            return (
+                              <Badge variant="warning" className="text-2xs">
+                                Claim Pending Review
+                              </Badge>
+                            )
+                          }
+                          if (userClaim.status === 'accepted') {
+                            return (
+                              <Badge variant="success" className="text-2xs">
+                                Claim Approved
+                              </Badge>
+                            )
+                          }
+                          return (
+                            <Badge variant="destructive" className="text-2xs">
+                              Claim Not Approved
+                            </Badge>
+                          )
+                        })()
+                      ) : (
+                        // If it is a LOST item (not found), strangers should NOT see "Submit Claim"!
+                        // Instead, they can notify that they found it:
                         <Button
                           size="sm"
-                          className="h-7 text-2xs"
-                          onClick={() => setClaimingItem(report)}
+                          variant="outline"
+                          className="h-7 text-2xs gap-1 text-primary border-primary/40 hover:bg-primary/5"
+                          onClick={() => {
+                            setReportType('found')
+                            setItemName(report.itemName)
+                            setCategory(report.category)
+                            setLocation(report.location || '')
+                            setShowReportModal(true)
+                          }}
                         >
-                          Submit Claim
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          I Found This
                         </Button>
                       )
                     )}

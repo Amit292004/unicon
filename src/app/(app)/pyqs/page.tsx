@@ -9,7 +9,8 @@ import {
   Calendar,
   Building2,
   CheckCircle2,
-  Award
+  Award,
+  Trash2
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -22,7 +23,7 @@ import { formatFileSize } from '@/lib/utils'
 import type { ExamType } from '@/types'
 
 export default function PYQsPage() {
-  const { currentProfile, pyqs, addPYQ } = useAppStore()
+  const { currentProfile, pyqs, addPYQ, deletePYQ } = useAppStore()
 
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedYear, setSelectedYear] = useState<number | 'all'>('all')
@@ -232,22 +233,40 @@ export default function PYQsPage() {
                 </div>
               </div>
 
-              <div className="border-t pt-3 flex items-center justify-between">
+              <div className="border-t pt-3 flex items-center justify-between gap-2">
                 <span className="text-2xs text-muted-foreground">
                   Contributor: {pyq.author?.fullName || 'Student Contributor'}
                 </span>
 
-                <a
-                  href={pyq.fileUrl}
-                  download={pyq.fileName}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
-                    <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                    Download PDF
-                  </Button>
-                </a>
+                <div className="flex items-center gap-1.5">
+                  {(currentProfile.id === pyq.authorId || currentProfile.role === 'admin' || currentProfile.role === 'moderator') && (
+                    <Button
+                      size="icon-sm"
+                      variant="ghost"
+                      className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                      onClick={() => {
+                        if (typeof window !== 'undefined' && window.confirm(`Delete question paper "${pyq.title}"?`)) {
+                          deletePYQ(pyq.id)
+                        }
+                      }}
+                      title="Delete Question Paper"
+                      aria-label="Delete question paper"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Button>
+                  )}
+                  <a
+                    href={pyq.fileUrl}
+                    download={pyq.fileName}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
+                      <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                      Download PDF
+                    </Button>
+                  </a>
+                </div>
               </div>
             </Card>
           ))}

@@ -13,7 +13,11 @@ import {
   Users,
   LogOut,
   ArrowLeft,
-  Building2
+  Building2,
+  BookOpen,
+  FileText,
+  Phone,
+  Settings
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { UserAvatar } from '@/components/shared/user-avatar'
@@ -39,8 +43,14 @@ export default function AdminLayout({
 
   const navLinks = [
     { href: '/admin/dashboard', label: 'Overview Metrics', icon: LayoutDashboard },
-    { href: '/admin/notices', label: 'Notice Targeting', icon: Bell },
-    { href: '/admin/transport', label: 'Fleet & Transit Logistics', icon: Bus },
+    { href: '/admin/notices', label: 'Notices Engine', icon: Bell },
+    { href: '/admin/transport', label: 'Transit & Logistics', icon: Bus },
+    { href: '/admin/students', label: 'Students & Users', icon: Users },
+    { href: '/admin/lost-found', label: 'Lost & Found', icon: Search },
+    { href: '/admin/academics', label: 'Timetable & Exams', icon: BookOpen },
+    { href: '/admin/resources', label: 'Notes & PYQ Archive', icon: FileText },
+    { href: '/admin/contacts', label: 'Campus Contacts', icon: Phone },
+    { href: '/admin/settings', label: 'College & Depts', icon: Settings },
   ]
 
   return (

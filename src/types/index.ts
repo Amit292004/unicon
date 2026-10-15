@@ -1,6 +1,6 @@
 // Shared TypeScript types across CampusConnect
 
-export type UserRole = 'student' | 'college_admin' | 'transport_admin' | 'platform_admin'
+export type UserRole = 'student' | 'college_admin' | 'transport_admin' | 'platform_admin' | 'faculty' | 'admin' | 'moderator'
 export type Theme = 'light' | 'dark' | 'system'
 export type NoticeAudience = 'all' | 'department' | 'semester' | 'department_semester'
 export type NoticeStatus = 'draft' | 'published' | 'archived'
@@ -9,7 +9,7 @@ export type LostFoundStatus = 'active' | 'claimed' | 'resolved'
 export type ClaimStatus = 'pending' | 'accepted' | 'rejected'
 export type BusStatus = 'active' | 'inactive' | 'maintenance'
 export type ComplaintStatus = 'open' | 'in_progress' | 'resolved' | 'closed'
-export type ExamType = 'internal' | 'end_semester' | 'mid_semester' | 'supplementary'
+export type ExamType = 'internal' | 'end_semester' | 'mid_semester' | 'supplementary' | 'midsem' | 'endsem'
 
 export interface College {
   id: string
@@ -19,7 +19,10 @@ export interface College {
   city: string | null
   state: string | null
   website: string | null
+  websiteUrl?: string | null
+  domain?: string | null
   isApproved: boolean
+  isVerified?: boolean
   createdAt: string
 }
 
@@ -28,7 +31,7 @@ export interface Department {
   collegeId: string
   name: string
   code: string
-  durationYears: number
+  durationYears?: number
 }
 
 export interface Profile {
@@ -289,3 +292,83 @@ export interface LostFoundStats {
   pendingClaims: number
   resolvedItems: number
 }
+
+export interface TimetableSlot {
+  id: string
+  collegeId: string
+  day: 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri'
+  time: string
+  subject: string
+  room: string
+  faculty: string
+  departmentId?: string | null
+  semester?: number | null
+}
+
+export interface ExamScheduleItem {
+  id: string
+  collegeId: string
+  code: string
+  subject: string
+  date: string
+  time: string
+  hall: string
+  departmentId?: string | null
+  semester?: number | null
+}
+
+export interface AcademicCalendarEvent {
+  id: string
+  collegeId: string
+  date: string
+  title: string
+  type: 'Exam' | 'Holiday' | 'Academic' | 'Evaluation' | 'Event'
+}
+
+export interface CampusContact {
+  id: string
+  collegeId: string
+  category: string
+  name: string
+  role: string
+  department: string
+  email: string
+  phone: string
+  office: string
+  hours: string
+}
+
+export interface PostComment {
+  id: string
+  postId: string
+  authorName: string
+  authorUsername: string
+  avatarUrl?: string | null
+  content: string
+  createdAt: string
+}
+
+export interface CampusQuestionAnswer {
+  id: string
+  authorName: string
+  role: string
+  content: string
+  createdAt: string
+}
+
+export interface CampusQuestion {
+  id: string
+  collegeId: string
+  authorName: string
+  authorUsername: string
+  avatarUrl?: string | null
+  category: 'Academics' | 'Hostel & Mess' | 'Transit & Bus' | 'Administrative' | 'Campus Life'
+  question: string
+  details: string
+  answersCount: number
+  upvotes: number
+  createdAt: string
+  hasUpvoted?: boolean
+  answers: CampusQuestionAnswer[]
+}
+

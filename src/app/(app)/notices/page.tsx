@@ -12,7 +12,9 @@ import {
   User,
   ExternalLink,
   ShieldCheck,
-  Plus
+  Plus,
+  Trash2,
+  Edit3
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -23,7 +25,7 @@ import { useAppStore } from '@/lib/data/client-store'
 import { formatDateTime } from '@/lib/utils'
 
 export default function NoticesPage() {
-  const { currentProfile, notices } = useAppStore()
+  const { currentProfile, notices, deleteNotice } = useAppStore()
   const [filterAudience, setFilterAudience] = useState<'all' | 'department' | 'semester'>('all')
   const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all')
   const [searchQuery, setSearchQuery] = useState('')
@@ -188,12 +190,30 @@ export default function NoticesPage() {
                     <span>{notice.author?.fullName || 'Academic Dean'}</span>
                   </div>
 
-                  <Link href={`/notices/${notice.id}`}>
-                    <Button variant="outline" size="sm" className="h-8 text-xs gap-1">
-                      Read Full Notice
-                      <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                    </Button>
-                  </Link>
+                  <div className="flex items-center gap-1.5">
+                    {(currentProfile.role === 'admin' || currentProfile.role === 'moderator' || currentProfile.id === notice.authorId) && (
+                      <Button
+                        size="icon-sm"
+                        variant="ghost"
+                        className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                        onClick={() => {
+                          if (typeof window !== 'undefined' && window.confirm(`Delete notice "${notice.title}"?`)) {
+                            deleteNotice(notice.id)
+                          }
+                        }}
+                        title="Delete Notice"
+                        aria-label="Delete notice"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      </Button>
+                    )}
+                    <Link href={`/notices/${notice.id}`}>
+                      <Button variant="outline" size="sm" className="h-8 text-xs gap-1">
+                        Read Full Notice
+                        <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
 

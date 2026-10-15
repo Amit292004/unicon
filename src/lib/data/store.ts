@@ -17,7 +17,12 @@ import type {
   Event,
   Message,
   Conversation,
-  Notification
+  Notification,
+  TimetableSlot,
+  ExamScheduleItem,
+  AcademicCalendarEvent,
+  CampusContact,
+  CampusQuestion
 } from '@/types'
 
 export const SEEDED_COLLEGES: College[] = [
@@ -65,6 +70,27 @@ export const SEEDED_DEPARTMENTS: Department[] = [
 ]
 
 export const SEEDED_PROFILES: Profile[] = [
+  {
+    id: 'usr-student-000',
+    collegeId: 'col-003',
+    departmentId: 'dept-001',
+    role: 'student',
+    fullName: 'Amit Sharma',
+    username: 'amit_sharma',
+    rollNumber: '2023CSE001',
+    email: 'amitsharma72020@gmail.com',
+    phoneNumber: '+91 98765 43200',
+    avatarUrl: null,
+    bio: 'Lead Developer & Student at UNICON platform.',
+    yearOfJoining: 2023,
+    expectedGraduationYear: 2027,
+    isEmailVerified: true,
+    isOnboarded: true,
+    theme: 'light',
+    createdAt: '2026-01-01T10:00:00Z',
+    college: SEEDED_COLLEGES[2],
+    department: SEEDED_DEPARTMENTS[0],
+  },
   {
     id: 'usr-student-001',
     collegeId: 'col-003',
@@ -348,12 +374,12 @@ export const SEEDED_PROJECTS: Project[] = [
     id: 'prj-001',
     collegeId: 'col-003',
     authorId: 'usr-student-001',
-    title: 'CampusConnect — Student Community & Utility Ecosystem',
+    title: 'UNICON — Student Community & Utility Ecosystem',
     description: 'A dedicated college portal integrating academic notices, lost-and-found claims matching, bus transport scheduling, and peer-to-peer resource sharing.',
     technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'PostgreSQL', 'Drizzle ORM'],
     coverImageUrl: null,
-    repoUrl: 'https://github.com/campusconnect/core',
-    liveUrl: 'https://campusconnect.demo.app',
+    repoUrl: 'https://github.com/unicon/core',
+    liveUrl: 'https://unicon.demo.app',
     createdAt: '2026-10-01T10:00:00Z',
     author: { fullName: 'Alex Chen', username: 'alex_chen', avatarUrl: null },
   },
@@ -497,9 +523,10 @@ export const SEEDED_ROUTES: Route[] = [
   },
 ]
 
-export const SEEDED_CONTACTS = [
+export const SEEDED_CONTACTS: CampusContact[] = [
   {
     id: 'cnt-001',
+    collegeId: 'col-003',
     category: 'Academic Administration',
     name: 'Dr. Robert Jamir',
     role: 'Dean of Academic Affairs',
@@ -511,6 +538,7 @@ export const SEEDED_CONTACTS = [
   },
   {
     id: 'cnt-002',
+    collegeId: 'col-003',
     category: 'Department Leadership',
     name: 'Prof. Ananya Sen',
     role: 'Head of Department',
@@ -522,6 +550,7 @@ export const SEEDED_CONTACTS = [
   },
   {
     id: 'cnt-003',
+    collegeId: 'col-003',
     category: 'Campus Transport Services',
     name: 'Vikram Singh',
     role: 'Transport Operations Officer',
@@ -533,6 +562,7 @@ export const SEEDED_CONTACTS = [
   },
   {
     id: 'cnt-004',
+    collegeId: 'col-003',
     category: 'Health & Student Support',
     name: 'Dr. Neha Sharma',
     role: 'Senior Medical Officer',
@@ -544,6 +574,7 @@ export const SEEDED_CONTACTS = [
   },
   {
     id: 'cnt-005',
+    collegeId: 'col-003',
     category: 'Hostel & Residence Life',
     name: 'T. L. Pongen',
     role: 'Chief Warden of Hostels',
@@ -554,3 +585,109 @@ export const SEEDED_CONTACTS = [
     hours: '09:00 - 17:00 (Mon - Sat)',
   },
 ]
+
+export const SEEDED_TIMETABLE_SLOTS: TimetableSlot[] = [
+  { id: 'tt-001', collegeId: 'col-003', day: 'Mon', time: '09:00 - 10:00 AM', subject: 'Operating Systems (CS401)', room: 'Room 204', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 4 },
+  { id: 'tt-002', collegeId: 'col-003', day: 'Mon', time: '10:15 - 11:15 AM', subject: 'Database Management Systems (CS402)', room: 'Room 204', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 4 },
+  { id: 'tt-003', collegeId: 'col-003', day: 'Mon', time: '11:30 - 12:30 PM', subject: 'Computer Networks (CS403)', room: 'Room 204', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 4 },
+  { id: 'tt-004', collegeId: 'col-003', day: 'Mon', time: '01:30 - 04:30 PM', subject: 'Operating Systems Lab (CS491)', room: 'Software Lab 2', faculty: 'Prof. Sen & TAs', departmentId: 'dept-001', semester: 4 },
+  { id: 'tt-005', collegeId: 'col-003', day: 'Tue', time: '09:00 - 10:00 AM', subject: 'Theory of Computation (CS404)', room: 'Room 204', faculty: 'Dr. Pongen', departmentId: 'dept-001', semester: 4 },
+  { id: 'tt-006', collegeId: 'col-003', day: 'Tue', time: '10:15 - 11:15 AM', subject: 'Software Engineering (CS405)', room: 'Room 204', faculty: 'Prof. Kire', departmentId: 'dept-001', semester: 4 },
+  { id: 'tt-007', collegeId: 'col-003', day: 'Wed', time: '09:00 - 10:00 AM', subject: 'Database Systems (CS402)', room: 'Room 204', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 4 },
+  { id: 'tt-008', collegeId: 'col-003', day: 'Wed', time: '01:30 - 04:30 PM', subject: 'DBMS Laboratory (CS492)', room: 'Software Lab 1', faculty: 'Dr. Jamir & TAs', departmentId: 'dept-001', semester: 4 },
+  { id: 'tt-009', collegeId: 'col-003', day: 'Thu', time: '09:00 - 10:00 AM', subject: 'Computer Networks (CS403)', room: 'Room 204', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 4 },
+  { id: 'tt-010', collegeId: 'col-003', day: 'Fri', time: '09:00 - 11:00 AM', subject: 'Technical Seminar & Projects', room: 'Seminar Hall B', faculty: 'Faculty Committee', departmentId: 'dept-001', semester: 4 },
+]
+
+export const SEEDED_EXAM_SCHEDULES: ExamScheduleItem[] = [
+  { id: 'ex-001', collegeId: 'col-003', code: 'CS401', subject: 'Operating Systems', date: 'Oct 20, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 1 - Hall A', departmentId: 'dept-001', semester: 4 },
+  { id: 'ex-002', collegeId: 'col-003', code: 'CS402', subject: 'Database Systems', date: 'Oct 22, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 1 - Hall A', departmentId: 'dept-001', semester: 4 },
+  { id: 'ex-003', collegeId: 'col-003', code: 'CS403', subject: 'Computer Networks', date: 'Oct 24, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 1 - Hall B', departmentId: 'dept-001', semester: 4 },
+  { id: 'ex-004', collegeId: 'col-003', code: 'MA401', subject: 'Discrete Mathematics', date: 'Oct 27, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 2 - Hall C', departmentId: 'dept-001', semester: 4 },
+]
+
+export const SEEDED_CALENDAR_EVENTS: AcademicCalendarEvent[] = [
+  { id: 'cal-001', collegeId: 'col-003', date: 'Oct 20, 2026', title: 'Mid-Semester Examinations Commence', type: 'Exam' },
+  { id: 'cal-002', collegeId: 'col-003', date: 'Oct 28, 2026', title: 'Mid-Semester Examinations Conclude', type: 'Exam' },
+  { id: 'cal-003', collegeId: 'col-003', date: 'Nov 04, 2026', title: 'Autumn Break Begins', type: 'Holiday' },
+  { id: 'cal-004', collegeId: 'col-003', date: 'Nov 12, 2026', title: 'Classes Resume Post-Break', type: 'Academic' },
+  { id: 'cal-005', collegeId: 'col-003', date: 'Dec 01, 2026', title: 'Final Project Demonstrations', type: 'Evaluation' },
+  { id: 'cal-006', collegeId: 'col-003', date: 'Dec 15, 2026', title: 'End-Semester Examinations Begin', type: 'Exam' },
+]
+
+export const SEEDED_CAMPUS_QUESTIONS: CampusQuestion[] = [
+  {
+    id: 'q-1',
+    collegeId: 'col-003',
+    authorName: 'Alex Chen',
+    authorUsername: 'alex_chen',
+    avatarUrl: null,
+    category: 'Academics',
+    question: 'Where can we verify the end-semester evaluation weightage for OS and DBMS lab practicals?',
+    details: 'The syllabus document indicates continuous assessment is 40% and final viva is 60%, but the department notice board had an updated circular.',
+    answersCount: 2,
+    upvotes: 8,
+    createdAt: '2026-10-14T10:30:00Z',
+    answers: [
+      {
+        id: 'ans-1',
+        authorName: 'Priya Sharma',
+        role: 'Class Representative',
+        content: 'Dr. Jamir confirmed in yesterday lecture that continuous internal assessment is 40 marks and the university practical exam is 60 marks with external viva.',
+        createdAt: '2026-10-14T11:15:00Z',
+      },
+      {
+        id: 'ans-2',
+        authorName: 'Academic Cell',
+        role: 'Faculty Support',
+        content: 'Official circular No. AC/2026/04 has been uploaded to the Notices tab with the complete rubric.',
+        createdAt: '2026-10-14T12:00:00Z',
+      },
+    ],
+  },
+  {
+    id: 'q-2',
+    collegeId: 'col-003',
+    authorName: 'Rohan Verma',
+    authorUsername: 'rohan_v',
+    avatarUrl: null,
+    category: 'Transit & Bus',
+    question: 'Does Bus Route 1 run additional evening trips during examination weeks?',
+    details: 'Regular departure from campus terminal is 04:30 PM, but labs often extend until 05:15 PM during practicals.',
+    answersCount: 1,
+    upvotes: 14,
+    createdAt: '2026-10-13T16:00:00Z',
+    answers: [
+      {
+        id: 'ans-3',
+        authorName: 'Vikram Singh',
+        role: 'Transit Officer',
+        content: 'Yes! A special exam-clearance bus leaves Academic Block 1 terminal at 05:45 PM on all scheduled lab test dates.',
+        createdAt: '2026-10-13T17:20:00Z',
+      },
+    ],
+  },
+  {
+    id: 'q-3',
+    collegeId: 'col-003',
+    authorName: 'Imlirenla Jamir',
+    authorUsername: 'imlirenla',
+    avatarUrl: null,
+    category: 'Campus Life',
+    question: 'How do student technical clubs apply for campus auditorium booking for hackathons?',
+    details: 'We are organizing the annual inter-college 24h coding sprint and need sound facilities and high-speed Wi-Fi access.',
+    answersCount: 1,
+    upvotes: 5,
+    createdAt: '2026-10-12T09:00:00Z',
+    answers: [
+      {
+        id: 'ans-4',
+        authorName: 'Dean Student Affairs',
+        role: 'Administration',
+        content: 'Submit requisition form Form-SA7 signed by your faculty advisor at least 10 working days prior to the event.',
+        createdAt: '2026-10-12T14:10:00Z',
+      },
+    ],
+  },
+]
+

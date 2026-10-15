@@ -22,7 +22,7 @@ export default function AppLayout({
     }
   }, [theme])
 
-  const unreadNotificationsCount = notifications.filter((n) => !n.isRead).length
+  const unreadNotificationsCount = notifications.filter((n) => !n.isRead && n.userId === currentProfile.id).length
   const unreadMessagesCount = 0 // In-app active demo count
 
   return (

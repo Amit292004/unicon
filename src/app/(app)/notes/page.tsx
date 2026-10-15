@@ -10,7 +10,8 @@ import {
   Calendar,
   User,
   CheckCircle2,
-  Filter
+  Filter,
+  Trash2
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -22,7 +23,7 @@ import { useAppStore } from '@/lib/data/client-store'
 import { formatFileSize, formatDate } from '@/lib/utils'
 
 export default function NotesPage() {
-  const { currentProfile, notes, addNote } = useAppStore()
+  const { currentProfile, notes, addNote, deleteNote } = useAppStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all')
 
@@ -185,22 +186,40 @@ export default function NotesPage() {
                 </div>
               </div>
 
-              <div className="border-t pt-3 flex items-center justify-between">
+              <div className="border-t pt-3 flex items-center justify-between gap-2">
                 <span className="text-2xs text-muted-foreground">
                   {formatDate(note.createdAt)}
                 </span>
 
-                <a
-                  href={note.fileUrl}
-                  download={note.fileName}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
-                    <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                    Download File
-                  </Button>
-                </a>
+                <div className="flex items-center gap-1.5">
+                  {(currentProfile.id === note.authorId || currentProfile.role === 'admin' || currentProfile.role === 'moderator') && (
+                    <Button
+                      size="icon-sm"
+                      variant="ghost"
+                      className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                      onClick={() => {
+                        if (typeof window !== 'undefined' && window.confirm(`Delete note "${note.title}"?`)) {
+                          deleteNote(note.id)
+                        }
+                      }}
+                      title="Delete Note"
+                      aria-label="Delete note"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Button>
+                  )}
+                  <a
+                    href={note.fileUrl}
+                    download={note.fileName}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
+                      <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                      Download File
+                    </Button>
+                  </a>
+                </div>
               </div>
             </Card>
           ))}
