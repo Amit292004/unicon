@@ -144,6 +144,6 @@ Demo accounts (created by seed script):
 - Student: student@demo.campusconnect.app / Demo@1234
 - Admin: admin@demo.campusconnect.app / Admin@1234
 - Transport Admin: transport@demo.campusconnect.app / Transport@1234
-- College: "Demo University" (seeded)
+- College: "Nagaland University" (seeded)
 
 Run seed: `npm run db:seed`

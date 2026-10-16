@@ -24,7 +24,7 @@ export function GoogleAuthButton({
 
   const clientId = (
     process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
-    '600970011095-ei2vujje97566e6nqnnrp8jkote225l4.apps.googleusercontent.com'
+    '547807510306-jb9cc88ktj6ojhb7159l1t6n45299sa5.apps.googleusercontent.com'
   )
     .replace(/['"]/g, '')
     .trim()

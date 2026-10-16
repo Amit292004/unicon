@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
 import {
   Bell,
@@ -257,19 +256,6 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
             >
               <Menu className="h-5 w-5" aria-hidden="true" />
             </button>
-
-            {/* Brand Logo */}
-            <Link href="/" className="flex items-center gap-2 shrink-0">
-              <Image
-                src="/unicon-logo.png"
-                alt="UNICON"
-                width={112}
-                height={26}
-                className="h-6 sm:h-7 w-auto object-contain dark:brightness-110"
-                style={{ height: '26px', width: 'auto' }}
-                priority
-              />
-            </Link>
 
             {/* College Badge */}
             <div className="hidden md:inline-flex items-center gap-1.5 text-xs text-muted-foreground border border-border/70 bg-secondary/40 rounded-md px-2.5 py-1 truncate max-w-[200px]">

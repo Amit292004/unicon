@@ -139,7 +139,7 @@ export default function AcademicsPage() {
           </div>
           <p className="text-xs text-muted-foreground">
             Curriculum schedules, departmental timetables, and examination calendar for{' '}
-            {currentProfile.college?.name || 'Demo University'}
+            {currentProfile.college?.name || 'Nagaland University'}
           </p>
         </div>
 

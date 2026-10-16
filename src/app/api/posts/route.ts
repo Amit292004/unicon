@@ -4,7 +4,7 @@ import { postSchema } from '@/lib/validations'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const collegeId = searchParams.get('collegeId') || 'col-003'
+  const collegeId = searchParams.get('collegeId') || 'col-002'
 
   const posts = SEEDED_POSTS.filter((p) => p.collegeId === collegeId)
   return NextResponse.json({ data: posts, total: posts.length })
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
     const newPost = {
       id: `pst-${Date.now()}`,
-      collegeId: 'col-003',
+      collegeId: 'col-002',
       authorId: 'usr-student-001',
       type: result.data.type,
       content: result.data.content,

@@ -15,7 +15,7 @@ export default function RegisterPage() {
   const router = useRouter()
   const [step, setStep] = useState<1 | 2>(1)
   const [searchCollege, setSearchCollege] = useState('')
-  const [selectedCollegeId, setSelectedCollegeId] = useState<string>('col-003')
+  const [selectedCollegeId, setSelectedCollegeId] = useState<string>('col-002')
 
   // Step 2 Form
   const [email, setEmail] = useState('')
@@ -181,7 +181,7 @@ export default function RegisterPage() {
                       onClick={() => setSelectedCollegeId(college.id)}
                       className={`w-full text-left p-3 rounded-lg border transition-all flex items-start justify-between ${
                         isSelected
-                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                          ? 'border-border/80 bg-accent/40 shadow-xs'
                           : 'border-border/80 hover:bg-accent/50'
                       }`}
                       role="radio"

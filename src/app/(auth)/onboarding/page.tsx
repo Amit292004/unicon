@@ -26,7 +26,7 @@ function OnboardingContent() {
   const email = searchParams.get('email') || 'new.student@demo.campusconnect.app'
   const { registerUser, profiles } = useAppStore()
 
-  const [collegeId, setCollegeId] = useState<string>('col-003')
+  const [collegeId, setCollegeId] = useState<string>('col-002')
   const [fullName, setFullName] = useState('')
   const [username, setUsername] = useState('')
   const [rollNumber, setRollNumber] = useState('')
@@ -47,7 +47,11 @@ function OnboardingContent() {
         const stored = sessionStorage.getItem('cc_pending_registration')
         if (stored) {
           const parsed = JSON.parse(stored)
-          if (parsed.collegeId) setCollegeId(parsed.collegeId)
+          if (parsed.collegeId && SEEDED_COLLEGES.some((c) => c.id === parsed.collegeId)) {
+            setCollegeId(parsed.collegeId)
+          } else {
+            setCollegeId(SEEDED_COLLEGES[0]?.id || 'col-002')
+          }
           if (parsed.password) setPendingPassword(parsed.password)
         }
       } catch {
@@ -88,7 +92,7 @@ function OnboardingContent() {
 
     setLoading(true)
 
-    const selectedCollege = SEEDED_COLLEGES.find((c) => c.id === collegeId) || SEEDED_COLLEGES[1]
+    const selectedCollege = SEEDED_COLLEGES.find((c) => c.id === collegeId) || SEEDED_COLLEGES[0]
     const selectedDept = SEEDED_DEPARTMENTS.find((d) => d.id === departmentId)
     const newProfile: Profile = {
       id: `usr-${Date.now()}`,

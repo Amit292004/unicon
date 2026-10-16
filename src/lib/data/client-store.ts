@@ -191,7 +191,7 @@ export const useAppStore = create<AppStore>()(
     (set, get) => ({
       currentProfile: SEEDED_PROFILES[0], // Alex Chen by default
       theme: 'light',
-      college: SEEDED_COLLEGES[1], // Demo University
+      college: SEEDED_COLLEGES[0], // Nagaland University
       departments: SEEDED_DEPARTMENTS,
       profiles: SEEDED_PROFILES,
       notices: SEEDED_NOTICES,
@@ -605,7 +605,7 @@ export const useAppStore = create<AppStore>()(
           const assignedRole = isEmailAdmin ? 'college_admin' : isEmailTransport ? 'transport_admin' : 'student'
           const newProfile: Profile = {
             id: `usr-${Date.now()}`,
-            collegeId: get().college?.id || 'col-003',
+            collegeId: get().college?.id || 'col-002',
             departmentId: 'dept-001',
             role: assignedRole,
             fullName: capitalizedName,
@@ -1412,7 +1412,7 @@ export const useAppStore = create<AppStore>()(
     }),
     {
       name: 'campusconnect_app_storage',
-      version: 2,
+      version: 3,
       migrate: (persistedState: any, version: number) => {
         if (!persistedState) return persistedState
         if (version < 2) {
@@ -1420,7 +1420,7 @@ export const useAppStore = create<AppStore>()(
           const existingExams = Array.isArray(persistedState.examSchedules) ? persistedState.examSchedules : []
           const hasMultipleSemesters = existingSlots.some((s: any) => s.semester && s.semester !== 4)
 
-          return {
+          persistedState = {
             ...persistedState,
             timetableSlots: hasMultipleSemesters && existingSlots.length >= 40 ? existingSlots : SEEDED_TIMETABLE_SLOTS,
             examSchedules: existingExams.length >= 16 ? existingExams : SEEDED_EXAM_SCHEDULES,
@@ -1428,6 +1428,28 @@ export const useAppStore = create<AppStore>()(
               ...persistedState.currentProfile,
               semester: persistedState.currentProfile?.semester || 4,
             },
+          }
+        }
+        if (
+          version < 3 ||
+          persistedState.college?.slug === 'demo-university' ||
+          persistedState.college?.name === 'Demo University'
+        ) {
+          persistedState = {
+            ...persistedState,
+            college: SEEDED_COLLEGES[0],
+            currentProfile: {
+              ...persistedState.currentProfile,
+              college: SEEDED_COLLEGES[0],
+              collegeId: 'col-002',
+            },
+            profiles: Array.isArray(persistedState.profiles)
+              ? persistedState.profiles.map((p: any) => ({
+                  ...p,
+                  college: SEEDED_COLLEGES[0],
+                  collegeId: 'col-002',
+                }))
+              : persistedState.profiles,
           }
         }
         return persistedState

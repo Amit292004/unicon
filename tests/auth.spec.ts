@@ -10,7 +10,7 @@ test.describe('Authentication and Onboarding Flow', () => {
   test('Registration displays searchable college list and advances to account details', async ({ page }) => {
     await page.goto('/register')
     await expect(page.getByText('Step 1 of 2')).toBeVisible()
-    await expect(page.getByText('Demo University')).toBeVisible()
+    await expect(page.getByText('Nagaland University')).toBeVisible()
 
     // Click continue
     await page.getByRole('button', { name: /Continue to Account Details/i }).click()

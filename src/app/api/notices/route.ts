@@ -4,7 +4,7 @@ import { noticeSchema } from '@/lib/validations'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const collegeId = searchParams.get('collegeId') || 'col-003'
+  const collegeId = searchParams.get('collegeId') || 'col-002'
   const departmentId = searchParams.get('departmentId')
   const semesterStr = searchParams.get('semester')
   const semester = semesterStr ? parseInt(semesterStr) : null
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
     const newNotice = {
       id: `not-${Date.now()}`,
-      collegeId: 'col-003',
+      collegeId: 'col-002',
       authorId: 'usr-admin-001',
       title: result.data.title,
       content: result.data.content,
