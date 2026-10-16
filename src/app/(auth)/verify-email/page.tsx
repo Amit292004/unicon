@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Mail, CheckCircle2, RotateCw, ArrowRight, ShieldCheck, KeyRound } from 'lucide-react'
+import { Mail, CheckCircle2, RotateCw, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 
@@ -20,7 +20,8 @@ function VerifyEmailContent() {
     isDirectSent ? `A verification code was dispatched to ${email}.` : null
   )
   const [cooldown, setCooldown] = useState(isDirectSent ? 60 : 0)
-  const [previewOtp, setPreviewOtp] = useState<string | null>(null)
+
+
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   // Send OTP helper
@@ -54,12 +55,8 @@ function VerifyEmailContent() {
         ? `Verification code dispatched to your inbox (${email}) via Resend.`
         : `Verification code dispatched for ${email}.`
       setInfoMessage(providerInfo)
-      if (data.previewOtp) {
-        setPreviewOtp(data.previewOtp)
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('cc_preview_otp', data.previewOtp)
-        }
-      }
+
+
     } catch {
       setError('Network error: Unable to contact the verification service.')
     } finally {
@@ -67,14 +64,9 @@ function VerifyEmailContent() {
     }
   }, [email])
 
-  // Initial mount: focus first input, retrieve preview code, and request OTP if not already sent
+  // Initial mount: focus first input and request OTP if not already sent
   useEffect(() => {
     inputRefs.current[0]?.focus()
-
-    if (typeof window !== 'undefined') {
-      const stored = sessionStorage.getItem('cc_preview_otp')
-      if (stored) setPreviewOtp(stored)
-    }
 
     if (!isDirectSent) {
       triggerSendOtp(true)
@@ -164,17 +156,6 @@ function VerifyEmailContent() {
     }
   }
 
-  const handleUseDemoOtp = () => {
-    setOtp(['8', '4', '2', '1', '9', '0'])
-    setError(null)
-  }
-
-  const handleUseRealOtp = (code: string) => {
-    const digits = code.split('').slice(0, 6)
-    while (digits.length < 6) digits.push('')
-    setOtp(digits)
-    setError(null)
-  }
 
   return (
     <Card className="border shadow-card w-full">
@@ -233,36 +214,7 @@ function VerifyEmailContent() {
           </Button>
         </form>
 
-        {/* Live Google Gmail Delivery Status */}
-        <div className="p-3 rounded-md bg-secondary text-xs space-y-2 border">
-          <div className="flex items-center justify-between text-muted-foreground flex-wrap gap-2">
-            <span className="flex items-center gap-1.5 font-medium text-foreground">
-              <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              Live Google Gmail Delivery
-            </span>
-            <div className="flex items-center gap-2">
-              {previewOtp && (
-                <button
-                  type="button"
-                  onClick={() => handleUseRealOtp(previewOtp)}
-                  className="text-primary font-semibold hover:underline bg-primary/10 px-2 py-0.5 rounded text-2xs"
-                >
-                  Autofill Real OTP ({previewOtp})
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={handleUseDemoOtp}
-                className="text-muted-foreground hover:text-foreground font-medium hover:underline text-2xs"
-              >
-                Autofill 842190
-              </button>
-            </div>
-          </div>
-          <p className="text-2xs text-muted-foreground leading-relaxed">
-            Real OTPs are cryptographically generated and emailed directly to your inbox via Google Gmail. Please enter the 6 digits from your email.
-          </p>
-        </div>
+
       </CardContent>
 
       <CardFooter className="flex flex-col space-y-2 border-t pt-4 text-center">

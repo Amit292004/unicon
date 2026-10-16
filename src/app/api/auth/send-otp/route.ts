@@ -63,7 +63,6 @@ export async function POST(request: Request) {
       message: `Verification code successfully dispatched to ${email.trim()} via ${providerName}`,
       cooldown: otpResult.cooldown || 60,
       simulated: emailResult.simulated,
-      previewOtp: emailResult.previewOtp,
       provider: emailResult.provider,
     })
   } catch (err: unknown) {

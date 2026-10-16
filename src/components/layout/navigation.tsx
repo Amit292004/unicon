@@ -279,7 +279,7 @@ export function BottomNav() {
             aria-hidden="true"
           />
           <div
-            className="relative z-50 bg-card border-t border-border/80 rounded-t-xl p-4 pb-20 shadow-modal space-y-3 animate-slide-up max-h-[82vh] overflow-y-auto"
+            className="relative z-50 bg-card border-t border-border/80 rounded-t-xl p-4 pb-20 safe-bottom shadow-modal space-y-3 animate-slide-up max-h-[85dvh] overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-label="More campus services"

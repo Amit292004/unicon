@@ -86,9 +86,6 @@ export default function RegisterPage() {
             password,
           })
         )
-        if (data.previewOtp) {
-          sessionStorage.setItem('cc_preview_otp', data.previewOtp)
-        }
       }
 
       router.push(`/verify-email?email=${encodeURIComponent(email)}&sent=1`)

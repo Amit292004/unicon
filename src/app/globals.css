@@ -111,14 +111,23 @@ body {
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 
+.safe-top {
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+
 .main-content-mobile {
   padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 1.25rem);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .main-content-mobile {
-    padding-bottom: 2rem;
+    padding-bottom: 2.5rem;
   }
+}
+
+/* ─── Touch & Interaction Optimizations ──────────────────────────── */
+button, a, input, select, textarea {
+  touch-action: manipulation;
 }
 
 /* ─── Scrollbar Utility for Horizontal Tabs ──────────────────────── */
@@ -129,3 +138,4 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+

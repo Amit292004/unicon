@@ -114,6 +114,7 @@ interface AppStore {
   addNote: (note: Omit<Note, 'id' | 'createdAt' | 'author' | 'downloadCount' | 'collegeId' | 'authorId'> & { collegeId?: string; authorId?: string }) => void
   updateNote: (id: string, updates: Partial<Note>) => void
   deleteNote: (id: string) => void
+  resetNotes: () => void
 
   addPYQ: (pyq: Omit<PYQ, 'id' | 'createdAt' | 'author' | 'downloadCount' | 'collegeId' | 'authorId'> & { collegeId?: string; authorId?: string }) => void
   updatePYQ: (id: string, updates: Partial<PYQ>) => void
@@ -815,6 +816,10 @@ export const useAppStore = create<AppStore>()(
         }))
       },
 
+      resetNotes: () => {
+        set({ notes: SEEDED_NOTES })
+      },
+
       // PYQs CRUD
       addPYQ: (pyqData) => {
         const profile = get().currentProfile
@@ -1412,7 +1417,7 @@ export const useAppStore = create<AppStore>()(
     }),
     {
       name: 'campusconnect_app_storage',
-      version: 3,
+      version: 4,
       migrate: (persistedState: any, version: number) => {
         if (!persistedState) return persistedState
         if (version < 2) {
@@ -1452,7 +1457,36 @@ export const useAppStore = create<AppStore>()(
               : persistedState.profiles,
           }
         }
+        if (version < 4 || !Array.isArray(persistedState.notes) || persistedState.notes.length === 0) {
+          persistedState = {
+            ...persistedState,
+            notes: SEEDED_NOTES,
+          }
+        } else {
+          // Merge newly introduced seeded notes for all semesters
+          const existingIds = new Set(persistedState.notes.map((n: any) => n.id))
+          const missing = SEEDED_NOTES.filter((n) => !existingIds.has(n.id))
+          if (missing.length > 0) {
+            persistedState = {
+              ...persistedState,
+              notes: [...persistedState.notes, ...missing],
+            }
+          }
+        }
         return persistedState
+      },
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          if (!Array.isArray(state.notes) || state.notes.length === 0) {
+            state.notes = SEEDED_NOTES
+          } else {
+            const existingIds = new Set(state.notes.map((n) => n.id))
+            const missing = SEEDED_NOTES.filter((n) => !existingIds.has(n.id))
+            if (missing.length > 0) {
+              state.notes = [...state.notes, ...missing]
+            }
+          }
+        }
       },
     }
   )

@@ -3,7 +3,7 @@ import path from "path";
 
 const nextConfig: NextConfig = {
   devIndicators: false,
-  allowedDevOrigins: ['10.164.218.20', 'localhost'],
+  allowedDevOrigins: ['10.168.207.20', '10.164.218.20', 'localhost', '127.0.0.1'],
   turbopack: {
     root: path.resolve(__dirname),
     rules: {

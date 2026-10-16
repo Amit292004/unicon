@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
 import {
   Bell,
@@ -257,8 +258,21 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
               <Menu className="h-5 w-5" aria-hidden="true" />
             </button>
 
+            {/* Mobile & Tablet UNICON Logo (Visible when desktop sidebar is hidden) */}
+            <Link href="/" className="lg:hidden flex items-center gap-1.5 shrink-0">
+              <Image
+                src="/unicon-logo.png"
+                alt="UNICON"
+                width={110}
+                height={26}
+                className="h-6 sm:h-7 w-auto object-contain dark:brightness-110"
+                style={{ height: '24px', width: 'auto' }}
+                priority
+              />
+            </Link>
+
             {/* College Badge */}
-            <div className="hidden md:inline-flex items-center gap-1.5 text-xs text-muted-foreground border border-border/70 bg-secondary/40 rounded-md px-2.5 py-1 truncate max-w-[200px]">
+            <div className="hidden sm:inline-flex items-center gap-1.5 text-xs text-muted-foreground border border-border/70 bg-secondary/40 rounded-md px-2.5 py-1 truncate max-w-[160px] md:max-w-[220px]">
               <Building2 className="h-3.5 w-3.5 text-muted-foreground/80 shrink-0" aria-hidden="true" />
               <span className="truncate">{activeProfile.college?.name ?? 'My College'}</span>
             </div>
@@ -587,7 +601,7 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
             aria-hidden="true"
           />
           <div
-            className="relative z-50 bg-card border-t border-border/80 rounded-t-2xl p-4 pb-8 shadow-modal space-y-3 animate-slide-up max-h-[85vh] overflow-y-auto"
+            className="relative z-50 bg-card border-t border-border/80 rounded-t-2xl p-4 pb-8 safe-bottom shadow-modal space-y-3 animate-slide-up max-h-[85dvh] overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-label="Campus modules menu"

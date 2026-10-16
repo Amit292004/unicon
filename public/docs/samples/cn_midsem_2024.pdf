@@ -6,35 +6,56 @@ endobj
 << /Type /Pages /Kids [3 0 R] /Count 1 >>
 endobj
 3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
 endobj
 4 0 obj
-<< /Length 156 >>
+<< /Length 676 >>
 stream
 BT
-/F1 16 Tf
-50 800 Td
-(Computer Networks - Mid Semester 2024) Tj
-/F1 11 Tf
+/F2 12 Tf
+50 790 Td
+(NAGALAND UNIVERSITY - CAMPUS STUDY REPOSITORY) Tj
+/F1 18 Tf
 0 -30 Td
-(Past year question paper - Computer Networks Mid Semester 2024) Tj
+(Computer Networks Mid-Semester Examination 2024) Tj
+/F2 10 Tf
+0 -22 Td
+(Course: Computer Networks  |  Semester 5  |  Contributor: Priya Sharma) Tj
+/F2 11 Tf
+0 -24 Td
+(Nagaland University Department of Computer Science & Engineering official exam archive.) Tj
+/F1 13 Tf
+0 -28 Td
+(Question Paper Outline) Tj
+/F2 10 Tf
+0 -16 Td
+(* Section A: IPv4 Subnetting and CIDR address calculation questions.) Tj
+0 -16 Td
+(* Section B: TCP Congestion Control and sliding window derivations.) Tj
+/F2 9 Tf
+0 -40 Td
+(Generated for CampusConnect - Nagaland University Academic Resource Portal) Tj
 ET
 
 endstream
 endobj
 5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
 endobj
 xref
-0 6
+0 7
 0000000000 65535 f 
 0000000009 00000 n 
 0000000058 00000 n 
 0000000115 00000 n 
-0000000241 00000 n 
-0000000448 00000 n 
+0000000251 00000 n 
+0000000978 00000 n 
+0000001053 00000 n 
 trailer
-<< /Size 6 /Root 1 0 R >>
+<< /Size 7 /Root 1 0 R >>
 startxref
-518
+1123
 %%EOF

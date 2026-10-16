@@ -1,0 +1,73 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1180 >>
+stream
+BT
+/F2 12 Tf
+50 790 Td
+(NAGALAND UNIVERSITY - CAMPUS STUDY REPOSITORY) Tj
+/F1 18 Tf
+0 -30 Td
+(Software Engineering - Agile Methodologies & System Architecture) Tj
+/F2 10 Tf
+0 -22 Td
+(Course: Software Engineering  |  Semester 6  |  Contributor: Imlirenla Jamir) Tj
+/F2 11 Tf
+0 -24 Td
+(Scrum ceremonies, user stories, Clean Architecture, SOLID principles, and CI/CD pipelines.) Tj
+/F1 13 Tf
+0 -28 Td
+(Agile & DevOps Lifecycle) Tj
+/F2 10 Tf
+0 -16 Td
+(* Scrum roles Product Owner, Scrum Master, Team and sprint iterations.) Tj
+0 -16 Td
+(* User story format: As a [user], I want [feature], so that [business value].) Tj
+0 -16 Td
+(* Continuous Integration & Continuous Delivery CI/CD pipelines with automated testing.) Tj
+/F1 13 Tf
+0 -24 Td
+(Software Design Patterns & Clean Code) Tj
+/F2 10 Tf
+0 -16 Td
+(* SOLID principles: Single Responsibility, Open/Closed, Liskov, Interface Segregation, Dependency Inversion.) Tj
+0 -16 Td
+(* Creational patterns: Factory, Singleton, Builder.) Tj
+0 -16 Td
+(* Structural & Behavioral patterns: Adapter, Observer, Strategy, and MVC architectures.) Tj
+/F2 9 Tf
+0 -40 Td
+(Generated for CampusConnect - Nagaland University Academic Resource Portal) Tj
+ET
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000001483 00000 n 
+0000001558 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+1628
+%%EOF

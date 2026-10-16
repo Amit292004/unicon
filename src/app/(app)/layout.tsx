@@ -53,7 +53,7 @@ export default function AppLayout({
         />
 
         {/* Dynamic Page Content */}
-        <main className="flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto main-content-mobile">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto main-content-mobile">
           {children}
         </main>
 

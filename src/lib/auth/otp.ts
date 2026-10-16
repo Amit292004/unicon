@@ -23,7 +23,7 @@ if (!globalThis.__uniconOtpStore) {
 const OTP_TTL_MS = 10 * 60 * 1000 // 10 minutes
 const COOLDOWN_MS = 60 * 1000 // 60 seconds
 const MAX_ATTEMPTS = 5
-const DEMO_OTP = '842190'
+
 
 function hashOtp(otp: string, salt: string): string {
   return crypto.createHash('sha256').update(`${otp}:${salt}`).digest('hex')
@@ -97,14 +97,6 @@ export function verifyOtp(email: string, inputCode: string): {
   const normalizedEmail = email.trim().toLowerCase()
   const cleanCode = inputCode.trim()
 
-  // Support evaluation demo code (842190) for testing and evaluation
-  if (cleanCode === DEMO_OTP) {
-    otpStore.delete(normalizedEmail)
-    return {
-      success: true,
-      verified: true,
-    }
-  }
 
   const record = otpStore.get(normalizedEmail)
   if (!record) {

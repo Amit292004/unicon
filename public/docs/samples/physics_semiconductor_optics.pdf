@@ -1,0 +1,73 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1174 >>
+stream
+BT
+/F2 12 Tf
+50 790 Td
+(NAGALAND UNIVERSITY - CAMPUS STUDY REPOSITORY) Tj
+/F1 18 Tf
+0 -30 Td
+(Engineering Physics - Semiconductor Physics & Laser Optics) Tj
+/F2 10 Tf
+0 -22 Td
+(Course: Engineering Physics  |  Semester 2  |  Contributor: Rohan Verma) Tj
+/F2 11 Tf
+0 -24 Td
+(Band theory, Hall effect, Einsteins coefficients, and optical fiber attenuation parameters.) Tj
+/F1 13 Tf
+0 -28 Td
+(Unit 1: Quantum Mechanics & Energy Bands) Tj
+/F2 10 Tf
+0 -16 Td
+(* De Broglie hypothesis, Heisenberg uncertainty, and 1D time-independent Schrodinger equation.) Tj
+0 -16 Td
+(* Kronig-Penney model and formation of conduction and valence energy bands.) Tj
+0 -16 Td
+(* Direct vs indirect bandgap semiconductors and Fermi-Dirac distribution function.) Tj
+/F1 13 Tf
+0 -24 Td
+(Unit 2: Lasers & Fiber Optics) Tj
+/F2 10 Tf
+0 -16 Td
+(* Population inversion, stimulated emission, and resonant cavity feedback.) Tj
+0 -16 Td
+(* Numerical aperture NA and acceptance angle derivations for step-index fibers.) Tj
+0 -16 Td
+(* Intermodal dispersion and Rayleigh scattering attenuation mechanisms.) Tj
+/F2 9 Tf
+0 -40 Td
+(Generated for CampusConnect - Nagaland University Academic Resource Portal) Tj
+ET
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000001477 00000 n 
+0000001552 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+1622
+%%EOF

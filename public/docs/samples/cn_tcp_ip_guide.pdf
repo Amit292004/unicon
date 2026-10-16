@@ -1,0 +1,73 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1161 >>
+stream
+BT
+/F2 12 Tf
+50 790 Td
+(NAGALAND UNIVERSITY - CAMPUS STUDY REPOSITORY) Tj
+/F1 18 Tf
+0 -30 Td
+(Computer Networks - TCP/IP Protocol Architecture) Tj
+/F2 10 Tf
+0 -22 Td
+(Course: Computer Networks  |  Semester 5  |  Contributor: Priya Sharma) Tj
+/F2 11 Tf
+0 -24 Td
+(IPv4 CIDR subnetting, TCP 3-way handshake, sliding window flow control, and DNS hierarchy.) Tj
+/F1 13 Tf
+0 -28 Td
+(Transport Layer Protocols) Tj
+/F2 10 Tf
+0 -16 Td
+(* TCP 3-way handshake SYN, SYN-ACK, ACK and 4-way termination handshake FIN, ACK.) Tj
+0 -16 Td
+(* TCP Congestion control: Slow Start, Congestion Avoidance, Fast Retransmit, and Fast Recovery.) Tj
+0 -16 Td
+(* Go-Back-N vs Selective Repeat sliding window protocols efficiency comparisons.) Tj
+/F1 13 Tf
+0 -24 Td
+(Network Layer & Subnetting) Tj
+/F2 10 Tf
+0 -16 Td
+(* CIDR notation, subnet mask calculations, and broadcast address derivations.) Tj
+0 -16 Td
+(* Distance Vector Routing Bellman-Ford, Count-to-Infinity vs Link State Routing OSPF/Dijkstra.) Tj
+0 -16 Td
+(* NAT Network Address Translation and private IP ranges RFC 1918.) Tj
+/F2 9 Tf
+0 -40 Td
+(Generated for CampusConnect - Nagaland University Academic Resource Portal) Tj
+ET
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000001464 00000 n 
+0000001539 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+1609
+%%EOF

@@ -20,9 +20,16 @@ import { useAppStore } from '@/lib/data/client-store'
 import { formatFileSize, formatDate } from '@/lib/utils'
 
 export default function NotesPage() {
-  const { currentProfile, notes, addNote, deleteNote, updateNote } = useAppStore()
+  const { currentProfile, notes, addNote, deleteNote, updateNote, resetNotes } = useAppStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all')
+
+  // Auto-restore seeded notes if empty
+  React.useEffect(() => {
+    if (!notes || notes.length === 0) {
+      resetNotes()
+    }
+  }, [notes, resetNotes])
 
   // Upload modal state
   const [showUploadModal, setShowUploadModal] = useState(false)
@@ -35,7 +42,7 @@ export default function NotesPage() {
   const [fileError, setFileError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const collegeNotes = notes.filter((n) => n.collegeId === currentProfile.collegeId)
+  const collegeNotes = notes.filter((n) => !n.collegeId || n.collegeId === currentProfile.collegeId)
 
   const filteredNotes = collegeNotes.filter((note) => {
     if (selectedSemester !== 'all' && note.semester !== selectedSemester) {
@@ -116,18 +123,45 @@ export default function NotesPage() {
    * and user-uploaded notes (blob: object URLs).
    * Also increments the download counter in the store.
    */
-  const handleDownload = (note: (typeof notes)[0]) => {
+  const handleDownload = async (note: (typeof notes)[0]) => {
     // Increment download count
     updateNote(note.id, { downloadCount: (note.downloadCount ?? 0) + 1 })
 
-    const link = document.createElement('a')
-    link.href = note.fileUrl
-    link.download = note.fileName
-    link.target = '_blank'
-    link.rel = 'noopener noreferrer'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    try {
+      if (note.fileUrl.startsWith('blob:') || note.fileUrl.startsWith('data:')) {
+        const link = document.createElement('a')
+        link.href = note.fileUrl
+        link.download = note.fileName
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        return
+      }
+
+      // Fetch static file as a Blob to enforce browser download behavior rather than inline PDF preview
+      const response = await fetch(note.fileUrl)
+      if (!response.ok) throw new Error('Network response failed')
+      const blob = await response.blob()
+      const objectUrl = URL.createObjectURL(blob)
+
+      const link = document.createElement('a')
+      link.href = objectUrl
+      link.download = note.fileName
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 2000)
+    } catch {
+      // Fallback
+      const link = document.createElement('a')
+      link.href = note.fileUrl
+      link.download = note.fileName
+      link.target = '_blank'
+      link.rel = 'noopener noreferrer'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
   }
 
   const handleCloseModal = () => {
@@ -224,11 +258,28 @@ export default function NotesPage() {
         <EmptyState
           icon={FileText}
           title="No course notes found"
-          description="No study materials match your search filters. Be the first to share notes for this subject!"
+          description={
+            searchQuery || selectedSemester !== 'all'
+              ? 'No study materials match your search filters. Try clearing your filters or changing semesters.'
+              : 'No study materials are loaded. Load official sample notes or be the first to share notes!'
+          }
           action={
-            <Button size="sm" onClick={() => setShowUploadModal(true)}>
-              Upload First Note
-            </Button>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Button size="sm" onClick={() => setShowUploadModal(true)}>
+                Upload First Note
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  setSearchQuery('')
+                  setSelectedSemester('all')
+                  resetNotes()
+                }}
+              >
+                Load Sample Notes
+              </Button>
+            </div>
           }
         />
       ) : (

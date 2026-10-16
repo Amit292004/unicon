@@ -1,0 +1,75 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1207 >>
+stream
+BT
+/F2 12 Tf
+50 790 Td
+(NAGALAND UNIVERSITY - CAMPUS STUDY REPOSITORY) Tj
+/F1 18 Tf
+0 -30 Td
+(Database Management Systems - Normalization & Indexing) Tj
+/F2 10 Tf
+0 -22 Td
+(Course: Database Systems  |  Semester 4  |  Contributor: Priya Sharma) Tj
+/F2 11 Tf
+0 -24 Td
+(Step-by-step decomposition examples with functional dependency preservation proofs.) Tj
+/F1 13 Tf
+0 -28 Td
+(Unit 1: Functional Dependencies & Closure) Tj
+/F2 10 Tf
+0 -16 Td
+(* Armstrongs Axioms: Reflexivity, Augmentation, Transitivity, and Union.) Tj
+0 -16 Td
+(* Attribute closure computation and finding candidate keys algorithm.) Tj
+0 -16 Td
+(* Canonical cover derivation for minimal functional dependency sets.) Tj
+/F1 13 Tf
+0 -24 Td
+(Unit 2: Normal Forms 1NF, 2NF, 3NF, BCNF) Tj
+/F2 10 Tf
+0 -16 Td
+(* 1NF: Atomic attribute values; 2NF: No partial dependency on candidate keys.) Tj
+0 -16 Td
+(* 3NF: For X -> A, either X is superkey or A is prime attribute.) Tj
+0 -16 Td
+(* BCNF: For every non-trivial dependency X -> A, X must be a superkey.) Tj
+0 -16 Td
+(* Lossless join decomposition testing and dependency preservation criteria.) Tj
+/F2 9 Tf
+0 -40 Td
+(Generated for CampusConnect - Nagaland University Academic Resource Portal) Tj
+ET
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000001510 00000 n 
+0000001585 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+1655
+%%EOF

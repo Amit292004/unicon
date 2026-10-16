@@ -169,23 +169,34 @@ export default function TransportPage() {
               </CardHeader>
 
               {/* Transit Stop Timeline */}
-              <div className="relative pl-6 space-y-5 pt-4 before:absolute before:left-2.5 before:top-6 before:bottom-6 before:w-0.5 before:bg-border">
+              <div className="pt-4">
                 {activeRoute.stops.map((stop, idx) => {
                   const isFirst = idx === 0
                   const isLast = idx === activeRoute.stops.length - 1
                   return (
-                    <div key={stop.id} className="relative flex items-start gap-4 text-xs">
+                    <div key={stop.id} className="relative flex items-start gap-3.5 text-xs pb-5 last:pb-1">
+                      {/* Timeline track connector to next stop */}
+                      {!isLast && (
+                        <span
+                          className="absolute left-[6px] top-3 -bottom-1 w-0.5 bg-border pointer-events-none"
+                          aria-hidden="true"
+                        />
+                      )}
+
                       {/* Node Indicator */}
                       <div
-                        className={`absolute -left-6 top-1 h-3.5 w-3.5 rounded-full border-2 bg-background shrink-0 ${
+                        className={`relative z-10 h-3.5 w-3.5 rounded-full border-2 bg-background shrink-0 mt-0.5 transition-colors ${
                           isFirst
-                            ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950'
+                            ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-950 ring-2 ring-emerald-500/20'
                             : isLast
-                            ? 'border-primary bg-primary text-primary-foreground'
+                            ? 'border-primary bg-primary text-primary-foreground ring-2 ring-primary/20'
                             : 'border-muted-foreground/60'
                         }`}
+                        aria-hidden="true"
                       />
-                      <div className="flex-1 pb-1 min-w-0">
+
+                      {/* Stop Information */}
+                      <div className="flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2">
                           <span className="font-semibold text-foreground flex flex-wrap items-center gap-1.5 min-w-0">
                             <span className="text-muted-foreground font-mono text-2xs">{stop.stopOrder}.</span>

@@ -2,19 +2,30 @@
 
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { Download, X, Smartphone, ArrowRight } from 'lucide-react'
+import { Download, X } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 import { usePwa } from '@/lib/pwa-context'
 import { Button } from '@/components/ui/button'
 
 export function InstallBanner() {
+  const pathname = usePathname()
   const { isInstalled, isStandalone, openInstallModal } = usePwa()
   const [dismissed, setDismissed] = useState(true)
+
+  // Do not show the install banner on authentication, registration, onboarding, or offline routes
+  const isExcludedRoute =
+    pathname?.startsWith('/login') ||
+    pathname?.startsWith('/register') ||
+    pathname?.startsWith('/verify-email') ||
+    pathname?.startsWith('/onboarding') ||
+    pathname?.startsWith('/auth') ||
+    pathname?.startsWith('/offline')
 
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    // Do not show banner if already standalone / installed
-    if (isInstalled || isStandalone) {
+    // Do not show banner if excluded route or already standalone / installed
+    if (isExcludedRoute || isInstalled || isStandalone) {
       setDismissed(true)
       return
     }
@@ -31,10 +42,10 @@ export function InstallBanner() {
     // Delay slightly for smooth entrance
     const timer = setTimeout(() => {
       setDismissed(false)
-    }, 1500)
+    }, 2000)
 
     return () => clearTimeout(timer)
-  }, [isInstalled, isStandalone])
+  }, [isExcludedRoute, isInstalled, isStandalone])
 
   const handleDismiss = () => {
     setDismissed(true)
@@ -43,33 +54,33 @@ export function InstallBanner() {
     }
   }
 
-  if (dismissed || isInstalled || isStandalone) {
+  if (isExcludedRoute || dismissed || isInstalled || isStandalone) {
     return null
   }
 
   return (
     <div
-      className="fixed bottom-20 lg:bottom-5 right-4 left-4 sm:left-auto sm:max-w-md z-40 bg-card/95 backdrop-blur-md border border-primary/20 shadow-xl rounded-2xl p-3.5 animate-in slide-in-from-bottom-5 duration-300"
+      className="fixed bottom-20 lg:bottom-5 right-4 left-4 sm:left-auto sm:max-w-md z-40 bg-card/95 backdrop-blur-md border border-primary/20 shadow-xl rounded-2xl p-3 animate-in slide-in-from-bottom-5 duration-300"
       role="region"
       aria-label="Install UNICON app banner"
     >
-      <div className="flex items-center gap-3">
-        <div className="relative h-11 w-11 rounded-xl bg-primary/10 border border-primary/20 p-1 shrink-0 flex items-center justify-center">
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        <div className="relative h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 p-1 shrink-0 flex items-center justify-center">
           <Image
             src="/unicon-icon.png"
             alt="UNICON"
-            width={36}
-            height={36}
-            className="h-9 w-9 object-contain"
+            width={32}
+            height={32}
+            className="h-8 w-8 object-contain"
           />
         </div>
 
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 pr-1">
           <p className="text-xs font-semibold text-foreground truncate">
-            Install UNICON as App
+            Install UNICON
           </p>
-          <p className="text-3xs text-muted-foreground truncate">
-            Faster navigation, offline notices & instant access
+          <p className="text-2xs text-muted-foreground truncate">
+            Fast offline access &amp; instant notices
           </p>
         </div>
 
@@ -77,7 +88,7 @@ export function InstallBanner() {
           <Button
             size="sm"
             onClick={openInstallModal}
-            className="h-8 px-3 text-xs gap-1.5 font-medium shadow-xs"
+            className="h-8 px-2.5 sm:px-3 text-xs gap-1.5 font-medium shadow-xs"
           >
             <Download className="h-3.5 w-3.5" />
             <span>Install</span>

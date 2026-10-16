@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Download, Smartphone, CheckCircle2 } from 'lucide-react'
 import { usePwa } from '@/lib/pwa-context'
 import { Button } from '@/components/ui/button'
@@ -18,6 +18,15 @@ export function DownloadAppButton({
   showWhenInstalled = false,
 }: DownloadAppButtonProps) {
   const { isInstalled, isStandalone, openInstallModal } = usePwa()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Render nothing until client has mounted — prevents server/client hydration mismatch
+  // because isInstalled/isStandalone are always false on the server but may differ on the client.
+  if (!mounted) return null
 
   if ((isInstalled || isStandalone) && !showWhenInstalled) {
     return null

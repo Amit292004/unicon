@@ -1,0 +1,73 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1157 >>
+stream
+BT
+/F2 12 Tf
+50 790 Td
+(NAGALAND UNIVERSITY - CAMPUS STUDY REPOSITORY) Tj
+/F1 18 Tf
+0 -30 Td
+(Data Structures & Algorithms - Trees, Graphs & Heaps) Tj
+/F2 10 Tf
+0 -22 Td
+(Course: Data Structures  |  Semester 3  |  Contributor: Alex Chen) Tj
+/F2 11 Tf
+0 -24 Td
+(AVL rotations, Red-Black balancing, Dijkstra shortest path, and Disjoint Set Union.) Tj
+/F1 13 Tf
+0 -28 Td
+(Section 1: Balanced Binary Search Trees) Tj
+/F2 10 Tf
+0 -16 Td
+(* AVL balance factors -1, 0, +1: LL, RR, LR, and RL rotation mechanics.) Tj
+0 -16 Td
+(* Red-Black tree properties: root blackness, red node black children, black-height invariance.) Tj
+0 -16 Td
+(* Binary Heap: array indexing parent/left/right, heapify down/up in Olog N.) Tj
+/F1 13 Tf
+0 -24 Td
+(Section 2: Graph Algorithms & Minimum Spanning Trees) Tj
+/F2 10 Tf
+0 -16 Td
+(* BFS for unweighted shortest path, DFS for cycle detection and topological sort.) Tj
+0 -16 Td
+(* Dijkstras algorithm with priority queue in OV + E log V.) Tj
+0 -16 Td
+(* Kruskals MST using Disjoint Set Union with path compression and rank union.) Tj
+/F2 9 Tf
+0 -40 Td
+(Generated for CampusConnect - Nagaland University Academic Resource Portal) Tj
+ET
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000001460 00000 n 
+0000001535 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+1605
+%%EOF

@@ -1,0 +1,73 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1100 >>
+stream
+BT
+/F2 12 Tf
+50 790 Td
+(NAGALAND UNIVERSITY - CAMPUS STUDY REPOSITORY) Tj
+/F1 18 Tf
+0 -30 Td
+(Digital Electronics & Finite State Machine Design) Tj
+/F2 10 Tf
+0 -22 Td
+(Course: Digital Electronics  |  Semester 3  |  Contributor: Rohan Verma) Tj
+/F2 11 Tf
+0 -24 Td
+(K-map minimization, flip-flop conversions, synchronous counters, and race-around conditions.) Tj
+/F1 13 Tf
+0 -28 Td
+(Combinational Logic Optimization) Tj
+/F2 10 Tf
+0 -16 Td
+(* Karnaugh maps for 4 and 5 variables with don't care conditions.) Tj
+0 -16 Td
+(* Quine-McCluskey tabular reduction method for multiple output circuits.) Tj
+0 -16 Td
+(* Decoders, encoders, multiplexer trees, and full-adder design with NAND gates.) Tj
+/F1 13 Tf
+0 -24 Td
+(Sequential Circuits & State Machines) Tj
+/F2 10 Tf
+0 -16 Td
+(* JK Flip-Flop race-around elimination via Master-Slave and edge-triggering.) Tj
+0 -16 Td
+(* Excitation tables for SR, JK, D, and T flip-flops.) Tj
+0 -16 Td
+(* Mealy vs Moore state machine models and state diagram synthesis.) Tj
+/F2 9 Tf
+0 -40 Td
+(Generated for CampusConnect - Nagaland University Academic Resource Portal) Tj
+ET
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000001403 00000 n 
+0000001478 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+1548
+%%EOF

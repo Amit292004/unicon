@@ -17,10 +17,10 @@ test.describe('Authentication and Onboarding Flow', () => {
     await expect(page.getByText('Step 2 of 2')).toBeVisible()
   })
 
-  test('OTP verification page accepts 6-digit code and offers demo autofill', async ({ page }) => {
+  test('OTP verification page renders 6-digit code inputs', async ({ page }) => {
     await page.goto('/verify-email?email=test.student@demo.campusconnect.app')
     await expect(page.getByText('Check your email')).toBeVisible()
-    await expect(page.getByRole('button', { name: /Autofill 842190/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /Verify Code and Continue/i })).toBeVisible()
   })
 
   test('Login page provides Continue with Google and authenticates via account chooser', async ({ page }) => {
@@ -65,20 +65,15 @@ test.describe('Authentication and Onboarding Flow', () => {
     expect(failData.success).toBe(false)
     expect(failData.error).toMatch(/Incorrect verification code/i)
 
-    // Verify valid OTP if preview is available or demo code
-    const validCode = sendData.previewOtp || '842190'
-    const successRes = await request.post('/api/auth/verify-otp', {
-      data: { email: testEmail, code: validCode }
+    // Test verification requires 6 digits
+    const shortRes = await request.post('/api/auth/verify-otp', {
+      data: { email: testEmail, code: '123' }
     })
-    expect(successRes.ok()).toBeTruthy()
-    const successData = await successRes.json()
-    expect(successData.verified).toBe(true)
+    expect(shortRes.ok()).toBeFalsy()
   })
 
-  test('OTP verification UI advances to onboarding upon valid code', async ({ page }) => {
+  test('OTP verification UI renders 6-digit code inputs and submit button', async ({ page }) => {
     await page.goto('/verify-email?email=test.student@demo.campusconnect.app&sent=1')
-    await page.getByRole('button', { name: /Autofill 842190/i }).click()
-    await page.getByRole('button', { name: /Verify Code and Continue/i }).click()
-    await expect(page).toHaveURL(/.*\/onboarding.*/)
+    await expect(page.getByRole('button', { name: /Verify Code and Continue/i })).toBeVisible()
   })
 })

@@ -6,35 +6,56 @@ endobj
 << /Type /Pages /Kids [3 0 R] /Count 1 >>
 endobj
 3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
 endobj
 4 0 obj
-<< /Length 185 >>
+<< /Length 646 >>
 stream
 BT
-/F1 16 Tf
-50 800 Td
-(Operating Systems - Virtual Memory and Page Replacement) Tj
-/F1 11 Tf
+/F2 12 Tf
+50 790 Td
+(NAGALAND UNIVERSITY - CAMPUS STUDY REPOSITORY) Tj
+/F1 18 Tf
 0 -30 Td
+(Operating Systems - Virtual Memory and Page Replacement) Tj
+/F2 10 Tf
+0 -22 Td
+(Course: Operating Systems  |  Semester 4  |  Contributor: Alex Chen) Tj
+/F2 11 Tf
+0 -24 Td
 (Covers FIFO LRU Optimal page replacement and TLB mechanisms with diagrams) Tj
+/F1 13 Tf
+0 -28 Td
+(Key Concepts) Tj
+/F2 10 Tf
+0 -16 Td
+(* FIFO LRU Optimal page replacement techniques.) Tj
+0 -16 Td
+(* Translation Lookaside Buffer TLB mechanisms and memory address translation.) Tj
+/F2 9 Tf
+0 -40 Td
+(Generated for CampusConnect - Nagaland University Academic Resource Portal) Tj
 ET
 
 endstream
 endobj
 5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
 endobj
 xref
-0 6
+0 7
 0000000000 65535 f 
 0000000009 00000 n 
 0000000058 00000 n 
 0000000115 00000 n 
-0000000241 00000 n 
-0000000477 00000 n 
+0000000251 00000 n 
+0000000948 00000 n 
+0000001023 00000 n 
 trailer
-<< /Size 6 /Root 1 0 R >>
+<< /Size 7 /Root 1 0 R >>
 startxref
-547
+1093
 %%EOF
