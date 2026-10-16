@@ -133,16 +133,16 @@ export default function AskCampusPage() {
           />
         </div>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 sm:pb-0">
           {categories.map((cat) => (
             <button
               key={cat}
               type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition border ${
+              className={`px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition border ${
                 selectedCategory === cat
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'bg-card text-muted-foreground hover:bg-accent'
+                  ? 'bg-primary text-primary-foreground border-primary font-semibold shadow-xs'
+                  : 'bg-card text-muted-foreground border-border/80 hover:bg-accent/50'
               }`}
             >
               {cat}

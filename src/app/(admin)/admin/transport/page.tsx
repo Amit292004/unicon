@@ -276,7 +276,7 @@ export default function AdminTransportPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button size="sm" variant="outline" onClick={handleOpenAddBus} className="gap-1.5 text-xs">
             <Plus className="h-4 w-4" aria-hidden="true" />
             Register Bus

@@ -2,8 +2,8 @@
 @config "../../tailwind.config.ts";
 
 :root {
-  /* ─── Light Theme Tokens ──────────────────────────────────────── */
-  --background: 0 0% 99%;
+  /* ─── Light Theme Tokens (Refined Collegiate Palette) ─────────────── */
+  --background: 210 20% 98%;
   --foreground: 222 47% 11%;
 
   --card: 0 0% 100%;
@@ -12,65 +12,74 @@
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
 
-  --primary: 239 84% 60%;
+  /* Collegiate terracotta / warm rust primary */
+  --primary: 21 88% 48%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 220 14% 96%;
-  --secondary-foreground: 220 13% 25%;
+  --secondary: 214 18% 95%;
+  --secondary-foreground: 222 35% 20%;
 
-  --muted: 220 14% 96%;
-  --muted-foreground: 220 9% 46%;
+  --muted: 214 18% 95%;
+  --muted-foreground: 215 16% 47%;
 
-  --accent: 239 84% 97%;
-  --accent-foreground: 239 84% 40%;
+  --accent: 24 100% 97%;
+  --accent-foreground: 21 88% 42%;
 
-  --border: 220 13% 91%;
-  --input: 220 13% 91%;
-  --ring: 239 84% 60%;
+  --border: 214 20% 90%;
+  --input: 214 20% 89%;
+  --ring: 21 88% 48%;
 
   --radius: 0.5rem;
 
   /* ─── Sidebar & Layout Constants ───────────────────────────────── */
   --sidebar-width: 240px;
-  --header-height: 60px;
-  --bottom-nav-height: 64px;
+  --header-height: 58px;
+  --bottom-nav-height: 62px;
 }
 
 .dark {
-  --background: 222 47% 5%;
-  --foreground: 210 40% 96%;
+  /* ─── Dark Theme Tokens (Deep Ink & Slate) ────────────────────────── */
+  --background: 224 28% 7%;
+  --foreground: 210 30% 96%;
 
-  --card: 222 47% 8%;
-  --card-foreground: 210 40% 96%;
+  --card: 224 24% 10%;
+  --card-foreground: 210 30% 96%;
 
-  --popover: 222 47% 8%;
-  --popover-foreground: 210 40% 96%;
+  --popover: 224 24% 10%;
+  --popover-foreground: 210 30% 96%;
 
-  --primary: 239 84% 67%;
+  --primary: 21 90% 55%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 217 32% 14%;
-  --secondary-foreground: 210 40% 80%;
+  --secondary: 224 20% 15%;
+  --secondary-foreground: 210 30% 88%;
 
-  --muted: 217 32% 14%;
-  --muted-foreground: 215 20% 55%;
+  --muted: 224 20% 14%;
+  --muted-foreground: 215 16% 62%;
 
-  --accent: 239 50% 18%;
-  --accent-foreground: 239 84% 75%;
+  --accent: 21 40% 16%;
+  --accent-foreground: 24 95% 78%;
 
-  --border: 217 32% 17%;
-  --input: 217 32% 17%;
-  --ring: 239 84% 67%;
+  --border: 224 16% 18%;
+  --input: 224 16% 18%;
+  --ring: 21 90% 55%;
 }
 
 * {
   border-color: hsl(var(--border));
 }
 
+::selection {
+  background-color: hsl(var(--primary) / 0.15);
+  color: hsl(var(--foreground));
+}
+
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-feature-settings: "rlig" 1, "calt" 1;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ─── Scrollbar ──────────────────────────────────────────────────── */

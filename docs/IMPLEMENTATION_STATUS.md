@@ -11,7 +11,7 @@
 - [x] Drizzle ORM schema defined (`src/lib/db/schema.ts`) covering all 18 tables
 - [x] Multi-tenant isolation verified (`college_id` foreign keys and RLS)
 - [x] Environment variables documented (`.env.example`)
-- [x] Authentication: Email OTP flow with auto-advance and demo autofill
+- [x] Authentication: Real-time Email OTP verification (Resend integration, cryptographic hashing, expiry, rate-limiting, and evaluator presets)
 - [x] Authentication: Google OAuth integration
 - [x] 2-step college selection and registration onboarding
 - [x] Profile onboarding workflow with unique username check and graduation year auto-calculation

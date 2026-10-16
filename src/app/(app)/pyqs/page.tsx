@@ -126,64 +126,90 @@ export default function PYQsPage() {
       )}
 
       {/* Search and Multi-Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
-          <Input
-            placeholder="Search PYQs by subject name or keywords..."
-            className="pl-9 text-xs"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <Input
+              placeholder="Search PYQs by subject name or keywords..."
+              className="pl-9 text-xs h-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Year Filter */}
+            <select
+              value={selectedYear}
+              onChange={(e) =>
+                setSelectedYear(e.target.value === 'all' ? 'all' : Number(e.target.value))
+              }
+              className="h-9 rounded-md border border-input bg-background px-3 text-xs shadow-subtle focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+              aria-label="Filter by exam year"
+            >
+              <option value="all">All Exam Years</option>
+              {[2025, 2024, 2023, 2022, 2021].map((yr) => (
+                <option key={yr} value={yr}>
+                  Year {yr}
+                </option>
+              ))}
+            </select>
+
+            {/* Exam Type Filter */}
+            <select
+              value={selectedExamType}
+              onChange={(e) => setSelectedExamType(e.target.value as ExamType | 'all')}
+              className="h-9 rounded-md border border-input bg-background px-3 text-xs shadow-subtle focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+              aria-label="Filter by exam type"
+            >
+              <option value="all">All Exam Formats</option>
+              <option value="end_semester">End Semester Exams</option>
+              <option value="mid_semester">Mid Semester Tests</option>
+              <option value="internal">Internal Assessments</option>
+            </select>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Year Filter */}
-          <select
-            value={selectedYear}
-            onChange={(e) =>
-              setSelectedYear(e.target.value === 'all' ? 'all' : Number(e.target.value))
-            }
-            className="h-9 rounded-md border border-input bg-background px-3 text-xs shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
-            aria-label="Filter by exam year"
+        {/* Semester Filter Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+          <button
+            type="button"
+            onClick={() => setSelectedSemester('all')}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition shrink-0 ${
+              selectedSemester === 'all'
+                ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
+                : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+            }`}
           >
-            <option value="all">All Years</option>
-            {[2025, 2024, 2023, 2022, 2021].map((yr) => (
-              <option key={yr} value={yr}>
-                Year {yr}
-              </option>
-            ))}
-          </select>
-
-          {/* Semester Filter */}
-          <select
-            value={selectedSemester}
-            onChange={(e) =>
-              setSelectedSemester(e.target.value === 'all' ? 'all' : Number(e.target.value))
-            }
-            className="h-9 rounded-md border border-input bg-background px-3 text-xs shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
-            aria-label="Filter by semester"
-          >
-            <option value="all">All Semesters</option>
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
-              <option key={s} value={s}>
-                Sem {s}
-              </option>
-            ))}
-          </select>
-
-          {/* Exam Type Filter */}
-          <select
-            value={selectedExamType}
-            onChange={(e) => setSelectedExamType(e.target.value as ExamType | 'all')}
-            className="h-9 rounded-md border border-input bg-background px-3 text-xs shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
-            aria-label="Filter by exam type"
-          >
-            <option value="all">All Exam Types</option>
-            <option value="end_semester">End Semester</option>
-            <option value="mid_semester">Mid Semester</option>
-            <option value="internal">Internal Test</option>
-          </select>
+            All Semesters ({collegePYQs.length})
+          </button>
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => {
+            const count = collegePYQs.filter((p) => p.semester === s).length
+            return (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setSelectedSemester(s)}
+                className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition shrink-0 flex items-center gap-1.5 ${
+                  selectedSemester === s
+                    ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
+                    : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                <span>Sem {s}</span>
+                {count > 0 && (
+                  <span
+                    className={`text-3xs font-mono px-1 rounded ${
+                      selectedSemester === s ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    {count}
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -202,38 +228,48 @@ export default function PYQsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredPYQs.map((pyq) => (
-            <Card key={pyq.id} className="p-5 border shadow-card flex flex-col justify-between space-y-4">
+            <Card
+              key={pyq.id}
+              className="p-5 border shadow-card hover:shadow-card-hover transition-all flex flex-col justify-between space-y-4"
+            >
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <ResourceFileIcon mimeType="application/pdf" fileName={pyq.fileName} size="md" />
+                  <div className="p-2 rounded-lg bg-muted/60 border border-border/70 shrink-0">
+                    <ResourceFileIcon mimeType="application/pdf" fileName={pyq.fileName} size="md" />
+                  </div>
                   <div className="space-y-1 flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <Badge variant="default" className="text-2xs font-normal">
                         {pyq.subject}
                       </Badge>
-                      <Badge variant="outline" className="text-2xs">
+                      <Badge variant="outline" className="text-2xs font-mono font-bold">
                         {pyq.examYear}
                       </Badge>
                       {pyq.semester && (
-                        <Badge variant="secondary" className="text-2xs">
+                        <Badge variant="secondary" className="text-2xs font-mono">
                           Sem {pyq.semester}
                         </Badge>
                       )}
+                      <Badge variant="outline" className="text-3xs capitalize text-muted-foreground">
+                        {getExamTypeLabel(pyq.examType)}
+                      </Badge>
                     </div>
 
-                    <h3 className="text-sm font-bold text-foreground leading-snug">
+                    <h3 className="text-sm font-bold text-foreground leading-snug line-clamp-2">
                       {pyq.title}
                     </h3>
                   </div>
                 </div>
 
-                <div className="text-2xs text-muted-foreground border-t pt-2 flex items-center justify-between">
+                <div className="text-2xs text-muted-foreground border-t border-border/60 pt-2.5 flex items-center justify-between">
                   <span>Term: {getExamTypeLabel(pyq.examType)}</span>
-                  <span>Size: {pyq.fileSize ? formatFileSize(pyq.fileSize) : '920 KB'}</span>
+                  <span className="font-mono bg-muted/60 px-1.5 py-0.5 rounded text-3xs border border-border/50">
+                    {pyq.fileSize ? formatFileSize(pyq.fileSize) : '920 KB'}
+                  </span>
                 </div>
               </div>
 
-              <div className="border-t pt-3 flex items-center justify-between gap-2">
+              <div className="border-t border-border/60 pt-3 flex items-center justify-between gap-2">
                 <span className="text-2xs text-muted-foreground">
                   Contributor: {pyq.author?.fullName || 'Student Contributor'}
                 </span>
@@ -261,7 +297,7 @@ export default function PYQsPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
+                    <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs font-medium shadow-xs">
                       <Download className="h-3.5 w-3.5" aria-hidden="true" />
                       Download PDF
                     </Button>

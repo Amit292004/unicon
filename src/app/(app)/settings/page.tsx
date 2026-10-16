@@ -21,7 +21,9 @@ import {
   Phone,
   ExternalLink,
   Check,
-  AlertCircle
+  AlertCircle,
+  Smartphone,
+  Download,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -29,9 +31,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { UserAvatar } from '@/components/shared/user-avatar'
 import { EditProfileModal } from '@/components/profile/edit-profile-modal'
 import { useAppStore } from '@/lib/data/client-store'
+import { usePwa } from '@/lib/pwa-context'
 
 export default function SettingsPage() {
   const { currentProfile, updateProfile, theme, setTheme, profiles, departments } = useAppStore()
+  const { openInstallModal, isStandalone, isInstalled } = usePwa()
 
   // Modal state
   const [showEditModal, setShowEditModal] = useState(false)
@@ -144,15 +148,25 @@ export default function SettingsPage() {
     }, 300)
   }
 
-  const handleEmailRequest = (e: React.FormEvent) => {
+  const handleEmailRequest = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!newEmail.includes('@')) return
 
-    setEmailMsg(
-      `Verification OTP sent to ${newEmail}. Current active address (${currentProfile.email}) will remain active until verified.`
-    )
-    setNewEmail('')
-    setTimeout(() => setEmailMsg(null), 6000)
+    try {
+      await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: newEmail }),
+      })
+      setEmailMsg(
+        `Verification OTP dispatched to ${newEmail}. Current active address (${currentProfile.email}) will remain active until verified.`
+      )
+      setNewEmail('')
+      setTimeout(() => setEmailMsg(null), 6000)
+    } catch {
+      setEmailMsg(`Failed to send verification OTP to ${newEmail}.`)
+      setTimeout(() => setEmailMsg(null), 6000)
+    }
   }
 
   return (
@@ -397,36 +411,36 @@ export default function SettingsPage() {
           <button
             type="button"
             onClick={() => setTheme('light')}
-            className={`p-3.5 rounded-lg border text-left transition flex items-center gap-3 ${
+            className={`p-3.5 rounded-lg border text-left transition-all flex items-center gap-3 ${
               theme === 'light'
-                ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                : 'bg-card hover:bg-accent/50'
+                ? 'border-primary bg-primary/[0.04] ring-1 ring-primary/60 shadow-xs'
+                : 'bg-card border-border/80 hover:border-border hover:bg-accent/40 shadow-subtle'
             }`}
           >
-            <div className="h-8 w-8 rounded-md bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-md bg-muted/60 border border-border/70 text-foreground flex items-center justify-center shrink-0">
               <Sun className="h-4 w-4" aria-hidden="true" />
             </div>
             <div>
               <p className="font-semibold text-xs text-foreground">Light Theme</p>
-              <p className="text-2xs text-muted-foreground">Clean academic contrast</p>
+              <p className="text-2xs text-muted-foreground">Crisp academic daylight</p>
             </div>
           </button>
 
           <button
             type="button"
             onClick={() => setTheme('dark')}
-            className={`p-3.5 rounded-lg border text-left transition flex items-center gap-3 ${
+            className={`p-3.5 rounded-lg border text-left transition-all flex items-center gap-3 ${
               theme === 'dark'
-                ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                : 'bg-card hover:bg-accent/50'
+                ? 'border-primary bg-primary/[0.04] ring-1 ring-primary/60 shadow-xs'
+                : 'bg-card border-border/80 hover:border-border hover:bg-accent/40 shadow-subtle'
             }`}
           >
-            <div className="h-8 w-8 rounded-md bg-indigo-950 text-indigo-400 flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-md bg-muted/60 border border-border/70 text-foreground flex items-center justify-center shrink-0">
               <Moon className="h-4 w-4" aria-hidden="true" />
             </div>
             <div>
               <p className="font-semibold text-xs text-foreground">Dark Theme</p>
-              <p className="text-2xs text-muted-foreground">Low-light study mode</p>
+              <p className="text-2xs text-muted-foreground">Low-light ink contrast</p>
             </div>
           </button>
         </div>
@@ -517,6 +531,40 @@ export default function SettingsPage() {
               className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
             />
           </label>
+        </div>
+      </Card>
+
+      {/* Section 5: Mobile & Desktop App (PWA) */}
+      <Card className="p-5 border shadow-card space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Smartphone className="h-4 w-4 text-primary" aria-hidden="true" />
+            <h2 className="text-sm font-bold text-foreground">Mobile &amp; Desktop App (PWA)</h2>
+          </div>
+          {isStandalone || isInstalled ? (
+            <span className="text-2xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+              <Check className="h-3 w-3" /> App Active
+            </span>
+          ) : (
+            <span className="text-2xs font-semibold text-muted-foreground bg-muted border px-2.5 py-0.5 rounded-full">
+              Browser Web Mode
+            </span>
+          )}
+        </div>
+
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          UNICON functions as a high-speed Progressive Web App. Install it directly onto your home screen or desktop application menu for instant offline circulars, bus schedules, emergency hotlines, and distraction-free browsing without app-store downloads.
+        </p>
+
+        <div className="pt-1 flex items-center gap-3">
+          <Button
+            size="sm"
+            onClick={openInstallModal}
+            className="gap-2 text-xs font-semibold"
+          >
+            <Download className="h-3.5 w-3.5" />
+            <span>{isStandalone || isInstalled ? 'Reinstall / View App Options' : 'Download UNICON as App'}</span>
+          </Button>
         </div>
       </Card>
 

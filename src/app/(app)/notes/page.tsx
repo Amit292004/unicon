@@ -109,33 +109,57 @@ export default function NotesPage() {
         </div>
       )}
 
-      {/* Search & Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-        <div className="flex-1 relative">
+      {/* Search & Semester Pills */}
+      <div className="space-y-3">
+        <div className="relative">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
           <Input
             placeholder="Search notes by title, topic, or subject..."
-            className="pl-9 text-xs"
+            className="pl-9 text-xs h-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        <select
-          value={selectedSemester}
-          onChange={(e) =>
-            setSelectedSemester(e.target.value === 'all' ? 'all' : Number(e.target.value))
-          }
-          className="h-9 rounded-md border border-input bg-background px-3 text-xs shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
-          aria-label="Filter notes by semester"
-        >
-          <option value="all">All Semesters</option>
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
-            <option key={sem} value={sem}>
-              Semester {sem}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+          <button
+            type="button"
+            onClick={() => setSelectedSemester('all')}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition shrink-0 ${
+              selectedSemester === 'all'
+                ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
+                : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+            }`}
+          >
+            All Semesters ({collegeNotes.length})
+          </button>
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => {
+            const semCount = collegeNotes.filter((n) => n.semester === sem).length
+            return (
+              <button
+                key={sem}
+                type="button"
+                onClick={() => setSelectedSemester(sem)}
+                className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition shrink-0 flex items-center gap-1.5 ${
+                  selectedSemester === sem
+                    ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
+                    : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                <span>Sem {sem}</span>
+                {semCount > 0 && (
+                  <span
+                    className={`text-3xs font-mono px-1 rounded ${
+                      selectedSemester === sem ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    {semCount}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Notes Grid */}
@@ -153,22 +177,27 @@ export default function NotesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredNotes.map((note) => (
-            <Card key={note.id} className="p-5 border shadow-card flex flex-col justify-between space-y-4">
+            <Card
+              key={note.id}
+              className="p-5 border shadow-card hover:shadow-card-hover transition-all flex flex-col justify-between space-y-4"
+            >
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <ResourceFileIcon mimeType={note.mimeType} fileName={note.fileName} size="md" />
+                  <div className="p-2 rounded-lg bg-muted/60 border border-border/70 shrink-0">
+                    <ResourceFileIcon mimeType={note.mimeType} fileName={note.fileName} size="md" />
+                  </div>
                   <div className="space-y-1 flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <Badge variant="default" className="text-2xs font-normal">
                         {note.subject}
                       </Badge>
                       {note.semester && (
-                        <Badge variant="outline" className="text-2xs">
+                        <Badge variant="outline" className="text-2xs font-mono">
                           Sem {note.semester}
                         </Badge>
                       )}
                     </div>
-                    <h3 className="text-sm font-bold text-foreground leading-snug">
+                    <h3 className="text-sm font-bold text-foreground leading-snug line-clamp-2">
                       {note.title}
                     </h3>
                   </div>
@@ -180,13 +209,18 @@ export default function NotesPage() {
                   </p>
                 )}
 
-                <div className="text-2xs text-muted-foreground border-t pt-2 flex flex-wrap items-center justify-between gap-2">
-                  <span>Author: {note.author?.fullName || 'Student'}</span>
-                  <span>Size: {note.fileSize ? formatFileSize(note.fileSize) : '1.8 MB'}</span>
+                <div className="text-2xs text-muted-foreground border-t border-border/60 pt-2.5 flex flex-wrap items-center justify-between gap-2">
+                  <span className="flex items-center gap-1">
+                    <span className="text-muted-foreground">Author:</span>
+                    <span className="font-medium text-foreground">{note.author?.fullName || 'Student'}</span>
+                  </span>
+                  <span className="font-mono bg-muted/60 px-1.5 py-0.5 rounded text-3xs border border-border/50">
+                    {note.fileSize ? formatFileSize(note.fileSize) : '1.8 MB'}
+                  </span>
                 </div>
               </div>
 
-              <div className="border-t pt-3 flex items-center justify-between gap-2">
+              <div className="border-t border-border/60 pt-3 flex items-center justify-between gap-2">
                 <span className="text-2xs text-muted-foreground">
                   {formatDate(note.createdAt)}
                 </span>
@@ -214,9 +248,9 @@ export default function NotesPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
+                    <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs font-medium shadow-xs">
                       <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                      Download File
+                      Download Note
                     </Button>
                   </a>
                 </div>

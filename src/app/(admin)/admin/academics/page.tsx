@@ -40,6 +40,7 @@ export default function AdminAcademicsPage() {
 
   const [activeTab, setActiveTab] = useState<'timetable' | 'exams' | 'calendar'>('timetable')
   const [selectedDay, setSelectedDay] = useState<'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri'>('Mon')
+  const [adminSemester, setAdminSemester] = useState<number | 'all'>('all')
   const [actionMsg, setActionMsg] = useState<string | null>(null)
 
   // Timetable Modal State
@@ -80,7 +81,7 @@ export default function AdminAcademicsPage() {
     setTtRoom('Room 204')
     setTtFaculty('')
     setTtDeptId(departments[0]?.id || '')
-    setTtSemester(4)
+    setTtSemester(adminSemester !== 'all' ? adminSemester : 4)
     setShowTimetableModal(true)
   }
 
@@ -146,7 +147,7 @@ export default function AdminAcademicsPage() {
     setExTime('10:00 AM - 12:00 PM')
     setExHall('Academic Block 1 - Hall A')
     setExDeptId(departments[0]?.id || '')
-    setExSemester(4)
+    setExSemester(adminSemester !== 'all' ? adminSemester : 4)
     setShowExamModal(true)
   }
 
@@ -253,7 +254,14 @@ export default function AdminAcademicsPage() {
     setTimeout(() => setActionMsg(null), 4000)
   }
 
-  const daySlots = timetableSlots.filter((s) => s.day === selectedDay)
+  const adminSemesterSlots = timetableSlots.filter(
+    (s) => adminSemester === 'all' || (s.semester || 4) === adminSemester
+  )
+  const daySlots = adminSemesterSlots.filter((s) => s.day === selectedDay)
+
+  const adminSemesterExams = examSchedules.filter(
+    (e) => adminSemester === 'all' || (e.semester || 4) === adminSemester
+  )
 
   return (
     <div className="space-y-6">
@@ -268,7 +276,7 @@ export default function AdminAcademicsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {activeTab === 'timetable' && (
             <Button size="sm" onClick={handleOpenAddTimetable} className="gap-1.5 text-xs">
               <Plus className="h-4 w-4" aria-hidden="true" />
@@ -308,7 +316,7 @@ export default function AdminAcademicsPage() {
               : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
-          Weekly Timetable ({timetableSlots.length})
+          Weekly Timetable ({adminSemesterSlots.length})
         </button>
         <button
           type="button"
@@ -319,7 +327,7 @@ export default function AdminAcademicsPage() {
               : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
-          Exam Timetable ({examSchedules.length})
+          Exam Timetable ({adminSemesterExams.length})
         </button>
         <button
           type="button"
@@ -333,6 +341,47 @@ export default function AdminAcademicsPage() {
           Academic Calendar ({calendarEvents.length})
         </button>
       </div>
+
+      {/* Admin Semester Filter Bar */}
+      {(activeTab === 'timetable' || activeTab === 'exams') && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 rounded-lg border bg-card text-xs shadow-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-foreground">Filter by Semester:</span>
+            <span className="text-muted-foreground text-2xs">
+              {adminSemester === 'all' ? 'All Semesters' : `Semester ${adminSemester}`}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+            {([1, 2, 3, 4, 5, 6, 7, 8] as const).map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setAdminSemester(s)}
+                className={`px-2.5 py-1 rounded text-2xs font-medium transition cursor-pointer ${
+                  adminSemester === s
+                    ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
+                    : 'bg-secondary/70 hover:bg-secondary text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Sem {s}
+              </button>
+            ))}
+            <div className="h-3 w-px bg-border mx-0.5" />
+            <button
+              type="button"
+              onClick={() => setAdminSemester('all')}
+              className={`px-2.5 py-1 rounded text-2xs font-medium transition cursor-pointer ${
+                adminSemester === 'all'
+                  ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
+                  : 'bg-secondary/70 hover:bg-secondary text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              All
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Tab 1: Weekly Timetable */}
       {activeTab === 'timetable' && (
@@ -349,7 +398,7 @@ export default function AdminAcademicsPage() {
                     : 'bg-card hover:bg-accent text-foreground'
                 }`}
               >
-                {day} ({timetableSlots.filter((s) => s.day === day).length})
+                {day} ({adminSemesterSlots.filter((s) => s.day === day).length})
               </button>
             ))}
           </div>
@@ -412,49 +461,61 @@ export default function AdminAcademicsPage() {
       {/* Tab 2: Exam Timetable */}
       {activeTab === 'exams' && (
         <div className="space-y-3">
-          <Card className="border shadow-card divide-y">
-            {examSchedules.map((exam) => (
-              <div key={exam.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-2xs font-mono font-bold">
-                      {exam.code}
-                    </Badge>
-                    <span className="font-bold text-foreground text-sm">{exam.subject}</span>
-                    {exam.semester && (
-                      <Badge variant="secondary" className="text-2xs">
-                        Sem {exam.semester}
+          {adminSemesterExams.length === 0 ? (
+            <div className="p-12 text-center border rounded-lg bg-card text-muted-foreground text-xs space-y-2">
+              <FileText className="h-8 w-8 mx-auto text-muted-foreground" aria-hidden="true" />
+              <p className="font-semibold text-foreground">
+                No examination schedules found for {adminSemester === 'all' ? 'any semester' : `Semester ${adminSemester}`}
+              </p>
+              <Button size="sm" onClick={handleOpenAddExam}>
+                Schedule Exam
+              </Button>
+            </div>
+          ) : (
+            <Card className="border shadow-card divide-y">
+              {adminSemesterExams.map((exam) => (
+                <div key={exam.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-2xs font-mono font-bold">
+                        {exam.code}
                       </Badge>
-                    )}
+                      <span className="font-bold text-foreground text-sm">{exam.subject}</span>
+                      {exam.semester && (
+                        <Badge variant="secondary" className="text-2xs">
+                          Sem {exam.semester}
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-muted-foreground text-2xs">
+                      Exam Date: <span className="font-medium text-foreground">{exam.date}</span> ({exam.time}) &bull; Hall: {exam.hall}
+                    </p>
                   </div>
-                  <p className="text-muted-foreground text-2xs">
-                    Exam Date: <span className="font-medium text-foreground">{exam.date}</span> ({exam.time}) &bull; Hall: {exam.hall}
-                  </p>
-                </div>
 
-                <div className="flex items-center gap-1.5">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7 text-2xs gap-1"
-                    onClick={() => handleOpenEditExam(exam)}
-                  >
-                    <Edit3 className="h-3 w-3" aria-hidden="true" />
-                    Edit
-                  </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="outline"
-                    className="h-7 w-7 text-destructive-600 hover:bg-destructive-50"
-                    onClick={() => handleDeleteExam(exam.id, exam.code)}
-                    title="Delete exam"
-                  >
-                    <Trash2 className="h-3 w-3" aria-hidden="true" />
-                  </Button>
+                  <div className="flex items-center gap-1.5">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-2xs gap-1"
+                      onClick={() => handleOpenEditExam(exam)}
+                    >
+                      <Edit3 className="h-3 w-3" aria-hidden="true" />
+                      Edit
+                    </Button>
+                    <Button
+                      size="icon-sm"
+                      variant="outline"
+                      className="h-7 w-7 text-destructive-600 hover:bg-destructive-50"
+                      onClick={() => handleDeleteExam(exam.id, exam.code)}
+                      title="Delete exam"
+                    >
+                      <Trash2 className="h-3 w-3" aria-hidden="true" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </Card>
+              ))}
+            </Card>
+          )}
         </div>
       )}
 

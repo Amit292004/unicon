@@ -55,6 +55,7 @@ export const noticeSchema = z.object({
   targetSemester: z.number().int().min(1).max(12).optional().nullable(),
   expiresAt: z.string().optional().nullable(),
   status: z.enum(['draft', 'published']),
+  attachmentUrls: z.array(z.string()).optional().nullable(),
 })
 
 // ─── Notes ───────────────────────────────────────────────────────────────────
@@ -110,6 +111,7 @@ export const lostFoundReportSchema = z.object({
   description: z.string().min(10, 'Description is required').max(1000),
   location: z.string().max(200).optional(),
   dateOccurred: z.string().optional(),
+  imageUrl: z.string().optional().nullable(),
   handoverInfo: z.string().max(500).optional(),
 })
 

@@ -16,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { NoticeAttachmentViewer } from '@/components/notices/notice-attachment-viewer'
 import { useAppStore } from '@/lib/data/client-store'
 import { formatDateTime } from '@/lib/utils'
 
@@ -69,41 +70,46 @@ export default function NoticeDetailPage() {
       </div>
 
       {/* Main Notice Document Card */}
-      <Card className="p-6 sm:p-8 border shadow-card space-y-6">
+      <Card className="p-6 sm:p-8 border border-border/80 shadow-card bg-card space-y-6">
         {/* Notice Meta Header */}
-        <div className="space-y-3 border-b pb-5">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="default" className="text-2xs uppercase">
-              {notice.audience === 'all'
-                ? 'All Students'
-                : notice.audience === 'department'
-                ? 'Department Scope'
-                : `Semester ${notice.targetSemester || ''}`}
-            </Badge>
-            <span className="text-2xs text-muted-foreground">
-              College: {currentProfile.college?.name}
+        <div className="space-y-3 border-b border-border/70 pb-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Badge variant="default" className="text-3xs uppercase font-mono">
+                {notice.audience === 'all'
+                  ? 'All Students'
+                  : notice.audience === 'department'
+                  ? 'Department Scope'
+                  : `Semester ${notice.targetSemester || ''}`}
+              </Badge>
+              <span className="text-3xs font-mono text-muted-foreground">
+                Ref: {notice.id}
+              </span>
+            </div>
+            <span className="text-3xs text-muted-foreground font-mono">
+              {currentProfile.college?.name}
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground leading-snug">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground leading-snug">
             {notice.title}
           </h1>
 
           <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-1">
             <div className="flex items-center gap-1.5">
-              <User className="h-4 w-4 text-primary" aria-hidden="true" />
+              <User className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
               <span className="font-medium text-foreground">
                 {notice.author?.fullName || 'Academic Dean'}
               </span>
             </div>
 
             <div className="flex items-center gap-1.5">
-              <Calendar className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              <span>{formatDateTime(notice.publishedAt || notice.createdAt)}</span>
+              <Calendar className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+              <span className="font-mono text-2xs">{formatDateTime(notice.publishedAt || notice.createdAt)}</span>
             </div>
 
             {notice.expiresAt && (
-              <span className="text-2xs text-muted-foreground border-l pl-3">
+              <span className="text-2xs text-muted-foreground border-l pl-3 font-mono">
                 Valid until {formatDateTime(notice.expiresAt)}
               </span>
             )}
@@ -115,35 +121,20 @@ export default function NoticeDetailPage() {
           {notice.content}
         </div>
 
-        {/* Official Attachments */}
+        {/* Official Attachments (Images or PDFs displayed in appropriate dimensions) */}
         {notice.attachmentUrls && notice.attachmentUrls.length > 0 && (
-          <div className="border-t pt-5 space-y-3">
+          <div className="border-t pt-5 space-y-4">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Official Document Attachments
+              Official Attachments &amp; Visual Documents ({notice.attachmentUrls.length})
             </h3>
-            <div className="space-y-2">
+            <div className="space-y-6">
               {notice.attachmentUrls.map((url, idx) => (
-                <div
+                <NoticeAttachmentViewer
                   key={idx}
-                  className="flex items-center justify-between p-3 rounded-lg border bg-secondary/30 text-xs"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <FileText className="h-4 w-4 text-primary" aria-hidden="true" />
-                    <div>
-                      <p className="font-medium text-foreground">
-                        {url.split('/').pop() || 'official_bulletin.pdf'}
-                      </p>
-                      <p className="text-2xs text-muted-foreground">PDF Document &bull; Verified</p>
-                    </div>
-                  </div>
-
-                  <a href={url} target="_blank" rel="noopener noreferrer">
-                    <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
-                      <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                      Download
-                    </Button>
-                  </a>
-                </div>
+                  url={url}
+                  title={notice.title}
+                  mode="detail"
+                />
               ))}
             </div>
           </div>

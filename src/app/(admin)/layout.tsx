@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   ShieldCheck,
+  ShieldAlert,
   LayoutDashboard,
   Bell,
   Bus,
@@ -22,6 +23,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { UserAvatar } from '@/components/shared/user-avatar'
 import { useAppStore } from '@/lib/data/client-store'
+import { canAccessAdminPanel } from '@/lib/auth/roles'
 
 export default function AdminLayout({
   children,
@@ -40,6 +42,38 @@ export default function AdminLayout({
       root.classList.remove('dark')
     }
   }, [theme])
+
+  // Deny access to students and unauthorized users
+  if (!canAccessAdminPanel(currentProfile)) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-card border border-border/80 rounded-xl p-6 shadow-card text-center space-y-4">
+          <div className="h-12 w-12 rounded-full bg-destructive/10 text-destructive flex items-center justify-center mx-auto">
+            <ShieldAlert className="h-6 w-6" aria-hidden="true" />
+          </div>
+          <div className="space-y-1.5">
+            <h1 className="text-lg font-bold text-foreground">Access Restricted</h1>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Administrative consoles and institutional tasks are restricted to authorized administrators and faculty. You are currently signed in as <span className="font-semibold text-foreground">{currentProfile.fullName}</span> ({currentProfile.role.replace('_', ' ')}).
+            </p>
+          </div>
+          <div className="pt-2 flex flex-col gap-2">
+            <Link href="/" className="w-full">
+              <Button size="sm" className="w-full text-xs gap-1.5 shadow-subtle">
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Return to Student Portal
+              </Button>
+            </Link>
+            <Link href="/login?callbackUrl=/admin/dashboard" className="w-full">
+              <Button size="sm" variant="outline" className="w-full text-xs">
+                Sign In with Administrator Account
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const navLinks = [
     { href: '/admin/dashboard', label: 'Overview Metrics', icon: LayoutDashboard },
@@ -61,13 +95,14 @@ export default function AdminLayout({
           {/* Brand & Role Badge */}
           <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <Link href="/home" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2 shrink-0">
                 <Image
                   src="/unicon-logo.png"
                   alt="UNICON"
-                  width={110}
-                  height={24}
-                  className="h-6 w-auto object-contain dark:brightness-110"
+                  width={130}
+                  height={28}
+                  className="h-7 w-auto object-contain dark:brightness-110"
+                  style={{ height: '28px', width: 'auto' }}
                   priority
                 />
               </Link>
@@ -76,7 +111,7 @@ export default function AdminLayout({
               </span>
             </div>
 
-            <Link href="/home">
+            <Link href="/">
               <Button size="icon-sm" variant="ghost" aria-label="Return to student portal">
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               </Button>
@@ -117,7 +152,7 @@ export default function AdminLayout({
             </div>
           </div>
 
-          <Link href="/home" className="block w-full">
+          <Link href="/" className="block w-full">
             <Button size="sm" variant="outline" className="w-full text-xs h-8">
               Return to Student View
             </Button>

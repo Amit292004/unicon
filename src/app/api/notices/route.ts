@@ -62,7 +62,7 @@ export async function POST(request: Request) {
       audience: result.data.audience,
       targetDepartmentId: result.data.targetDepartmentId || null,
       targetSemester: result.data.targetSemester || null,
-      attachmentUrls: null,
+      attachmentUrls: result.data.attachmentUrls || null,
       publishedAt: result.data.status === 'published' ? new Date().toISOString() : null,
       expiresAt: result.data.expiresAt || null,
       createdAt: new Date().toISOString(),

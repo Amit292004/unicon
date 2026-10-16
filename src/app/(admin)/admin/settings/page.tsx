@@ -165,7 +165,7 @@ export default function AdminSettingsPage() {
                 <Input
                   value={collegeName}
                   onChange={(e) => setCollegeName(e.target.value)}
-                  placeholder="e.g. National Institute of Technology, Nagaland"
+                  placeholder="e.g. Nagaland University"
                   required
                   className="text-xs h-8"
                 />
@@ -177,7 +177,7 @@ export default function AdminSettingsPage() {
                   <Input
                     value={collegeSlug}
                     onChange={(e) => setCollegeSlug(e.target.value)}
-                    placeholder="nit-nagaland"
+                    placeholder="nagaland-university"
                     required
                     className="text-xs h-8 font-mono"
                   />
@@ -187,7 +187,7 @@ export default function AdminSettingsPage() {
                   <Input
                     value={collegeDomain}
                     onChange={(e) => setCollegeDomain(e.target.value)}
-                    placeholder="nitnagaland.ac.in"
+                    placeholder="nagalanduniversity.ac.in"
                     className="text-xs h-8 font-mono"
                   />
                 </div>
@@ -199,7 +199,7 @@ export default function AdminSettingsPage() {
                   <Input
                     value={collegeCity}
                     onChange={(e) => setCollegeCity(e.target.value)}
-                    placeholder="Dimapur"
+                    placeholder="Kohima"
                     className="text-xs h-8"
                   />
                 </div>
@@ -219,7 +219,7 @@ export default function AdminSettingsPage() {
                 <Input
                   value={collegeWebsite}
                   onChange={(e) => setCollegeWebsite(e.target.value)}
-                  placeholder="https://nitnagaland.ac.in"
+                  placeholder="https://nagalanduniversity.ac.in"
                   className="text-xs h-8"
                 />
               </div>

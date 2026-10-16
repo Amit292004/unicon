@@ -19,13 +19,23 @@ export async function updateSession(request: NextRequest) {
   // If Supabase credentials are not set or are placeholder, allow demo session cookie
   if (!isValidSupabaseUrl(supabaseUrl) || !supabaseAnonKey || supabaseAnonKey.includes('your_supabase_anon_key')) {
     const demoUserCookie = request.cookies.get('cc_demo_user')?.value
+    const userRoleCookie = request.cookies.get('cc_user_role')?.value
     const isProtectedRoute = request.nextUrl.pathname.startsWith('/admin')
 
-    if (!demoUserCookie && isProtectedRoute) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      url.search = `?callbackUrl=${encodeURIComponent(request.nextUrl.pathname)}`
-      return NextResponse.redirect(url)
+    if (isProtectedRoute) {
+      if (!demoUserCookie) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/login'
+        url.search = `?callbackUrl=${encodeURIComponent(request.nextUrl.pathname)}`
+        return NextResponse.redirect(url)
+      }
+
+      if (userRoleCookie === 'student') {
+        const url = request.nextUrl.clone()
+        url.pathname = '/'
+        url.search = ''
+        return NextResponse.redirect(url)
+      }
     }
 
     return NextResponse.next()
@@ -42,7 +52,7 @@ export async function updateSession(request: NextRequest) {
           getAll() {
             return request.cookies.getAll()
           },
-          setAll(cookiesToSet: Array<{ name: string; value: string; options?: any }>) {
+          setAll(cookiesToSet: Array<{ name: string; value: string; options?: Record<string, unknown> }>) {
             cookiesToSet.forEach(({ name, value }) =>
               request.cookies.set(name, value)
             )
@@ -57,15 +67,25 @@ export async function updateSession(request: NextRequest) {
 
     const { data: { user } } = await supabase.auth.getUser()
     const demoUserCookie = request.cookies.get('cc_demo_user')?.value
+    const userRoleCookie = request.cookies.get('cc_user_role')?.value
     const activeUser = user || demoUserCookie
 
     const isProtectedRoute = request.nextUrl.pathname.startsWith('/admin')
 
-    if (!activeUser && isProtectedRoute) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      url.search = `?callbackUrl=${encodeURIComponent(request.nextUrl.pathname)}`
-      return NextResponse.redirect(url)
+    if (isProtectedRoute) {
+      if (!activeUser) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/login'
+        url.search = `?callbackUrl=${encodeURIComponent(request.nextUrl.pathname)}`
+        return NextResponse.redirect(url)
+      }
+
+      if (userRoleCookie === 'student') {
+        const url = request.nextUrl.clone()
+        url.pathname = '/'
+        url.search = ''
+        return NextResponse.redirect(url)
+      }
     }
   } catch (err) {
     console.warn('Supabase middleware warning:', err)

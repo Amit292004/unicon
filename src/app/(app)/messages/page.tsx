@@ -152,12 +152,12 @@ function MessagesContent() {
           {selectedRecipient ? (
             <>
               {/* Thread Header */}
-              <div className="p-3.5 border-b bg-card flex items-center justify-between">
-                <div className="flex items-center gap-3">
+              <div className="p-3.5 border-b bg-card flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
                   <button
                     type="button"
                     onClick={() => setMobileThreadOpen(false)}
-                    className="md:hidden p-1.5 rounded-md hover:bg-accent"
+                    className="md:hidden p-1.5 -ml-1 rounded-md hover:bg-accent shrink-0 cursor-pointer"
                     aria-label="Back to students list"
                   >
                     <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -167,20 +167,21 @@ function MessagesContent() {
                     name={selectedRecipient.fullName}
                     avatarUrl={selectedRecipient.avatarUrl}
                     size="sm"
+                    className="shrink-0"
                   />
-                  <div>
-                    <p className="font-semibold text-xs text-foreground">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-xs text-foreground truncate">
                       {selectedRecipient.fullName}
                     </p>
-                    <p className="text-2xs text-muted-foreground">
+                    <p className="text-2xs text-muted-foreground truncate">
                       @{selectedRecipient.username} &bull; {selectedRecipient.department?.name || 'Department'}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-2xs text-muted-foreground">
-                  <ShieldCheck className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-                  <span>College Verified</span>
+                <div className="flex items-center gap-1.5 text-2xs text-muted-foreground shrink-0">
+                  <ShieldCheck className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
+                  <span className="hidden sm:inline">College Verified</span>
                 </div>
               </div>
 
@@ -201,7 +202,7 @@ function MessagesContent() {
                         className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}
                       >
                         <div
-                          className={`max-w-[78%] p-3 rounded-xl text-xs leading-relaxed ${
+                          className={`max-w-[85%] sm:max-w-[78%] p-3 rounded-xl text-xs leading-relaxed break-words ${
                             isMine
                               ? 'bg-primary text-primary-foreground rounded-br-none shadow-sm'
                               : 'bg-card border text-foreground rounded-bl-none shadow-sm'
@@ -224,11 +225,11 @@ function MessagesContent() {
                 <input
                   type="text"
                   placeholder={`Write a message to ${selectedRecipient.fullName.split(' ')[0]}...`}
-                  className="flex-1 h-9 rounded-md border border-input bg-background px-3 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+                  className="flex-1 min-w-0 h-9 rounded-md border border-input bg-background px-3 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                 />
-                <Button type="submit" size="sm" className="h-9 px-4 text-xs gap-1">
+                <Button type="submit" size="sm" className="h-9 px-4 text-xs gap-1 shrink-0">
                   <Send className="h-3.5 w-3.5" aria-hidden="true" />
                   Send
                 </Button>

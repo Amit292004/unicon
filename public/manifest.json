@@ -1,0 +1,69 @@
+{
+  "name": "UNICON — College Community & Campus Portal",
+  "short_name": "UNICON",
+  "description": "The complete campus companion for notices, course notes, bus tracking, lost & found, and student community.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#0b0f1a",
+  "theme_color": "#ea580c",
+  "orientation": "portrait-primary",
+  "categories": ["education", "social", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Official Notices",
+      "short_name": "Notices",
+      "description": "View active circulars and announcements",
+      "url": "/notices?source=pwa_shortcut",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Campus Transport",
+      "short_name": "Transport",
+      "description": "Live bus routes and schedule",
+      "url": "/transport?source=pwa_shortcut",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Study Notes & PYQs",
+      "short_name": "Academics",
+      "description": "Course notes and past papers",
+      "url": "/academics?source=pwa_shortcut",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Lost & Found",
+      "short_name": "Lost & Found",
+      "description": "Report or recover lost items",
+      "url": "/lost-found?source=pwa_shortcut",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

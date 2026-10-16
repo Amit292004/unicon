@@ -88,7 +88,7 @@ function OnboardingContent() {
 
     setLoading(true)
 
-    const selectedCollege = SEEDED_COLLEGES.find((c) => c.id === collegeId) || SEEDED_COLLEGES[2]
+    const selectedCollege = SEEDED_COLLEGES.find((c) => c.id === collegeId) || SEEDED_COLLEGES[1]
     const selectedDept = SEEDED_DEPARTMENTS.find((d) => d.id === departmentId)
     const newProfile: Profile = {
       id: `usr-${Date.now()}`,
@@ -119,7 +119,7 @@ function OnboardingContent() {
 
     setTimeout(() => {
       setLoading(false)
-      router.push('/home')
+      router.push('/')
     }, 400)
   }
 

@@ -52,6 +52,7 @@ export interface Profile {
   isOnboarded: boolean
   theme: Theme
   createdAt: string
+  semester?: number | null
   // Joined relations
   college?: College
   department?: Department

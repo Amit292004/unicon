@@ -78,7 +78,7 @@ export default function AdminDashboardPage() {
       icon: Users,
       stat: `${profiles.length} Accounts`,
       desc: 'Enrollment verification, role permissions & directory management',
-      color: 'text-indigo-600',
+      color: 'text-orange-600',
     },
     {
       title: 'Lost & Found Hub',
@@ -134,7 +134,7 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <div className="border-b pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex flex-wrap items-center gap-2 mb-1">
             <Badge variant="outline" className="text-2xs uppercase">
               {college?.name || currentProfile.college?.name}
             </Badge>
@@ -148,7 +148,7 @@ export default function AdminDashboardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Link href="/admin/notices">
             <Button size="sm" className="h-8 text-xs gap-1">
               <Bell className="h-3.5 w-3.5" aria-hidden="true" />
@@ -166,40 +166,44 @@ export default function AdminDashboardPage() {
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-4 border shadow-card space-y-1">
+        <Card className="p-4 border shadow-card hover:shadow-card-hover transition-all space-y-1.5">
           <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-2xs font-semibold uppercase tracking-wider">Enrolled Students</span>
             <Users className="h-4 w-4 text-primary" aria-hidden="true" />
           </div>
-          <p className="text-2xl font-bold text-foreground">{totalStudents}</p>
-          <p className="text-2xs text-muted-foreground">{totalFaculty} faculty accounts</p>
+          <p className="text-2xl font-bold text-foreground tabular-nums">{totalStudents}</p>
+          <p className="text-2xs text-muted-foreground font-mono">{totalFaculty} verified faculty accounts</p>
         </Card>
 
-        <Card className="p-4 border shadow-card space-y-1">
+        <Card className="p-4 border shadow-card hover:shadow-card-hover transition-all space-y-1.5">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-2xs font-semibold uppercase tracking-wider">Published Notices</span>
+            <span className="text-2xs font-semibold uppercase tracking-wider">Published Bulletins</span>
             <Bell className="h-4 w-4 text-primary" aria-hidden="true" />
           </div>
-          <p className="text-2xl font-bold text-foreground">{publishedNotices}</p>
-          <p className="text-2xs text-muted-foreground">Active bulletins</p>
+          <p className="text-2xl font-bold text-foreground tabular-nums">{publishedNotices}</p>
+          <p className="text-2xs text-muted-foreground font-mono">Active institutional circulars</p>
         </Card>
 
-        <Card className="p-4 border shadow-card space-y-1">
+        <Card className="p-4 border shadow-card hover:shadow-card-hover transition-all space-y-1.5">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-2xs font-semibold uppercase tracking-wider">Missing Items</span>
-            <Search className="h-4 w-4 text-amber-600" aria-hidden="true" />
+            <span className="text-2xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+              Active Missing Items
+            </span>
+            <Search className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
           </div>
-          <p className="text-2xl font-bold text-foreground">{activeLostFound}</p>
-          <p className="text-2xs text-amber-600 font-medium">{pendingClaims} claims pending</p>
+          <p className="text-2xl font-bold text-foreground tabular-nums">{activeLostFound}</p>
+          <p className="text-2xs text-amber-600 dark:text-amber-400 font-medium font-mono">{pendingClaims} claims pending review</p>
         </Card>
 
-        <Card className="p-4 border shadow-card space-y-1">
+        <Card className="p-4 border shadow-card hover:shadow-card-hover transition-all space-y-1.5">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-2xs font-semibold uppercase tracking-wider">Transit Complaints</span>
-            <AlertCircle className="h-4 w-4 text-rose-600" aria-hidden="true" />
+            <span className="text-2xs font-semibold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+              Transit Complaints
+            </span>
+            <AlertCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" aria-hidden="true" />
           </div>
-          <p className="text-2xl font-bold text-foreground">{openComplaints}</p>
-          <p className="text-2xs text-muted-foreground">Requiring investigation</p>
+          <p className="text-2xl font-bold text-foreground tabular-nums">{openComplaints}</p>
+          <p className="text-2xs text-rose-600 dark:text-rose-400 font-medium font-mono">Open tickets in queue</p>
         </Card>
       </div>
 
@@ -207,33 +211,35 @@ export default function AdminDashboardPage() {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-            Management &amp; CRUD Operations Hub
+            Management Consoles &amp; Controls
           </h2>
-          <span className="text-2xs text-muted-foreground">8 Dedicated Consoles</span>
+          <span className="text-2xs text-muted-foreground font-mono">8 Operational Subsystems</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
           {managementModules.map((m) => {
             const Icon = m.icon
             return (
               <Link key={m.href} href={m.href} className="group">
-                <Card className="p-4 border shadow-card hover:border-primary/50 transition flex flex-col justify-between h-full bg-card hover:bg-muted/10">
-                  <div className="space-y-2">
+                <Card className="p-4 border shadow-card hover:shadow-card-hover hover:border-primary/50 transition-all flex flex-col justify-between h-full bg-card group-hover:bg-accent/[0.25]">
+                  <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <div className={`p-2 rounded-md bg-muted/30 ${m.color}`}>
+                      <div className={`p-2 rounded-md bg-muted/60 border border-border/70 ${m.color}`}>
                         <Icon className="h-4 w-4" aria-hidden="true" />
                       </div>
                       <Badge variant="outline" className="text-2xs font-mono">
                         {m.stat}
                       </Badge>
                     </div>
-                    <h3 className="font-bold text-xs text-foreground group-hover:text-primary transition flex items-center justify-between">
-                      <span>{m.title}</span>
-                      <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
-                    </h3>
-                    <p className="text-2xs text-muted-foreground line-clamp-2">
-                      {m.desc}
-                    </p>
+                    <div className="space-y-1">
+                      <h3 className="font-bold text-xs text-foreground group-hover:text-primary transition flex items-center justify-between">
+                        <span>{m.title}</span>
+                        <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                      </h3>
+                      <p className="text-2xs text-muted-foreground line-clamp-2 leading-relaxed">
+                        {m.desc}
+                      </p>
+                    </div>
                   </div>
                 </Card>
               </Link>
@@ -255,14 +261,17 @@ export default function AdminDashboardPage() {
             </CardHeader>
             <CardContent className="divide-y p-0">
               {auditLogs.map((log) => (
-                <div key={log.id} className="p-3.5 flex items-center justify-between text-xs">
-                  <div className="space-y-0.5">
-                    <p className="font-semibold text-foreground">{log.action}</p>
-                    <p className="text-2xs text-muted-foreground">{log.detail}</p>
+                <div key={log.id} className="p-3.5 flex items-center justify-between text-xs hover:bg-muted/30 transition-colors">
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <span className="h-2 w-2 rounded-full bg-primary shrink-0 mt-1.5" />
+                    <div className="space-y-0.5 min-w-0">
+                      <p className="font-semibold text-foreground truncate">{log.action}</p>
+                      <p className="text-2xs text-muted-foreground truncate">{log.detail}</p>
+                    </div>
                   </div>
-                  <div className="text-right text-2xs text-muted-foreground">
+                  <div className="text-right text-2xs text-muted-foreground shrink-0 pl-3">
                     <span className="font-medium text-foreground block">{log.user}</span>
-                    <span>{log.time}</span>
+                    <span className="font-mono">{log.time}</span>
                   </div>
                 </div>
               ))}

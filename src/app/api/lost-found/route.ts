@@ -123,6 +123,7 @@ export async function POST(request: Request) {
       description: result.data.description,
       location: result.data.location || null,
       date_occurred: result.data.dateOccurred || null,
+      image_url: result.data.imageUrl || null,
       handover_info: result.data.handoverInfo || null,
     })
     .select()

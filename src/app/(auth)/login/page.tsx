@@ -4,13 +4,17 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Building2, Mail, Lock, ArrowRight, ShieldCheck, UserCheck } from 'lucide-react'
+import {
+  Mail,
+  Lock,
+  ArrowRight,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { useAppStore } from '@/lib/data/client-store'
-import { SEEDED_PROFILES } from '@/lib/data/store'
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
+import { GoogleAuthButton } from '@/components/auth/google-auth-button'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -19,7 +23,15 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+
+  const [error, setError] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const err = params.get('error')
+      if (err) return decodeURIComponent(err)
+    }
+    return null
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,11 +39,17 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // 1. Try store-level authenticate (handles demo accounts, registered users, and auto-provisions testing emails)
+      const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
+      const callbackUrl = params?.get('callbackUrl')
+      const targetDestination = callbackUrl || (email.toLowerCase().includes('admin') || email.toLowerCase().includes('transport') ? '/admin/dashboard' : '/')
+
+      // 1. Try store-level authenticate
       const res = authenticate(email, password)
       if (res.success) {
-        router.push('/home')
-        router.refresh()
+        if (typeof document !== 'undefined') {
+          document.cookie = `cc_demo_user=${email.trim().toLowerCase()}; path=/; max-age=86400; SameSite=Lax`
+        }
+        window.location.href = targetDestination
         return
       }
 
@@ -45,8 +63,10 @@ export default function LoginPage() {
 
         if (!sbError) {
           loginAs(email)
-          router.push('/home')
-          router.refresh()
+          if (typeof document !== 'undefined') {
+            document.cookie = `cc_demo_user=${email.trim().toLowerCase()}; path=/; max-age=86400; SameSite=Lax`
+          }
+          window.location.href = targetDestination
           return
         }
       }
@@ -61,8 +81,13 @@ export default function LoginPage() {
 
   const handleQuickLogin = (profileEmail: string) => {
     loginAs(profileEmail)
-    router.push('/home')
-    router.refresh()
+    if (typeof document !== 'undefined') {
+      document.cookie = `cc_demo_user=${profileEmail}; path=/; max-age=86400; SameSite=Lax`
+    }
+    const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
+    const callbackUrl = params?.get('callbackUrl')
+    const targetDestination = callbackUrl || (profileEmail.includes('admin') || profileEmail.includes('transport') ? '/admin/dashboard' : '/')
+    window.location.href = targetDestination
   }
 
   return (
@@ -72,37 +97,55 @@ export default function LoginPage() {
           <Image
             src="/unicon-logo.png"
             alt="UNICON"
-            width={120}
-            height={26}
-            className="h-7 w-auto object-contain dark:brightness-110"
+            width={130}
+            height={28}
+            className="h-8 w-auto object-contain dark:brightness-110"
             priority
           />
         </div>
         <CardTitle className="text-xl font-bold">Sign In to UNICON</CardTitle>
         <CardDescription>
-          Enter your registered college email and password to access your campus dashboard.
+          Enter your registered email and password to access your campus dashboard.
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
         {error && (
           <div
-            className="p-3 text-xs rounded-md bg-destructive-50 text-destructive-600 border border-destructive/20"
+            className="p-3 text-xs rounded-md bg-destructive-50 text-destructive-600 border border-destructive/20 text-left"
             role="alert"
           >
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+        {/* Official Google Sign In Button (identical to Bounce Back Academy) */}
+        <GoogleAuthButton
+          callbackUrl="/"
+          text="continue_with"
+          onError={(err) => setError(err)}
+        />
+
+        <div className="relative my-2">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-2xs text-muted-foreground font-medium">
+              Or continue with password
+            </span>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-foreground" htmlFor="email">
-              College Email Address
+            <label className="text-xs font-medium text-foreground" htmlFor="login-email">
+              Institutional Email
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <Input
-                id="email"
+                id="login-email"
                 type="email"
                 placeholder="student@demo.campusconnect.app"
                 className="pl-9"
@@ -115,16 +158,22 @@ export default function LoginPage() {
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-medium text-foreground" htmlFor="password">
+              <label className="text-xs font-medium text-foreground" htmlFor="login-password">
                 Password
               </label>
+              <Link
+                href="/register"
+                className="text-2xs text-muted-foreground hover:text-primary transition-colors"
+              >
+                Forgot password?
+              </Link>
             </div>
             <div className="relative">
               <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <Input
-                id="password"
+                id="login-password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
                 className="pl-9"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -134,80 +183,87 @@ export default function LoginPage() {
           </div>
 
           <Button type="submit" className="w-full" loading={loading}>
-            Sign In with Email
+            Sign In
             <ArrowRight className="h-4 w-4 ml-1" aria-hidden="true" />
           </Button>
         </form>
 
+        {/* Quick Evaluator Role Switcher */}
         <div className="relative my-4">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
+            <span className="w-full border-t border-dashed" />
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">Demo Accounts for Evaluation</span>
+          <div className="relative flex justify-center text-xs uppercase tracking-wider">
+            <span className="bg-card px-2.5 text-2xs text-muted-foreground font-semibold">
+              Evaluator Fast-Track (1-Click)
+            </span>
           </div>
         </div>
 
         {/* Instant Role Switching Presets for Reviewers & Judges */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-left">
+        <div className="grid grid-cols-2 gap-2.5 text-left">
           <button
             type="button"
             onClick={() => handleQuickLogin('amitsharma72020@gmail.com')}
-            className="flex flex-col p-2.5 rounded-md border text-left hover:bg-accent transition-colors bg-accent/40"
+            className="flex flex-col p-2.5 rounded-lg border border-primary/30 bg-primary/[0.03] hover:bg-primary/[0.08] hover:border-primary/60 transition-all text-left shadow-subtle group"
           >
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-              <UserCheck className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-              Amit Sharma
+            <div className="flex items-center justify-between w-full">
+              <span className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                Amit Sharma
+              </span>
+              <span className="text-3xs font-mono font-semibold uppercase px-1 py-0.5 rounded bg-primary/10 text-primary">
+                Student Lead
+              </span>
             </div>
-            <span className="text-2xs text-muted-foreground mt-0.5">Student (CSE, Lead)</span>
+            <span className="text-2xs text-muted-foreground mt-1">CSE &bull; Lead Evaluator</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleQuickLogin('student@demo.campusconnect.app')}
-            className="flex flex-col p-2.5 rounded-md border text-left hover:bg-accent transition-colors"
+            className="flex flex-col p-2.5 rounded-lg border border-border/80 hover:border-border hover:bg-accent/50 transition-all text-left shadow-subtle group"
           >
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-              <UserCheck className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-              Alex Chen
+            <div className="flex items-center justify-between w-full">
+              <span className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                Alex Chen
+              </span>
+              <span className="text-3xs font-mono uppercase px-1 py-0.5 rounded bg-muted text-muted-foreground">
+                Student
+              </span>
             </div>
-            <span className="text-2xs text-muted-foreground mt-0.5">Student (CSE, Sem 4)</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleQuickLogin('priya@demo.campusconnect.app')}
-            className="flex flex-col p-2.5 rounded-md border text-left hover:bg-accent transition-colors"
-          >
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-              <UserCheck className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-              Priya Sharma
-            </div>
-            <span className="text-2xs text-muted-foreground mt-0.5">Student (Contributor)</span>
+            <span className="text-2xs text-muted-foreground mt-1">CSE &bull; 4th Semester</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleQuickLogin('admin@demo.campusconnect.app')}
-            className="flex flex-col p-2.5 rounded-md border text-left hover:bg-accent transition-colors"
+            className="flex flex-col p-2.5 rounded-lg border border-border/80 hover:border-border hover:bg-accent/50 transition-all text-left shadow-subtle group"
           >
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-              <ShieldCheck className="h-3.5 w-3.5 text-brand-600" aria-hidden="true" />
-              Dean Academic
+            <div className="flex items-center justify-between w-full">
+              <span className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                Dean Academic
+              </span>
+              <span className="text-3xs font-mono uppercase px-1 py-0.5 rounded bg-muted text-muted-foreground">
+                Admin
+              </span>
             </div>
-            <span className="text-2xs text-muted-foreground mt-0.5">College Administrator</span>
+            <span className="text-2xs text-muted-foreground mt-1">Academic Affairs &amp; Registry</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleQuickLogin('transport@demo.campusconnect.app')}
-            className="flex flex-col p-2.5 rounded-md border text-left hover:bg-accent transition-colors"
+            className="flex flex-col p-2.5 rounded-lg border border-border/80 hover:border-border hover:bg-accent/50 transition-all text-left shadow-subtle group"
           >
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-              <ShieldCheck className="h-3.5 w-3.5 text-brand-600" aria-hidden="true" />
-              Transit Officer
+            <div className="flex items-center justify-between w-full">
+              <span className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                Transit Officer
+              </span>
+              <span className="text-3xs font-mono uppercase px-1 py-0.5 rounded bg-muted text-muted-foreground">
+                Logistics
+              </span>
             </div>
-            <span className="text-2xs text-muted-foreground mt-0.5">Transport Administrator</span>
+            <span className="text-2xs text-muted-foreground mt-1">Fleet &amp; Bus Administration</span>
           </button>
         </div>
       </CardContent>

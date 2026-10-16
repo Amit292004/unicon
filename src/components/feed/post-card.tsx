@@ -113,31 +113,31 @@ export function PostCard({ post }: PostCardProps) {
   }
 
   return (
-    <Card className="p-4 sm:p-5 border shadow-card transition-colors relative" id={post.id}>
+    <Card className="p-4 sm:p-5 border border-border/80 shadow-subtle hover:border-border transition-colors relative bg-card" id={post.id}>
       {/* Author Header */}
       <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Link href={`/profile/${post.author?.username || 'user'}`}>
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <Link href={`/profile/${post.author?.username || 'user'}`} className="shrink-0">
             <UserAvatar
               name={post.author?.fullName || 'Student'}
               avatarUrl={post.author?.avatarUrl}
               size="md"
             />
           </Link>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
               <Link
                 href={`/profile/${post.author?.username || 'user'}`}
-                className="font-semibold text-sm text-foreground hover:underline"
+                className="font-semibold text-xs sm:text-sm text-foreground hover:underline truncate"
               >
                 {post.author?.fullName || 'Anonymous Student'}
               </Link>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-3xs font-mono text-muted-foreground truncate">
                 @{post.author?.username || 'user'}
               </span>
             </div>
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-2xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-2 mt-0.5">
+              <span className="text-3xs font-mono text-muted-foreground shrink-0">
                 {formatRelativeTime(post.createdAt)}
               </span>
               {getTypeBadge(post.type)}
@@ -176,7 +176,7 @@ export function PostCard({ post }: PostCardProps) {
       </div>
 
       {/* Post Text */}
-      <div className="mt-3 text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+      <div className="mt-3 text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words">
         {post.content}
       </div>
 
@@ -194,31 +194,31 @@ export function PostCard({ post }: PostCardProps) {
       )}
 
       {/* Interaction Actions */}
-      <div className="mt-4 pt-3 border-t flex items-center justify-between text-muted-foreground text-xs">
-        <div className="flex items-center gap-1 sm:gap-4">
+      <div className="mt-3.5 pt-2.5 border-t border-border/60 flex items-center justify-between text-muted-foreground text-xs">
+        <div className="flex items-center gap-1 sm:gap-2">
           <button
             type="button"
             onClick={handleLike}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md transition-colors hover:bg-accent ${
-              isLiked ? 'text-destructive font-semibold' : ''
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md transition-colors hover:bg-secondary cursor-pointer ${
+              isLiked ? 'text-destructive-600 font-semibold' : 'hover:text-foreground'
             }`}
             aria-label={`Like post. Currently ${post.likesCount} likes`}
           >
             <Heart
-              className={`h-4 w-4 ${isLiked ? 'fill-destructive text-destructive' : ''}`}
+              className={`h-4 w-4 ${isLiked ? 'fill-destructive-500 text-destructive-500' : ''}`}
               aria-hidden="true"
             />
-            <span>{post.likesCount}</span>
+            <span className="font-mono text-xs">{post.likesCount}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setShowComments(!showComments)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-accent transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md hover:bg-secondary hover:text-foreground transition-colors cursor-pointer"
             aria-label={`Comments. Currently ${comments.length} comments`}
           >
             <MessageCircle className="h-4 w-4" aria-hidden="true" />
-            <span>{comments.length}</span>
+            <span className="font-mono text-xs">{comments.length}</span>
           </button>
         </div>
 
@@ -226,8 +226,8 @@ export function PostCard({ post }: PostCardProps) {
           <button
             type="button"
             onClick={handleSave}
-            className={`p-1.5 rounded-md transition-colors hover:bg-accent ${
-              isSaved ? 'text-primary' : ''
+            className={`p-1.5 rounded-md transition-colors hover:bg-secondary cursor-pointer ${
+              isSaved ? 'text-primary' : 'hover:text-foreground'
             }`}
             aria-label={isSaved ? 'Remove from saved items' : 'Save post'}
           >
@@ -237,7 +237,7 @@ export function PostCard({ post }: PostCardProps) {
           <button
             type="button"
             onClick={handleCopyLink}
-            className="p-1.5 rounded-md hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+            className="p-1.5 rounded-md hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground cursor-pointer"
             aria-label="Share post link"
             title={copiedLink ? 'Copied!' : 'Copy link'}
           >
@@ -252,32 +252,32 @@ export function PostCard({ post }: PostCardProps) {
 
       {/* Expandable Comments Section */}
       {showComments && (
-        <div className="mt-3 pt-3 border-t space-y-3">
+        <div className="mt-3 pt-3 border-t border-border/60 space-y-3">
           <div className="space-y-2 max-h-56 overflow-y-auto">
             {comments.length === 0 ? (
-              <p className="text-2xs text-muted-foreground py-1">No comments yet. Start the conversation!</p>
+              <p className="text-3xs text-muted-foreground py-1">No comments yet. Start the conversation!</p>
             ) : (
               comments.map((comm) => {
                 const canDeleteComm =
                   currentProfile.username === comm.authorUsername ||
                   currentProfile.role === 'admin'
                 return (
-                  <div key={comm.id} className="flex items-start justify-between gap-2 text-xs bg-muted/40 p-2.5 rounded-md">
-                    <div className="space-y-0.5 min-w-0">
-                      <div className="flex items-center gap-1.5">
+                  <div key={comm.id} className="flex items-start justify-between gap-2 text-xs bg-secondary/40 border border-border/50 p-2.5 rounded-md">
+                    <div className="space-y-0.5 min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
                         <span className="font-semibold text-foreground text-xs">{comm.authorName}</span>
-                        <span className="text-2xs text-muted-foreground">@{comm.authorUsername}</span>
-                        <span className="text-2xs text-muted-foreground">&bull;</span>
-                        <span className="text-2xs text-muted-foreground">{formatRelativeTime(comm.createdAt)}</span>
+                        <span className="text-3xs font-mono text-muted-foreground">@{comm.authorUsername}</span>
+                        <span className="text-3xs text-muted-foreground">&bull;</span>
+                        <span className="text-3xs font-mono text-muted-foreground">{formatRelativeTime(comm.createdAt)}</span>
                       </div>
-                      <p className="text-foreground text-xs">{comm.content}</p>
+                      <p className="text-foreground text-xs leading-relaxed break-words">{comm.content}</p>
                     </div>
 
                     {canDeleteComm && (
                       <button
                         type="button"
                         onClick={() => handleDeleteComment(comm.id)}
-                        className="text-muted-foreground hover:text-destructive p-1"
+                        className="text-muted-foreground hover:text-destructive p-1 rounded hover:bg-secondary cursor-pointer"
                         aria-label="Delete comment"
                       >
                         <Trash2 className="h-3 w-3" aria-hidden="true" />
@@ -293,11 +293,11 @@ export function PostCard({ post }: PostCardProps) {
             <input
               type="text"
               placeholder="Write a constructive comment..."
-              className="flex-1 h-8 rounded-md border border-input bg-background px-3 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+              className="flex-1 h-8 rounded-md border border-border bg-background px-3 text-xs placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary"
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
             />
-            <Button type="submit" size="sm" className="h-8 px-3">
+            <Button type="submit" size="sm" className="h-8 px-3 shadow-subtle">
               <Send className="h-3 w-3" aria-hidden="true" />
               <span className="sr-only">Submit comment</span>
             </Button>

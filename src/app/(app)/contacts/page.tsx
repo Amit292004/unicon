@@ -21,16 +21,14 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { UserAvatar } from '@/components/shared/user-avatar'
 import { useAppStore } from '@/lib/data/client-store'
+import { isFacultyOrAdmin } from '@/lib/auth/roles'
 
 export default function ContactsPage() {
   const { currentProfile, profiles, campusContacts } = useAppStore()
   const [activeTab, setActiveTab] = useState<'all' | 'students' | 'admin'>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
-  const isAdminOrFaculty =
-    currentProfile.role === 'admin' ||
-    currentProfile.role === 'moderator' ||
-    currentProfile.role === 'faculty'
+  const isAdminOrFaculty = isFacultyOrAdmin(currentProfile)
 
   const studentContacts = profiles.filter((p) => p.collegeId === currentProfile.collegeId)
 
@@ -76,33 +74,42 @@ export default function ContactsPage() {
 
       {/* Search and Tabs */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-        <div className="flex rounded-md border p-1 bg-muted/40 gap-1 text-xs">
+        <div className="flex rounded-md border p-1 bg-muted/40 gap-1 text-xs overflow-x-auto no-scrollbar max-w-full">
           <button
             type="button"
             onClick={() => setActiveTab('all')}
-            className={`px-3 py-1.5 rounded font-medium transition ${
-              activeTab === 'all' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'
+            className={`px-3 py-1.5 rounded font-medium transition whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
+              activeTab === 'all' ? 'bg-background shadow-xs text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            All Contacts ({campusContacts.length + studentContacts.length})
+            <span>All Directory</span>
+            <span className="text-2xs font-mono px-1 rounded bg-muted text-muted-foreground">
+              {campusContacts.length + studentContacts.length}
+            </span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('admin')}
-            className={`px-3 py-1.5 rounded font-medium transition ${
-              activeTab === 'admin' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'
+            className={`px-3 py-1.5 rounded font-medium transition whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
+              activeTab === 'admin' ? 'bg-background shadow-xs text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Administration &amp; Helpdesks ({campusContacts.length})
+            <span>Administration &amp; Helplines</span>
+            <span className="text-2xs font-mono px-1 rounded bg-muted text-muted-foreground">
+              {campusContacts.length}
+            </span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('students')}
-            className={`px-3 py-1.5 rounded font-medium transition ${
-              activeTab === 'students' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'
+            className={`px-3 py-1.5 rounded font-medium transition whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
+              activeTab === 'students' ? 'bg-background shadow-xs text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Student Peers ({studentContacts.length})
+            <span>Student Peers</span>
+            <span className="text-2xs font-mono px-1 rounded bg-muted text-muted-foreground">
+              {studentContacts.length}
+            </span>
           </button>
         </div>
 
@@ -110,7 +117,7 @@ export default function ContactsPage() {
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
           <Input
             placeholder="Search by officer name, department, role, or title..."
-            className="pl-9 text-xs"
+            className="pl-9 text-xs h-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -134,40 +141,51 @@ export default function ContactsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredInstitutional.map((contact) => (
-                <Card key={contact.id} className="p-5 border shadow-card space-y-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <Badge variant="outline" className="text-2xs mb-1">
-                        {contact.category}
-                      </Badge>
-                      <h3 className="font-bold text-sm text-foreground">{contact.name}</h3>
-                      <p className="text-xs text-primary font-medium">{contact.role}</p>
-                      <p className="text-2xs text-muted-foreground">{contact.department}</p>
+                <Card key={contact.id} className="p-5 border shadow-card hover:shadow-card-hover transition-all flex flex-col justify-between space-y-3.5">
+                  <div className="space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="space-y-1">
+                        <Badge variant="outline" className="text-2xs uppercase">
+                          {contact.category}
+                        </Badge>
+                        <h3 className="font-bold text-sm text-foreground">{contact.name}</h3>
+                        <p className="text-xs text-primary font-medium">{contact.role}</p>
+                        <p className="text-2xs text-muted-foreground">{contact.department}</p>
+                      </div>
+                      <div className="flex items-center gap-1 text-primary text-2xs font-semibold bg-primary/10 px-2 py-0.5 rounded border border-primary/20 shrink-0">
+                        <ShieldCheck className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
+                        <span>Official</span>
+                      </div>
                     </div>
-                    <ShieldCheck className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+
+                    <div className="space-y-1.5 text-2xs text-muted-foreground border-t border-border/60 pt-2.5">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
+                        <span className="text-foreground">{contact.office}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
+                        <span>Desk Hours: <span className="font-mono">{contact.hours}</span></span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="space-y-1.5 text-2xs text-muted-foreground border-t pt-2.5">
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
-                      <a href={`mailto:${contact.email}`} className="hover:underline text-foreground">
-                        {contact.email}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
-                      <a href={`tel:${contact.phone}`} className="hover:underline text-foreground">
-                        {contact.phone}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
-                      <span>{contact.office}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" aria-hidden="true" />
-                      <span>Hours: {contact.hours}</span>
-                    </div>
+                  <div className="border-t border-border/60 pt-3 flex items-center justify-between gap-2">
+                    <a
+                      href={`mailto:${contact.email}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-medium bg-card hover:bg-accent transition text-foreground"
+                    >
+                      <Mail className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                      <span>Email</span>
+                    </a>
+
+                    <a
+                      href={`tel:${contact.phone}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-medium bg-card hover:bg-accent transition text-foreground font-mono"
+                    >
+                      <Phone className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                      <span>{contact.phone}</span>
+                    </a>
                   </div>
                 </Card>
               ))}
@@ -193,7 +211,7 @@ export default function ContactsPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {filteredStudents.map((student) => (
-                <Card key={student.id} className="p-4 border shadow-card flex items-center justify-between gap-3">
+                <Card key={student.id} className="p-4 border shadow-card hover:shadow-card-hover transition-all flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <UserAvatar
                       name={student.fullName}
@@ -208,16 +226,21 @@ export default function ContactsPage() {
                       >
                         {student.fullName}
                       </Link>
-                      <p className="text-2xs text-muted-foreground truncate">
-                        @{student.username} &bull; {student.department?.code || 'Student'}
-                      </p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-2xs text-muted-foreground font-mono truncate">
+                          @{student.username}
+                        </span>
+                        <Badge variant="outline" className="text-3xs uppercase px-1 py-0 font-mono">
+                          {student.department?.code || 'STUDENT'}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
 
                   {student.id !== currentProfile.id && (
                     <Link href={`/chat`}>
-                      <Button variant="outline" size="icon-sm" aria-label={`Message ${student.fullName}`}>
-                        <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                      <Button variant="outline" size="icon-sm" className="h-8 w-8 shrink-0" aria-label={`Message ${student.fullName}`}>
+                        <MessageCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" aria-hidden="true" />
                       </Button>
                     </Link>
                   )}

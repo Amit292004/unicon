@@ -44,7 +44,7 @@ export default function NotificationsPage() {
     if (n.resourceType === 'lost_found') return '/lost-found'
     if (n.resourceType === 'transport') return '/transport'
     if (n.resourceType === 'message') return '/messages'
-    return '/home'
+    return '/'
   }
 
   return (
@@ -84,19 +84,26 @@ export default function NotificationsPage() {
           {userNotifications.map((notif) => (
             <Card
               key={notif.id}
-              className={`p-4 border shadow-card transition flex items-start gap-3.5 ${
-                !notif.isRead ? 'bg-primary/5 border-primary/30' : 'bg-card'
+              className={`p-4 border shadow-card hover:shadow-card-hover transition-all flex items-start gap-3.5 ${
+                !notif.isRead
+                  ? 'border-l-4 border-l-primary bg-primary/[0.02] border-border'
+                  : 'bg-card border-border/80'
               }`}
             >
-              <div className="p-2 rounded-full bg-secondary shrink-0 mt-0.5">
+              <div className="p-2 rounded-md bg-muted/60 border border-border/70 shrink-0 mt-0.5">
                 {getNotificationIcon(notif.type)}
               </div>
 
               <div className="flex-1 min-w-0 space-y-1">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-xs font-bold text-foreground leading-snug">
-                    {notif.title}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    {!notif.isRead && (
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                    )}
+                    <p className="text-xs font-bold text-foreground leading-snug">
+                      {notif.title}
+                    </p>
+                  </div>
                   <span className="text-2xs text-muted-foreground shrink-0 font-mono">
                     {formatRelativeTime(notif.createdAt)}
                   </span>
@@ -121,7 +128,7 @@ export default function NotificationsPage() {
                     <button
                       type="button"
                       onClick={() => markNotificationAsRead(notif.id)}
-                      className="text-2xs text-muted-foreground hover:text-foreground"
+                      className="text-2xs text-muted-foreground hover:text-foreground font-medium"
                     >
                       Dismiss as read
                     </button>

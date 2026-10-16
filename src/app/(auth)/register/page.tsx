@@ -4,11 +4,12 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Building2, Search, ArrowRight, CheckCircle2, ShieldCheck, Mail, Lock } from 'lucide-react'
+import { Building2, Search, ArrowRight, CheckCircle2, Mail, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { SEEDED_COLLEGES } from '@/lib/data/store'
+import { GoogleAuthButton } from '@/components/auth/google-auth-button'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -57,6 +58,24 @@ export default function RegisterPage() {
 
     setLoading(true)
     try {
+      // Send real OTP email
+      const response = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          collegeName: selectedCollege?.name,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        setError(data.error || 'Failed to dispatch verification code to your email.')
+        setLoading(false)
+        return
+      }
+
       // Store pending registration info in sessionStorage
       if (typeof window !== 'undefined') {
         sessionStorage.setItem(
@@ -67,11 +86,14 @@ export default function RegisterPage() {
             password,
           })
         )
+        if (data.previewOtp) {
+          sessionStorage.setItem('cc_preview_otp', data.previewOtp)
+        }
       }
 
-      router.push(`/verify-email?email=${encodeURIComponent(email)}`)
+      router.push(`/verify-email?email=${encodeURIComponent(email)}&sent=1`)
     } catch {
-      setError('Failed to initiate verification.')
+      setError('Network error: Unable to contact the verification service.')
     } finally {
       setLoading(false)
     }
@@ -104,15 +126,33 @@ export default function RegisterPage() {
         </CardDescription>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="space-y-4">
         {error && (
           <div
-            className="mb-4 p-3 text-xs rounded-md bg-destructive-50 text-destructive-600 border border-destructive/20"
+            className="p-3 text-xs rounded-md bg-destructive-50 text-destructive-600 border border-destructive/20"
             role="alert"
           >
             {error}
           </div>
         )}
+
+        {/* Quick Sign up with Google (identical to Bounce Back Academy) */}
+        <GoogleAuthButton
+          callbackUrl="/"
+          text="signup_with"
+          onError={(err) => setError(err)}
+        />
+
+        <div className="relative my-2">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-2xs text-muted-foreground font-medium">
+              Or register with email
+            </span>
+          </div>
+        </div>
 
         {step === 1 && (
           <form onSubmit={handleStep1Next} className="space-y-4">
@@ -142,22 +182,27 @@ export default function RegisterPage() {
                       className={`w-full text-left p-3 rounded-lg border transition-all flex items-start justify-between ${
                         isSelected
                           ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                          : 'hover:bg-accent/50 border-border'
+                          : 'border-border/80 hover:bg-accent/50'
                       }`}
                       role="radio"
                       aria-checked={isSelected}
                     >
-                      <div className="space-y-0.5">
-                        <div className="flex items-center gap-1.5 font-medium text-xs text-foreground">
-                          <Building2 className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-                          {college.name}
+                      <div className="flex items-start gap-2.5">
+                        <Building2
+                          className={`h-4 w-4 mt-0.5 shrink-0 ${
+                            isSelected ? 'text-primary' : 'text-muted-foreground'
+                          }`}
+                          aria-hidden="true"
+                        />
+                        <div>
+                          <p className="text-xs font-semibold text-foreground">{college.name}</p>
+                          <p className="text-2xs text-muted-foreground">
+                            {college.city}, {college.state}
+                          </p>
                         </div>
-                        <p className="text-2xs text-muted-foreground pl-5">
-                          {college.city}, {college.state}
-                        </p>
                       </div>
                       {isSelected && (
-                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
                       )}
                     </button>
                   )
@@ -165,7 +210,7 @@ export default function RegisterPage() {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={!selectedCollegeId}>
+            <Button type="submit" className="w-full">
               Continue to Account Details
               <ArrowRight className="h-4 w-4 ml-1" aria-hidden="true" />
             </Button>
@@ -173,9 +218,9 @@ export default function RegisterPage() {
         )}
 
         {step === 2 && (
-          <form onSubmit={handleStep2Submit} className="space-y-3">
-            <div className="p-2.5 rounded-md bg-secondary text-xs flex items-center justify-between">
-              <span className="text-muted-foreground truncate max-w-[260px]">
+          <form onSubmit={handleStep2Submit} className="space-y-4">
+            <div className="p-3 bg-muted/40 rounded-lg border border-border/80 flex items-center justify-between">
+              <span className="text-xs font-medium text-foreground truncate max-w-[240px]">
                 {selectedCollege?.name}
               </span>
               <button

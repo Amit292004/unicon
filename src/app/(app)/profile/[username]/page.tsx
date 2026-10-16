@@ -213,53 +213,81 @@ export default function StudentProfilePage() {
       </Card>
 
       {/* Exactly FOUR Primary Profile Tabs */}
-      <div className="flex border-b text-xs font-semibold">
+      <div className="flex border-b border-border/80 text-xs font-semibold overflow-x-auto no-scrollbar gap-1">
         <button
           type="button"
           onClick={() => setActiveTab('posts')}
-          className={`flex items-center gap-2 pb-3 px-4 border-b-2 transition ${
+          className={`flex items-center gap-2 pb-3 px-3.5 border-b-2 transition whitespace-nowrap ${
             activeTab === 'posts'
               ? 'border-primary text-primary font-bold'
               : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
-          <span>Posts ({userPosts.length})</span>
+          <span>Community Posts</span>
+          <span
+            className={`text-2xs font-mono px-1.5 py-0.2 rounded ${
+              activeTab === 'posts' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+            }`}
+          >
+            {userPosts.length}
+          </span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('notes')}
-          className={`flex items-center gap-2 pb-3 px-4 border-b-2 transition ${
+          className={`flex items-center gap-2 pb-3 px-3.5 border-b-2 transition whitespace-nowrap ${
             activeTab === 'notes'
               ? 'border-primary text-primary font-bold'
               : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
-          <span>Notes ({userNotes.length})</span>
+          <span>Course Notes</span>
+          <span
+            className={`text-2xs font-mono px-1.5 py-0.2 rounded ${
+              activeTab === 'notes' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+            }`}
+          >
+            {userNotes.length}
+          </span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('pyqs')}
-          className={`flex items-center gap-2 pb-3 px-4 border-b-2 transition ${
+          className={`flex items-center gap-2 pb-3 px-3.5 border-b-2 transition whitespace-nowrap ${
             activeTab === 'pyqs'
               ? 'border-primary text-primary font-bold'
               : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
-          <span>PYQs ({userPYQs.length})</span>
+          <span>Question Papers (PYQs)</span>
+          <span
+            className={`text-2xs font-mono px-1.5 py-0.2 rounded ${
+              activeTab === 'pyqs' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+            }`}
+          >
+            {userPYQs.length}
+          </span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('projects')}
-          className={`flex items-center gap-2 pb-3 px-4 border-b-2 transition ${
+          className={`flex items-center gap-2 pb-3 px-3.5 border-b-2 transition whitespace-nowrap ${
             activeTab === 'projects'
               ? 'border-primary text-primary font-bold'
               : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
-          <span>Projects ({userProjects.length})</span>
+          <span>Portfolio Projects</span>
+          <span
+            className={`text-2xs font-mono px-1.5 py-0.2 rounded ${
+              activeTab === 'projects' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+            }`}
+          >
+            {userProjects.length}
+          </span>
         </button>
       </div>
 

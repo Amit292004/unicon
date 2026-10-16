@@ -14,12 +14,16 @@ import {
   Send,
   Eye,
   Filter,
-  X
+  X,
+  FileText,
+  Image as ImageIcon
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { NoticeAttachmentUploader } from '@/components/notices/notice-attachment-uploader'
+import { isPdfAttachment, isImageAttachment } from '@/lib/notices'
 import { useAppStore } from '@/lib/data/client-store'
 import { formatDateTime } from '@/lib/utils'
 import type { Notice, NoticeAudience, NoticeStatus } from '@/types'
@@ -38,6 +42,7 @@ export default function AdminNoticesPage() {
   const [targetDeptId, setTargetDeptId] = useState<string>(departments[0]?.id || '')
   const [targetSemester, setTargetSemester] = useState<number>(4)
   const [status, setStatus] = useState<NoticeStatus>('published')
+  const [attachmentUrl, setAttachmentUrl] = useState<string | null>(null)
   const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft' | 'archived'>('all')
   const [actionMsg, setActionMsg] = useState<string | null>(null)
 
@@ -55,6 +60,7 @@ export default function AdminNoticesPage() {
     setTargetDeptId(departments[0]?.id || '')
     setTargetSemester(4)
     setStatus('published')
+    setAttachmentUrl(null)
     setShowModal(true)
   }
 
@@ -66,6 +72,7 @@ export default function AdminNoticesPage() {
     setTargetDeptId(notice.targetDepartmentId || departments[0]?.id || '')
     setTargetSemester(notice.targetSemester || 4)
     setStatus(notice.status)
+    setAttachmentUrl(notice.attachmentUrls?.[0] || null)
     setShowModal(true)
   }
 
@@ -82,6 +89,8 @@ export default function AdminNoticesPage() {
     e.preventDefault()
     if (!title.trim() || !content.trim()) return
 
+    const attachments = attachmentUrl ? [attachmentUrl] : null
+
     if (editingNotice) {
       updateNotice(editingNotice.id, {
         title: title.trim(),
@@ -90,6 +99,7 @@ export default function AdminNoticesPage() {
         audience,
         targetDepartmentId: audience === 'department' || audience === 'department_semester' ? targetDeptId : null,
         targetSemester: audience === 'semester' || audience === 'department_semester' ? targetSemester : null,
+        attachmentUrls: attachments,
       })
       setActionMsg(`Notice "${title}" was updated successfully.`)
     } else {
@@ -102,7 +112,7 @@ export default function AdminNoticesPage() {
         audience,
         targetDepartmentId: audience === 'department' || audience === 'department_semester' ? targetDeptId : null,
         targetSemester: audience === 'semester' || audience === 'department_semester' ? targetSemester : null,
-        attachmentUrls: null,
+        attachmentUrls: attachments,
         publishedAt: status === 'published' ? new Date().toISOString() : null,
         expiresAt: null,
       })
@@ -113,6 +123,7 @@ export default function AdminNoticesPage() {
     setEditingNotice(null)
     setTitle('')
     setContent('')
+    setAttachmentUrl(null)
     setTimeout(() => setActionMsg(null), 4000)
   }
 
@@ -194,6 +205,29 @@ export default function AdminNoticesPage() {
                     <span className="text-2xs text-muted-foreground">
                       {formatDateTime(n.publishedAt || n.createdAt)}
                     </span>
+
+                    {n.attachmentUrls && n.attachmentUrls.length > 0 && (
+                      <Badge
+                        variant="outline"
+                        className={`text-3xs gap-1 ${
+                          isPdfAttachment(n.attachmentUrls[0])
+                            ? 'text-red-600 border-red-300 dark:border-red-900 bg-red-50/50 dark:bg-red-950/20'
+                            : 'text-primary border-primary/30 bg-primary/5'
+                        }`}
+                      >
+                        {isPdfAttachment(n.attachmentUrls[0]) ? (
+                          <>
+                            <FileText className="h-3 w-3" />
+                            <span>PDF Attached</span>
+                          </>
+                        ) : (
+                          <>
+                            <ImageIcon className="h-3 w-3" />
+                            <span>Image Attached</span>
+                          </>
+                        )}
+                      </Badge>
+                    )}
                   </div>
 
                   <p className="font-bold text-sm text-foreground">{n.title}</p>
@@ -389,6 +423,12 @@ export default function AdminNoticesPage() {
                   required
                 />
               </div>
+
+              {/* Attachment Picker for Image or PDF */}
+              <NoticeAttachmentUploader
+                attachmentUrl={attachmentUrl}
+                onChange={setAttachmentUrl}
+              />
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t">
                 <Button type="button" variant="ghost" size="sm" onClick={() => setShowModal(false)}>

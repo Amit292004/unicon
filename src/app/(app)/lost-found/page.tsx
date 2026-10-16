@@ -14,7 +14,11 @@ import {
   Tag,
   AlertCircle,
   FileText,
-  Trash2
+  Trash2,
+  Camera,
+  UploadCloud,
+  ZoomIn,
+  X
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -50,6 +54,10 @@ export default function LostFoundPage() {
   const [description, setDescription] = useState('')
   const [location, setLocation] = useState('')
   const [handoverInfo, setHandoverInfo] = useState('')
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [previewZoomImage, setPreviewZoomImage] = useState<{ url: string; title: string } | null>(null)
 
   // Claim Modal state
   const [claimingItem, setClaimingItem] = useState<LostFoundReport | null>(null)
@@ -88,6 +96,52 @@ export default function LostFoundPage() {
     return true
   })
 
+  const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Please select a valid image file (JPEG, PNG, WebP, or GIF).')
+      return
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('Image size exceeds 5 MB limit.')
+      return
+    }
+
+    setUploadError(null)
+    setIsUploadingImage(true)
+
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const res = await fetch('/api/lost-found/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to upload image')
+      }
+
+      setImageUrl(data.url)
+    } catch (err: unknown) {
+      console.error('Image upload error:', err)
+      setUploadError(err instanceof Error ? err.message : 'Image upload failed. Please try again.')
+    } finally {
+      setIsUploadingImage(false)
+      e.target.value = ''
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setImageUrl(null)
+    setUploadError(null)
+  }
+
   const handleCreateReport = (e: React.FormEvent) => {
     e.preventDefault()
     if (!itemName.trim() || !description.trim()) return
@@ -102,7 +156,7 @@ export default function LostFoundPage() {
       description: description.trim(),
       location: location.trim() || null,
       dateOccurred: new Date().toISOString().split('T')[0],
-      imageUrl: null,
+      imageUrl: imageUrl || null,
       handoverInfo: handoverInfo.trim() || null,
     })
 
@@ -111,6 +165,8 @@ export default function LostFoundPage() {
     setDescription('')
     setLocation('')
     setHandoverInfo('')
+    setImageUrl(null)
+    setUploadError(null)
     setShowReportModal(false)
   }
 
@@ -138,7 +194,7 @@ export default function LostFoundPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             size="sm"
             onClick={() => {
@@ -167,79 +223,108 @@ export default function LostFoundPage() {
       </div>
 
       {/* Real Statistics Calculated from Database */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-4 rounded-lg border bg-card shadow-card">
-          <p className="text-2xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Total Registry
-          </p>
-          <p className="text-2xl font-bold text-foreground mt-1">{totalReportsCount}</p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="p-4 rounded-lg border bg-card shadow-subtle">
+          <div className="flex items-center justify-between">
+            <p className="text-2xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Total Registry
+            </p>
+            <Tag className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+          </div>
+          <p className="text-2xl font-bold text-foreground mt-1 tabular-nums">{totalReportsCount}</p>
+          <p className="text-3xs text-muted-foreground mt-0.5">Cataloged items across campus</p>
         </div>
-        <div className="p-4 rounded-lg border bg-card shadow-card">
-          <p className="text-2xs font-semibold uppercase tracking-wider text-destructive-600">
-            Missing Items
-          </p>
-          <p className="text-2xl font-bold text-destructive-600 mt-1">{missingCount}</p>
+
+        <div className="p-4 rounded-lg border bg-card shadow-subtle">
+          <div className="flex items-center justify-between">
+            <p className="text-2xs font-semibold uppercase tracking-wider text-destructive-600 dark:text-rose-400">
+              Missing Valuables
+            </p>
+            <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
+          </div>
+          <p className="text-2xl font-bold text-destructive-600 dark:text-rose-400 mt-1 tabular-nums">{missingCount}</p>
+          <p className="text-3xs text-muted-foreground mt-0.5">Active search by owners</p>
         </div>
-        <div className="p-4 rounded-lg border bg-card shadow-card">
-          <p className="text-2xs font-semibold uppercase tracking-wider text-success-600">
-            Recovered / Found
-          </p>
-          <p className="text-2xl font-bold text-success-600 mt-1">{foundCount}</p>
+
+        <div className="p-4 rounded-lg border bg-card shadow-subtle">
+          <div className="flex items-center justify-between">
+            <p className="text-2xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+              Recovered &amp; Found
+            </p>
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" aria-hidden="true" />
+          </div>
+          <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1 tabular-nums">{foundCount}</p>
+          <p className="text-3xs text-muted-foreground mt-0.5">Safely deposited or returned</p>
         </div>
-        <div className="p-4 rounded-lg border bg-card shadow-card">
-          <p className="text-2xs font-semibold uppercase tracking-wider text-warning-600">
-            Pending Claims
-          </p>
-          <p className="text-2xl font-bold text-warning-600 mt-1">{pendingClaimsCount}</p>
+
+        <div className="p-4 rounded-lg border bg-card shadow-subtle">
+          <div className="flex items-center justify-between">
+            <p className="text-2xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+              Pending Claims
+            </p>
+            <Clock className="h-3.5 w-3.5 text-amber-500" aria-hidden="true" />
+          </div>
+          <p className="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1 tabular-nums">{pendingClaimsCount}</p>
+          <p className="text-3xs text-muted-foreground mt-0.5">Awaiting proof verification</p>
         </div>
       </div>
 
       {claimSuccessMsg && (
-        <div className="p-3 text-xs rounded-md bg-success-50 text-success-600 border border-success-500/20 flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <div className="p-3 text-xs rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-500/20 flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
           <span>{claimSuccessMsg}</span>
         </div>
       )}
 
       {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-        {/* Navigation Tabs */}
-        <div className="flex rounded-md border p-1 bg-muted/40 gap-1 text-xs">
+        {/* Navigation Tabs with live counts */}
+        <div className="flex rounded-md border p-1 bg-muted/40 gap-1 text-xs overflow-x-auto no-scrollbar">
           <button
             type="button"
             onClick={() => setActiveTab('all')}
-            className={`px-3 py-1.5 rounded font-medium transition ${
-              activeTab === 'all' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'
+            className={`px-3 py-1.5 rounded font-medium transition flex items-center gap-1.5 whitespace-nowrap ${
+              activeTab === 'all' ? 'bg-background shadow-xs text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            All Reports
+            <span>All</span>
+            <span className="text-2xs font-mono px-1 rounded bg-muted text-muted-foreground">{collegeReports.length}</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('lost')}
-            className={`px-3 py-1.5 rounded font-medium transition ${
-              activeTab === 'lost' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'
+            className={`px-3 py-1.5 rounded font-medium transition flex items-center gap-1.5 whitespace-nowrap ${
+              activeTab === 'lost' ? 'bg-background shadow-xs text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Lost Only
+            <span>Lost</span>
+            <span className="text-2xs font-mono px-1 rounded bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900">
+              {collegeReports.filter((r) => r.type === 'lost').length}
+            </span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('found')}
-            className={`px-3 py-1.5 rounded font-medium transition ${
-              activeTab === 'found' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'
+            className={`px-3 py-1.5 rounded font-medium transition flex items-center gap-1.5 whitespace-nowrap ${
+              activeTab === 'found' ? 'bg-background shadow-xs text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Found Only
+            <span>Found</span>
+            <span className="text-2xs font-mono px-1 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900">
+              {collegeReports.filter((r) => r.type === 'found').length}
+            </span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('my_reports')}
-            className={`px-3 py-1.5 rounded font-medium transition ${
-              activeTab === 'my_reports' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground'
+            className={`px-3 py-1.5 rounded font-medium transition flex items-center gap-1.5 whitespace-nowrap ${
+              activeTab === 'my_reports' ? 'bg-background shadow-xs text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            My Reports
+            <span>My Reports</span>
+            <span className="text-2xs font-mono px-1 rounded bg-muted text-muted-foreground">
+              {collegeReports.filter((r) => r.reporterId === currentProfile.id).length}
+            </span>
           </button>
         </div>
 
@@ -247,7 +332,7 @@ export default function LostFoundPage() {
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
           <Input
             placeholder="Search items by name, description, or location..."
-            className="pl-9 text-xs"
+            className="pl-9 text-xs h-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -257,10 +342,10 @@ export default function LostFoundPage() {
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="h-9 rounded-md border border-input bg-background px-3 text-xs shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+          className="h-9 rounded-md border border-input bg-background px-3 text-xs shadow-subtle focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
           aria-label="Filter items by category"
         >
-          <option value="all">All Categories</option>
+          <option value="all">All Categories ({LOST_FOUND_CATEGORIES.length})</option>
           {LOST_FOUND_CATEGORIES.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
@@ -296,16 +381,23 @@ export default function LostFoundPage() {
             const hasPendingClaims = (report.claims || []).some((c) => c.status === 'pending')
 
             return (
-              <Card key={report.id} className="p-5 border shadow-card flex flex-col justify-between space-y-4">
+              <Card
+                key={report.id}
+                className={`p-5 border shadow-card flex flex-col justify-between space-y-4 transition-all hover:shadow-card-hover ${
+                  report.type === 'lost'
+                    ? 'border-l-4 border-l-rose-500/80 dark:border-l-rose-500'
+                    : 'border-l-4 border-l-emerald-500/80 dark:border-l-emerald-500'
+                }`}
+              >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-1.5">
                         <Badge
                           variant={report.type === 'lost' ? 'destructive' : 'success'}
-                          className="text-2xs uppercase"
+                          className="text-2xs uppercase font-mono font-bold tracking-wider"
                         >
-                          {report.type}
+                          {report.type === 'lost' ? 'Missing Valuable' : 'Found Item'}
                         </Badge>
                         <Badge variant="outline" className="text-2xs">
                           {report.category}
@@ -317,7 +409,7 @@ export default function LostFoundPage() {
                           </Badge>
                         )}
                         {report.status === 'claimed' && (
-                          <Badge variant="secondary" className="text-2xs bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-800 flex items-center gap-1 font-semibold">
+                          <Badge variant="secondary" className="text-2xs bg-orange-100 dark:bg-orange-950/60 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-800 flex items-center gap-1 font-semibold">
                             Claimed
                           </Badge>
                         )}
@@ -331,6 +423,31 @@ export default function LostFoundPage() {
                       {formatRelativeTime(report.createdAt)}
                     </span>
                   </div>
+
+                  {report.imageUrl && (
+                    <div
+                      className="relative rounded-lg overflow-hidden border border-border/70 bg-muted/20 aspect-video sm:aspect-[21/9] max-h-52 w-full group cursor-pointer"
+                      onClick={() => setPreviewZoomImage({ url: report.imageUrl!, title: report.itemName })}
+                      title="Click to view full photo"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={report.imageUrl}
+                        alt={`Photo of ${report.itemName}`}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/70 backdrop-blur-sm text-white text-2xs px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
+                          <ZoomIn className="h-3 w-3" />
+                          <span>View Photo</span>
+                        </div>
+                      </div>
+                      <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded text-3xs font-medium bg-black/60 text-white backdrop-blur-sm pointer-events-none">
+                        Photo Attached
+                      </div>
+                    </div>
+                  )}
 
                   <p className="text-xs text-foreground leading-relaxed">
                     {report.description}
@@ -630,6 +747,100 @@ export default function LostFoundPage() {
                 />
               </div>
 
+              {/* Item Photo Upload (Vercel Blob Storage) */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-medium text-foreground flex items-center gap-1.5" htmlFor="item-image-upload">
+                    <Camera className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                    <span>Photo of {reportType === 'lost' ? 'Lost' : 'Found'} Item (Optional)</span>
+                  </label>
+                  <span className="text-3xs text-muted-foreground font-mono">Vercel Blob Storage</span>
+                </div>
+
+                {imageUrl ? (
+                  <div className="relative rounded-lg border border-border/80 bg-secondary/40 p-2.5 flex items-center gap-3">
+                    <div className="relative h-16 w-16 rounded-md overflow-hidden border border-border/80 bg-background shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={imageUrl}
+                        alt="Uploaded lost item"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                        <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                        <span>Photo attached to report</span>
+                      </p>
+                      <p className="text-3xs text-muted-foreground truncate mt-0.5">
+                        Uploaded to Vercel Blob storage
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-2xs text-destructive hover:bg-destructive/10 shrink-0"
+                      onClick={handleRemoveImage}
+                      title="Remove attached photo"
+                    >
+                      <Trash2 className="h-3.5 w-3.5 mr-1" />
+                      Remove
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor="item-image-upload"
+                      className={`flex flex-col items-center justify-center p-3.5 rounded-lg border-2 border-dashed transition cursor-pointer text-center ${
+                        isUploadingImage
+                          ? 'border-primary/50 bg-primary/5 pointer-events-none'
+                          : 'border-border hover:border-primary/60 hover:bg-muted/30'
+                      }`}
+                    >
+                      <input
+                        id="item-image-upload"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        onChange={handleImageFileChange}
+                        disabled={isUploadingImage}
+                        className="hidden"
+                      />
+                      {isUploadingImage ? (
+                        <div className="flex flex-col items-center gap-1.5 py-1">
+                          <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                          <p className="text-xs font-medium text-foreground">
+                            Uploading to Vercel Blob Storage...
+                          </p>
+                          <p className="text-3xs text-muted-foreground">Please wait a moment</p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-1">
+                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                            <UploadCloud className="h-4 w-4" aria-hidden="true" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium text-foreground">
+                              <span className="text-primary hover:underline font-semibold">Click to upload photo</span> or drag & drop
+                            </p>
+                            <p className="text-3xs text-muted-foreground">
+                              PNG, JPG, or WebP up to 5 MB
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </label>
+
+                    {uploadError && (
+                      <p className="text-2xs text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3 shrink-0" />
+                        <span>{uploadError}</span>
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
               {reportType === 'found' && (
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-foreground" htmlFor="item-handover">
@@ -649,11 +860,15 @@ export default function LostFoundPage() {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => setShowReportModal(false)}
+                  onClick={() => {
+                    setShowReportModal(false)
+                    setImageUrl(null)
+                    setUploadError(null)
+                  }}
                 >
                   Cancel
                 </Button>
-                <Button type="submit" size="sm">
+                <Button type="submit" size="sm" disabled={isUploadingImage}>
                   Publish Report
                 </Button>
               </div>
@@ -700,6 +915,42 @@ export default function LostFoundPage() {
               </div>
             </form>
           </Card>
+        </div>
+      )}
+
+      {/* Photo Lightbox Modal */}
+      {previewZoomImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setPreviewZoomImage(null)}
+        >
+          <div
+            className="relative max-w-2xl w-full bg-card rounded-xl border border-border/80 shadow-2xl overflow-hidden p-4 space-y-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b pb-2">
+              <h3 className="text-sm font-bold text-foreground truncate pr-2">
+                Photo: {previewZoomImage.title}
+              </h3>
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                onClick={() => setPreviewZoomImage(null)}
+                aria-label="Close photo preview"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="rounded-lg overflow-hidden border bg-black/5 max-h-[70vh] flex items-center justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={previewZoomImage.url}
+                alt={previewZoomImage.title}
+                className="max-h-[70vh] w-auto max-w-full object-contain rounded"
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -1,0 +1,68 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630' width='1200' height='630'>
+  <defs>
+    <linearGradient id='bgGrad' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='#0f172a' />
+      <stop offset='50%' stop-color='#1e293b' />
+      <stop offset='100%' stop-color='#0f766e' />
+    </linearGradient>
+    <linearGradient id='accentGrad' x1='0%' y1='0%' x2='100%' y2='0%'>
+      <stop offset='0%' stop-color='#14b8a6' />
+      <stop offset='100%' stop-color='#38bdf8' />
+    </linearGradient>
+  </defs>
+
+  <rect width='1200' height='630' fill='url(#bgGrad)' />
+  
+  <!-- Grid pattern overlay -->
+  <g opacity='0.08' stroke='#fff' stroke-width='1'>
+    <line x1='0' y1='100' x2='1200' y2='100' />
+    <line x1='0' y1='200' x2='1200' y2='200' />
+    <line x1='0' y1='300' x2='1200' y2='300' />
+    <line x1='0' y1='400' x2='1200' y2='400' />
+    <line x1='0' y1='500' x2='1200' y2='500' />
+    <line x1='200' y1='0' x2='200' y2='630' />
+    <line x1='400' y1='0' x2='400' y2='630' />
+    <line x1='600' y1='0' x2='600' y2='630' />
+    <line x1='800' y1='0' x2='800' y2='630' />
+    <line x1='1000' y1='0' x2='1000' y2='630' />
+  </g>
+
+  <!-- Header Badge -->
+  <rect x='80' y='60' width='360' height='40' rx='20' fill='#1e293b' stroke='#334155' stroke-width='2' />
+  <text x='100' y='86' font-family='system-ui, -apple-system, sans-serif' font-size='14' font-weight='bold' fill='#2dd4bf' letter-spacing='2'>DEPARTMENT OF COMPUTER SCIENCE</text>
+
+  <!-- Main Title -->
+  <text x='80' y='180' font-family='system-ui, -apple-system, sans-serif' font-size='62' font-weight='900' fill='#ffffff'>ANNUAL CAMPUS</text>
+  <text x='80' y='250' font-family='system-ui, -apple-system, sans-serif' font-size='62' font-weight='900' fill='url(#accentGrad)'>CODEFEST 2026</text>
+  
+  <text x='80' y='310' font-family='system-ui, -apple-system, sans-serif' font-size='20' fill='#94a3b8' font-weight='500'>
+    36-Hour Hackathon • System Software, Distributed Web &amp; AI/ML Solutions
+  </text>
+
+  <!-- Feature Cards -->
+  <g transform='translate(80, 360)'>
+    <rect x='0' y='0' width='310' height='130' rx='16' fill='#1e293b' stroke='#334155' />
+    <text x='24' y='45' font-family='system-ui, -apple-system, sans-serif' font-size='16' font-weight='bold' fill='#f8fafc'>1st Prize: ₹50,000</text>
+    <text x='24' y='75' font-family='system-ui, -apple-system, sans-serif' font-size='13' fill='#94a3b8'>+ Direct Incubator Mentorship</text>
+    <text x='24' y='100' font-family='system-ui, -apple-system, sans-serif' font-size='12' fill='#2dd4bf'>Cash Prize &amp; Internship</text>
+  </g>
+
+  <g transform='translate(420, 360)'>
+    <rect x='0' y='0' width='310' height='130' rx='16' fill='#1e293b' stroke='#334155' />
+    <text x='24' y='45' font-family='system-ui, -apple-system, sans-serif' font-size='16' font-weight='bold' fill='#f8fafc'>Eligibility &amp; Teams</text>
+    <text x='24' y='75' font-family='system-ui, -apple-system, sans-serif' font-size='13' fill='#94a3b8'>Teams of 2 to 4 Students</text>
+    <text x='24' y='100' font-family='system-ui, -apple-system, sans-serif' font-size='12' fill='#38bdf8'>Open to all B.Tech / BCA batches</text>
+  </g>
+
+  <g transform='translate(760, 360)'>
+    <rect x='0' y='0' width='310' height='130' rx='16' fill='#1e293b' stroke='#334155' />
+    <text x='24' y='45' font-family='system-ui, -apple-system, sans-serif' font-size='16' font-weight='bold' fill='#f8fafc'>Important Dates</text>
+    <text x='24' y='75' font-family='system-ui, -apple-system, sans-serif' font-size='13' fill='#94a3b8'>Deadline: Nov 15, 2026</text>
+    <text x='24' y='100' font-family='system-ui, -apple-system, sans-serif' font-size='12' fill='#f59e0b'>Grand Finale: Nov 28-29</text>
+  </g>
+
+  <!-- Footer Seal -->
+  <line x1='80' y1='540' x2='1120' y2='540' stroke='#334155' stroke-width='1' />
+  <text x='80' y='575' font-family='system-ui, -apple-system, sans-serif' font-size='14' fill='#64748b'>Official Institutional Announcement • Authorized by Dr. Robert Jamir, Academic Dean</text>
+  <text x='1120' y='575' font-family='system-ui, -apple-system, sans-serif' font-size='14' fill='#2dd4bf' font-weight='bold' text-anchor='end'>CampusConnect Verified</text>
+</svg>

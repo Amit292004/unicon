@@ -191,7 +191,7 @@ export const useAppStore = create<AppStore>()(
     (set, get) => ({
       currentProfile: SEEDED_PROFILES[0], // Alex Chen by default
       theme: 'light',
-      college: SEEDED_COLLEGES[2], // Demo University
+      college: SEEDED_COLLEGES[1], // Demo University
       departments: SEEDED_DEPARTMENTS,
       profiles: SEEDED_PROFILES,
       notices: SEEDED_NOTICES,
@@ -335,6 +335,9 @@ export const useAppStore = create<AppStore>()(
         })
         if (typeof document !== 'undefined') {
           document.cookie = `cc_demo_user=${profile.email}; path=/; max-age=86400; SameSite=Lax`
+          document.cookie = `cc_user_role=${profile.role}; path=/; max-age=86400; SameSite=Lax`
+          document.cookie = 'cc_user_name=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+          document.cookie = 'cc_user_avatar=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
         }
       },
 
@@ -597,18 +600,21 @@ export const useAppStore = create<AppStore>()(
           const capitalizedName = namePart
             ? namePart.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
             : 'Campus Student'
+          const isEmailAdmin = cleanEmail.includes('admin')
+          const isEmailTransport = cleanEmail.includes('transport')
+          const assignedRole = isEmailAdmin ? 'college_admin' : isEmailTransport ? 'transport_admin' : 'student'
           const newProfile: Profile = {
             id: `usr-${Date.now()}`,
             collegeId: get().college?.id || 'col-003',
             departmentId: 'dept-001',
-            role: 'student',
-            fullName: capitalizedName || 'Amit Sharma',
+            role: assignedRole,
+            fullName: capitalizedName,
             username: cleanEmail.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '_').slice(0, 20),
-            rollNumber: `2024${Math.floor(1000 + Math.random() * 9000)}`,
+            rollNumber: isEmailAdmin ? 'ADM-99' : isEmailTransport ? 'TRANS-99' : `2024${Math.floor(1000 + Math.random() * 9000)}`,
             email: cleanEmail,
             phoneNumber: '+91 98765 43210',
             avatarUrl: null,
-            bio: 'Student at UNICON platform.',
+            bio: isEmailAdmin ? 'College Administrator.' : isEmailTransport ? 'Transport Operations Coordinator.' : 'Student at UNICON platform.',
             yearOfJoining: 2023,
             expectedGraduationYear: 2027,
             isEmailVerified: true,
@@ -637,7 +643,12 @@ export const useAppStore = create<AppStore>()(
       logout: () => {
         if (typeof document !== 'undefined') {
           document.cookie = 'cc_demo_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+          document.cookie = 'cc_user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+          document.cookie = 'cc_user_name=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+          document.cookie = 'cc_user_avatar=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
         }
+        const defaultStudent = get().profiles.find((p) => p.role === 'student') || SEEDED_PROFILES[0]
+        set({ currentProfile: defaultStudent })
       },
 
       // Notices CRUD
@@ -1238,12 +1249,12 @@ export const useAppStore = create<AppStore>()(
         const recipient = get().profiles.find((p) => p.id === recipientId)
         if (!recipient) return
 
-        let conv = get().conversations.find((c) =>
+        const conv = get().conversations.find((c) =>
           c.participants.some((p) => p.id === recipientId) &&
           c.participants.some((p) => p.id === profile.id)
         )
 
-        let convId = conv ? conv.id : `cnv-${Date.now()}`
+        const convId = conv ? conv.id : `cnv-${Date.now()}`
 
         const newMsg: Message = {
           id: `msg-${Date.now()}`,
@@ -1401,6 +1412,26 @@ export const useAppStore = create<AppStore>()(
     }),
     {
       name: 'campusconnect_app_storage',
+      version: 2,
+      migrate: (persistedState: any, version: number) => {
+        if (!persistedState) return persistedState
+        if (version < 2) {
+          const existingSlots = Array.isArray(persistedState.timetableSlots) ? persistedState.timetableSlots : []
+          const existingExams = Array.isArray(persistedState.examSchedules) ? persistedState.examSchedules : []
+          const hasMultipleSemesters = existingSlots.some((s: any) => s.semester && s.semester !== 4)
+
+          return {
+            ...persistedState,
+            timetableSlots: hasMultipleSemesters && existingSlots.length >= 40 ? existingSlots : SEEDED_TIMETABLE_SLOTS,
+            examSchedules: existingExams.length >= 16 ? existingExams : SEEDED_EXAM_SCHEDULES,
+            currentProfile: {
+              ...persistedState.currentProfile,
+              semester: persistedState.currentProfile?.semester || 4,
+            },
+          }
+        }
+        return persistedState
+      },
     }
   )
 )

@@ -27,22 +27,11 @@ import type {
 
 export const SEEDED_COLLEGES: College[] = [
   {
-    id: 'col-001',
-    name: 'National Institute of Technology Nagaland',
-    slug: 'nit-nagaland',
-    logoUrl: null,
-    city: 'Chumukedima',
-    state: 'Nagaland',
-    website: 'https://nitnagaland.ac.in',
-    isApproved: true,
-    createdAt: '2026-01-01T00:00:00Z',
-  },
-  {
     id: 'col-002',
     name: 'Nagaland University',
     slug: 'nagaland-university',
     logoUrl: null,
-    city: 'Lumami',
+    city: 'Kohima',
     state: 'Nagaland',
     website: 'https://nagalanduniversity.ac.in',
     isApproved: true,
@@ -88,7 +77,7 @@ export const SEEDED_PROFILES: Profile[] = [
     isOnboarded: true,
     theme: 'light',
     createdAt: '2026-01-01T10:00:00Z',
-    college: SEEDED_COLLEGES[2],
+    college: SEEDED_COLLEGES[1],
     department: SEEDED_DEPARTMENTS[0],
   },
   {
@@ -108,8 +97,9 @@ export const SEEDED_PROFILES: Profile[] = [
     isEmailVerified: true,
     isOnboarded: true,
     theme: 'light',
+    semester: 4,
     createdAt: '2026-01-10T10:00:00Z',
-    college: SEEDED_COLLEGES[2],
+    college: SEEDED_COLLEGES[1],
     department: SEEDED_DEPARTMENTS[0],
   },
   {
@@ -129,8 +119,9 @@ export const SEEDED_PROFILES: Profile[] = [
     isEmailVerified: true,
     isOnboarded: true,
     theme: 'light',
+    semester: 4,
     createdAt: '2026-01-11T11:00:00Z',
-    college: SEEDED_COLLEGES[2],
+    college: SEEDED_COLLEGES[1],
     department: SEEDED_DEPARTMENTS[0],
   },
   {
@@ -151,7 +142,7 @@ export const SEEDED_PROFILES: Profile[] = [
     isOnboarded: true,
     theme: 'light',
     createdAt: '2026-01-01T09:00:00Z',
-    college: SEEDED_COLLEGES[2],
+    college: SEEDED_COLLEGES[1],
     department: SEEDED_DEPARTMENTS[0],
   },
   {
@@ -172,7 +163,7 @@ export const SEEDED_PROFILES: Profile[] = [
     isOnboarded: true,
     theme: 'light',
     createdAt: '2026-01-01T09:00:00Z',
-    college: SEEDED_COLLEGES[2],
+    college: SEEDED_COLLEGES[1],
     department: undefined,
   },
 ]
@@ -188,7 +179,7 @@ export const SEEDED_NOTICES: Notice[] = [
     audience: 'all',
     targetDepartmentId: null,
     targetSemester: null,
-    attachmentUrls: ['https://demo.campusconnect.app/docs/midsem_schedule_2026.pdf'],
+    attachmentUrls: ['/docs/midsem_schedule_2026.pdf'],
     publishedAt: '2026-10-14T08:30:00Z',
     expiresAt: '2026-11-30T23:59:59Z',
     createdAt: '2026-10-14T08:30:00Z',
@@ -208,7 +199,7 @@ export const SEEDED_NOTICES: Notice[] = [
     audience: 'department',
     targetDepartmentId: 'dept-001',
     targetSemester: null,
-    attachmentUrls: null,
+    attachmentUrls: ['/docs/codefest_poster.svg'],
     publishedAt: '2026-10-13T10:15:00Z',
     expiresAt: '2026-11-15T23:59:59Z',
     createdAt: '2026-10-13T10:15:00Z',
@@ -427,7 +418,7 @@ export const SEEDED_LOST_FOUND: LostFoundReport[] = [
     description: 'Found on third row bench in Room 204. Has an identification marking sticker on the back. Safely kept at the CSE Department office desk.',
     location: 'CSE Department Office Desk',
     dateOccurred: '2026-10-14',
-    imageUrl: null,
+    imageUrl: 'https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=800&auto=format&fit=crop&q=80',
     handoverInfo: 'Collect from Office Attendant Mr. Ao between 10 AM and 4 PM with ID verification.',
     createdAt: '2026-10-14T13:45:00Z',
     reporter: { fullName: 'Priya Sharma', username: 'priya_sharma', avatarUrl: null },
@@ -587,6 +578,43 @@ export const SEEDED_CONTACTS: CampusContact[] = [
 ]
 
 export const SEEDED_TIMETABLE_SLOTS: TimetableSlot[] = [
+  // --- Semester 1 ---
+  { id: 'tt-s1-01', collegeId: 'col-003', day: 'Mon', time: '09:00 - 10:00 AM', subject: 'Engineering Mathematics I (MA101)', room: 'Room 101', faculty: 'Dr. A. Sharma', departmentId: 'dept-001', semester: 1 },
+  { id: 'tt-s1-02', collegeId: 'col-003', day: 'Mon', time: '10:15 - 11:15 AM', subject: 'Physics for Engineers (PH101)', room: 'Room 101', faculty: 'Prof. R. Dutta', departmentId: 'dept-001', semester: 1 },
+  { id: 'tt-s1-03', collegeId: 'col-003', day: 'Mon', time: '11:30 - 12:30 PM', subject: 'Programming for Problem Solving (CS101)', room: 'Room 101', faculty: 'Dr. K. Murry', departmentId: 'dept-001', semester: 1 },
+  { id: 'tt-s1-04', collegeId: 'col-003', day: 'Mon', time: '01:30 - 04:30 PM', subject: 'Engineering Physics Laboratory (PH191)', room: 'Physics Lab 1', faculty: 'Prof. R. Dutta & TAs', departmentId: 'dept-001', semester: 1 },
+  { id: 'tt-s1-05', collegeId: 'col-003', day: 'Tue', time: '09:00 - 10:00 AM', subject: 'Basic Electrical Engineering (EE101)', room: 'Room 101', faculty: 'Prof. V. Roy', departmentId: 'dept-001', semester: 1 },
+  { id: 'tt-s1-06', collegeId: 'col-003', day: 'Tue', time: '10:15 - 11:15 AM', subject: 'Engineering Graphics & Design (ME101)', room: 'CAD Studio', faculty: 'Dr. B. Lotha', departmentId: 'dept-001', semester: 1 },
+  { id: 'tt-s1-07', collegeId: 'col-003', day: 'Wed', time: '09:00 - 10:00 AM', subject: 'Programming for Problem Solving (CS101)', room: 'Room 101', faculty: 'Dr. K. Murry', departmentId: 'dept-001', semester: 1 },
+  { id: 'tt-s1-08', collegeId: 'col-003', day: 'Wed', time: '01:30 - 04:30 PM', subject: 'Computer Programming Lab in C (CS191)', room: 'Software Lab 3', faculty: 'Dr. K. Murry & TAs', departmentId: 'dept-001', semester: 1 },
+  { id: 'tt-s1-09', collegeId: 'col-003', day: 'Thu', time: '09:00 - 10:00 AM', subject: 'Basic Electrical Engineering (EE101)', room: 'Room 101', faculty: 'Prof. V. Roy', departmentId: 'dept-001', semester: 1 },
+  { id: 'tt-s1-10', collegeId: 'col-003', day: 'Fri', time: '09:00 - 11:00 AM', subject: 'Professional Communication & Ethics (HS101)', room: 'Language Lab', faculty: 'Dr. N. Yeptho', departmentId: 'dept-001', semester: 1 },
+
+  // --- Semester 2 ---
+  { id: 'tt-s2-01', collegeId: 'col-003', day: 'Mon', time: '09:00 - 10:00 AM', subject: 'Engineering Mathematics II (MA102)', room: 'Room 102', faculty: 'Dr. A. Sharma', departmentId: 'dept-001', semester: 2 },
+  { id: 'tt-s2-02', collegeId: 'col-003', day: 'Mon', time: '10:15 - 11:15 AM', subject: 'Data Structures & Algorithms (CS201)', room: 'Room 102', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 2 },
+  { id: 'tt-s2-03', collegeId: 'col-003', day: 'Mon', time: '11:30 - 12:30 PM', subject: 'Digital Logic Design (CS202)', room: 'Room 102', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 2 },
+  { id: 'tt-s2-04', collegeId: 'col-003', day: 'Mon', time: '01:30 - 04:30 PM', subject: 'Data Structures Laboratory (CS291)', room: 'Software Lab 1', faculty: 'Prof. Sen & TAs', departmentId: 'dept-001', semester: 2 },
+  { id: 'tt-s2-05', collegeId: 'col-003', day: 'Tue', time: '09:00 - 10:00 AM', subject: 'Chemistry for Engineers (CH102)', room: 'Room 102', faculty: 'Dr. S. Kikon', departmentId: 'dept-001', semester: 2 },
+  { id: 'tt-s2-06', collegeId: 'col-003', day: 'Tue', time: '10:15 - 11:15 AM', subject: 'Basic Electronics Engineering (EC102)', room: 'Room 102', faculty: 'Prof. T. Longkumer', departmentId: 'dept-001', semester: 2 },
+  { id: 'tt-s2-07', collegeId: 'col-003', day: 'Wed', time: '09:00 - 10:00 AM', subject: 'Data Structures & Algorithms (CS201)', room: 'Room 102', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 2 },
+  { id: 'tt-s2-08', collegeId: 'col-003', day: 'Wed', time: '01:30 - 04:30 PM', subject: 'Digital Electronics Lab (EC292)', room: 'Hardware Lab', faculty: 'Prof. T. Longkumer & TAs', departmentId: 'dept-001', semester: 2 },
+  { id: 'tt-s2-09', collegeId: 'col-003', day: 'Thu', time: '09:00 - 10:00 AM', subject: 'Digital Logic Design (CS202)', room: 'Room 102', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 2 },
+  { id: 'tt-s2-10', collegeId: 'col-003', day: 'Fri', time: '09:00 - 11:00 AM', subject: 'Environmental Studies & Ecology (HS102)', room: 'Seminar Hall A', faculty: 'Dr. S. Kikon', departmentId: 'dept-001', semester: 2 },
+
+  // --- Semester 3 ---
+  { id: 'tt-s3-01', collegeId: 'col-003', day: 'Mon', time: '09:00 - 10:00 AM', subject: 'Discrete Mathematics (CS301)', room: 'Room 203', faculty: 'Dr. Pongen', departmentId: 'dept-001', semester: 3 },
+  { id: 'tt-s3-02', collegeId: 'col-003', day: 'Mon', time: '10:15 - 11:15 AM', subject: 'Object Oriented Programming (CS302)', room: 'Room 203', faculty: 'Prof. Kire', departmentId: 'dept-001', semester: 3 },
+  { id: 'tt-s3-03', collegeId: 'col-003', day: 'Mon', time: '11:30 - 12:30 PM', subject: 'Computer Organization & Architecture (CS303)', room: 'Room 203', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 3 },
+  { id: 'tt-s3-04', collegeId: 'col-003', day: 'Mon', time: '01:30 - 04:30 PM', subject: 'OOP Laboratory in Java & C++ (CS392)', room: 'Software Lab 2', faculty: 'Prof. Kire & TAs', departmentId: 'dept-001', semester: 3 },
+  { id: 'tt-s3-05', collegeId: 'col-003', day: 'Tue', time: '09:00 - 10:00 AM', subject: 'Principles of Programming Languages (CS304)', room: 'Room 203', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 3 },
+  { id: 'tt-s3-06', collegeId: 'col-003', day: 'Tue', time: '10:15 - 11:15 AM', subject: 'Discrete Mathematics (CS301)', room: 'Room 203', faculty: 'Dr. Pongen', departmentId: 'dept-001', semester: 3 },
+  { id: 'tt-s3-07', collegeId: 'col-003', day: 'Wed', time: '09:00 - 10:00 AM', subject: 'Computer Organization & Architecture (CS303)', room: 'Room 203', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 3 },
+  { id: 'tt-s3-08', collegeId: 'col-003', day: 'Wed', time: '01:30 - 04:30 PM', subject: 'Computer Architecture Simulation Lab (CS393)', room: 'Systems Lab', faculty: 'Prof. Ao & TAs', departmentId: 'dept-001', semester: 3 },
+  { id: 'tt-s3-09', collegeId: 'col-003', day: 'Thu', time: '09:00 - 10:00 AM', subject: 'Object Oriented Programming (CS302)', room: 'Room 203', faculty: 'Prof. Kire', departmentId: 'dept-001', semester: 3 },
+  { id: 'tt-s3-10', collegeId: 'col-003', day: 'Fri', time: '09:00 - 11:00 AM', subject: 'Open Source Software Development (CS305)', room: 'Seminar Hall B', faculty: 'Faculty Committee', departmentId: 'dept-001', semester: 3 },
+
+  // --- Semester 4 ---
   { id: 'tt-001', collegeId: 'col-003', day: 'Mon', time: '09:00 - 10:00 AM', subject: 'Operating Systems (CS401)', room: 'Room 204', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 4 },
   { id: 'tt-002', collegeId: 'col-003', day: 'Mon', time: '10:15 - 11:15 AM', subject: 'Database Management Systems (CS402)', room: 'Room 204', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 4 },
   { id: 'tt-003', collegeId: 'col-003', day: 'Mon', time: '11:30 - 12:30 PM', subject: 'Computer Networks (CS403)', room: 'Room 204', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 4 },
@@ -597,13 +625,104 @@ export const SEEDED_TIMETABLE_SLOTS: TimetableSlot[] = [
   { id: 'tt-008', collegeId: 'col-003', day: 'Wed', time: '01:30 - 04:30 PM', subject: 'DBMS Laboratory (CS492)', room: 'Software Lab 1', faculty: 'Dr. Jamir & TAs', departmentId: 'dept-001', semester: 4 },
   { id: 'tt-009', collegeId: 'col-003', day: 'Thu', time: '09:00 - 10:00 AM', subject: 'Computer Networks (CS403)', room: 'Room 204', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 4 },
   { id: 'tt-010', collegeId: 'col-003', day: 'Fri', time: '09:00 - 11:00 AM', subject: 'Technical Seminar & Projects', room: 'Seminar Hall B', faculty: 'Faculty Committee', departmentId: 'dept-001', semester: 4 },
+
+  // --- Semester 5 ---
+  { id: 'tt-s5-01', collegeId: 'col-003', day: 'Mon', time: '09:00 - 10:00 AM', subject: 'Design & Analysis of Algorithms (CS501)', room: 'Room 301', faculty: 'Dr. Pongen', departmentId: 'dept-001', semester: 5 },
+  { id: 'tt-s5-02', collegeId: 'col-003', day: 'Mon', time: '10:15 - 11:15 AM', subject: 'Compiler Design (CS502)', room: 'Room 301', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 5 },
+  { id: 'tt-s5-03', collegeId: 'col-003', day: 'Mon', time: '11:30 - 12:30 PM', subject: 'Web Technologies & Cloud Fundamentals (CS503)', room: 'Room 301', faculty: 'Prof. Kire', departmentId: 'dept-001', semester: 5 },
+  { id: 'tt-s5-04', collegeId: 'col-003', day: 'Mon', time: '01:30 - 04:30 PM', subject: 'Algorithms Laboratory (CS591)', room: 'Software Lab 1', faculty: 'Dr. Pongen & TAs', departmentId: 'dept-001', semester: 5 },
+  { id: 'tt-s5-05', collegeId: 'col-003', day: 'Tue', time: '09:00 - 10:00 AM', subject: 'Artificial Intelligence (CS504)', room: 'Room 301', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 5 },
+  { id: 'tt-s5-06', collegeId: 'col-003', day: 'Tue', time: '10:15 - 11:15 AM', subject: 'Microprocessors & Interfacing (CS505)', room: 'Room 301', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 5 },
+  { id: 'tt-s5-07', collegeId: 'col-003', day: 'Wed', time: '09:00 - 10:00 AM', subject: 'Compiler Design (CS502)', room: 'Room 301', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 5 },
+  { id: 'tt-s5-08', collegeId: 'col-003', day: 'Wed', time: '01:30 - 04:30 PM', subject: 'Web Technologies & Full-Stack Lab (CS593)', room: 'Web Studio Lab', faculty: 'Prof. Kire & TAs', departmentId: 'dept-001', semester: 5 },
+  { id: 'tt-s5-09', collegeId: 'col-003', day: 'Thu', time: '09:00 - 10:00 AM', subject: 'Design & Analysis of Algorithms (CS501)', room: 'Room 301', faculty: 'Dr. Pongen', departmentId: 'dept-001', semester: 5 },
+  { id: 'tt-s5-10', collegeId: 'col-003', day: 'Fri', time: '09:00 - 11:00 AM', subject: 'Open Elective: Renewable Energy Systems (OE501)', room: 'Auditorium 2', faculty: 'Dr. V. Roy', departmentId: 'dept-001', semester: 5 },
+
+  // --- Semester 6 ---
+  { id: 'tt-s6-01', collegeId: 'col-003', day: 'Mon', time: '09:00 - 10:00 AM', subject: 'Machine Learning & Pattern Recognition (CS601)', room: 'Room 302', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 6 },
+  { id: 'tt-s6-02', collegeId: 'col-003', day: 'Mon', time: '10:15 - 11:15 AM', subject: 'Distributed Systems (CS602)', room: 'Room 302', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 6 },
+  { id: 'tt-s6-03', collegeId: 'col-003', day: 'Mon', time: '11:30 - 12:30 PM', subject: 'Information & Network Security (CS603)', room: 'Room 302', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 6 },
+  { id: 'tt-s6-04', collegeId: 'col-003', day: 'Mon', time: '01:30 - 04:30 PM', subject: 'Machine Learning & Data Mining Lab (CS691)', room: 'AI Research Lab', faculty: 'Dr. Jamir & TAs', departmentId: 'dept-001', semester: 6 },
+  { id: 'tt-s6-05', collegeId: 'col-003', day: 'Tue', time: '09:00 - 10:00 AM', subject: 'Cloud Computing Architecture (CS604)', room: 'Room 302', faculty: 'Prof. Kire', departmentId: 'dept-001', semester: 6 },
+  { id: 'tt-s6-06', collegeId: 'col-003', day: 'Tue', time: '10:15 - 11:15 AM', subject: 'Software Testing & Quality Assurance (CS605)', room: 'Room 302', faculty: 'Dr. Pongen', departmentId: 'dept-001', semester: 6 },
+  { id: 'tt-s6-07', collegeId: 'col-003', day: 'Wed', time: '09:00 - 10:00 AM', subject: 'Distributed Systems (CS602)', room: 'Room 302', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 6 },
+  { id: 'tt-s6-08', collegeId: 'col-003', day: 'Wed', time: '01:30 - 04:30 PM', subject: 'Network Security & Cryptography Lab (CS693)', room: 'Cyber Sec Lab', faculty: 'Prof. Ao & TAs', departmentId: 'dept-001', semester: 6 },
+  { id: 'tt-s6-09', collegeId: 'col-003', day: 'Thu', time: '09:00 - 10:00 AM', subject: 'Machine Learning (CS601)', room: 'Room 302', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 6 },
+  { id: 'tt-s6-10', collegeId: 'col-003', day: 'Fri', time: '09:00 - 11:00 AM', subject: 'Mini-Project Presentation & Colloquium (CS695)', room: 'Seminar Hall A', faculty: 'Evaluation Committee', departmentId: 'dept-001', semester: 6 },
+
+  // --- Semester 7 ---
+  { id: 'tt-s7-01', collegeId: 'col-003', day: 'Mon', time: '09:00 - 10:00 AM', subject: 'Deep Learning & Neural Networks (CS701)', room: 'Room 305', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 7 },
+  { id: 'tt-s7-02', collegeId: 'col-003', day: 'Mon', time: '10:15 - 11:15 AM', subject: 'Internet of Things & Embedded Systems (CS702)', room: 'Room 305', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 7 },
+  { id: 'tt-s7-03', collegeId: 'col-003', day: 'Mon', time: '11:30 - 12:30 PM', subject: 'Natural Language Processing (CS703)', room: 'Room 305', faculty: 'Dr. Pongen', departmentId: 'dept-001', semester: 7 },
+  { id: 'tt-s7-04', collegeId: 'col-003', day: 'Mon', time: '01:30 - 04:30 PM', subject: 'Major Project Phase I Mentorship (CS791)', room: 'Project Lab 1', faculty: 'Department Faculty', departmentId: 'dept-001', semester: 7 },
+  { id: 'tt-s7-05', collegeId: 'col-003', day: 'Tue', time: '09:00 - 10:00 AM', subject: 'Mobile Application Development (CS704)', room: 'Room 305', faculty: 'Prof. Kire', departmentId: 'dept-001', semester: 7 },
+  { id: 'tt-s7-06', collegeId: 'col-003', day: 'Tue', time: '10:15 - 11:15 AM', subject: 'Big Data Analytics & Warehousing (CS705)', room: 'Room 305', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 7 },
+  { id: 'tt-s7-07', collegeId: 'col-003', day: 'Wed', time: '09:00 - 10:00 AM', subject: 'Deep Learning & Neural Networks (CS701)', room: 'Room 305', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 7 },
+  { id: 'tt-s7-08', collegeId: 'col-003', day: 'Wed', time: '01:30 - 04:30 PM', subject: 'IoT & Robotics Innovation Lab (CS792)', room: 'Embedded Lab', faculty: 'Prof. Ao & TAs', departmentId: 'dept-001', semester: 7 },
+  { id: 'tt-s7-09', collegeId: 'col-003', day: 'Thu', time: '09:00 - 10:00 AM', subject: 'Engineering Economics & Management (HS701)', room: 'Room 305', faculty: 'Dr. N. Yeptho', departmentId: 'dept-001', semester: 7 },
+  { id: 'tt-s7-10', collegeId: 'col-003', day: 'Fri', time: '09:00 - 11:00 AM', subject: 'Research Colloquium & Pre-Placement Training', room: 'Conference Hall', faculty: 'Placement Cell', departmentId: 'dept-001', semester: 7 },
+
+  // --- Semester 8 ---
+  { id: 'tt-s8-01', collegeId: 'col-003', day: 'Mon', time: '09:00 - 10:00 AM', subject: 'High Performance Computing (CS801)', room: 'Room 308', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 8 },
+  { id: 'tt-s8-02', collegeId: 'col-003', day: 'Mon', time: '10:15 - 11:15 AM', subject: 'Blockchain Technologies & Smart Contracts (CS802)', room: 'Room 308', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 8 },
+  { id: 'tt-s8-03', collegeId: 'col-003', day: 'Mon', time: '11:30 - 12:30 PM', subject: 'Quantum Computing Foundations (CS803)', room: 'Room 308', faculty: 'Dr. Pongen', departmentId: 'dept-001', semester: 8 },
+  { id: 'tt-s8-04', collegeId: 'col-003', day: 'Mon', time: '01:30 - 04:30 PM', subject: 'Capstone Project Phase II Lab (CS892)', room: 'Advanced Labs', faculty: 'Project Supervisors', departmentId: 'dept-001', semester: 8 },
+  { id: 'tt-s8-05', collegeId: 'col-003', day: 'Tue', time: '09:00 - 10:00 AM', subject: 'Technology Law, Ethics & Intellectual Property (HS801)', room: 'Room 308', faculty: 'Dr. N. Yeptho', departmentId: 'dept-001', semester: 8 },
+  { id: 'tt-s8-06', collegeId: 'col-003', day: 'Tue', time: '10:15 - 11:15 AM', subject: 'Advanced Distributed Cloud Systems (CS804)', room: 'Room 308', faculty: 'Prof. Ao', departmentId: 'dept-001', semester: 8 },
+  { id: 'tt-s8-07', collegeId: 'col-003', day: 'Wed', time: '09:00 - 10:00 AM', subject: 'High Performance Computing (CS801)', room: 'Room 308', faculty: 'Prof. Sen', departmentId: 'dept-001', semester: 8 },
+  { id: 'tt-s8-08', collegeId: 'col-003', day: 'Wed', time: '01:30 - 04:30 PM', subject: 'Capstone Project Demo & Viva Prep (CS892)', room: 'Advanced Labs', faculty: 'Project Supervisors', departmentId: 'dept-001', semester: 8 },
+  { id: 'tt-s8-09', collegeId: 'col-003', day: 'Thu', time: '09:00 - 10:00 AM', subject: 'Blockchain Technologies (CS802)', room: 'Room 308', faculty: 'Dr. Jamir', departmentId: 'dept-001', semester: 8 },
+  { id: 'tt-s8-10', collegeId: 'col-003', day: 'Fri', time: '09:00 - 11:00 AM', subject: 'Comprehensive Technical Viva & Career Advisory (CS894)', room: 'Seminar Hall A', faculty: 'Advisory Board', departmentId: 'dept-001', semester: 8 },
 ]
 
 export const SEEDED_EXAM_SCHEDULES: ExamScheduleItem[] = [
+  // Semester 1
+  { id: 'ex-s1-01', collegeId: 'col-003', code: 'CS101', subject: 'Programming for Problem Solving', date: 'Oct 19, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 1 - Hall A', departmentId: 'dept-001', semester: 1 },
+  { id: 'ex-s1-02', collegeId: 'col-003', code: 'MA101', subject: 'Engineering Mathematics I', date: 'Oct 21, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 1 - Hall A', departmentId: 'dept-001', semester: 1 },
+  { id: 'ex-s1-03', collegeId: 'col-003', code: 'PH101', subject: 'Physics for Engineers', date: 'Oct 23, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 1 - Hall B', departmentId: 'dept-001', semester: 1 },
+  { id: 'ex-s1-04', collegeId: 'col-003', code: 'EE101', subject: 'Basic Electrical Engineering', date: 'Oct 26, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 2 - Hall C', departmentId: 'dept-001', semester: 1 },
+
+  // Semester 2
+  { id: 'ex-s2-01', collegeId: 'col-003', code: 'CS201', subject: 'Data Structures & Algorithms', date: 'Oct 19, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 1 - Hall B', departmentId: 'dept-001', semester: 2 },
+  { id: 'ex-s2-02', collegeId: 'col-003', code: 'MA102', subject: 'Engineering Mathematics II', date: 'Oct 21, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 1 - Hall B', departmentId: 'dept-001', semester: 2 },
+  { id: 'ex-s2-03', collegeId: 'col-003', code: 'CS202', subject: 'Digital Logic Design', date: 'Oct 23, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 2 - Hall A', departmentId: 'dept-001', semester: 2 },
+  { id: 'ex-s2-04', collegeId: 'col-003', code: 'CH102', subject: 'Chemistry for Engineers', date: 'Oct 26, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 2 - Hall B', departmentId: 'dept-001', semester: 2 },
+
+  // Semester 3
+  { id: 'ex-s3-01', collegeId: 'col-003', code: 'CS301', subject: 'Discrete Mathematics', date: 'Oct 20, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 2 - Hall A', departmentId: 'dept-001', semester: 3 },
+  { id: 'ex-s3-02', collegeId: 'col-003', code: 'CS302', subject: 'Object Oriented Programming', date: 'Oct 22, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 2 - Hall A', departmentId: 'dept-001', semester: 3 },
+  { id: 'ex-s3-03', collegeId: 'col-003', code: 'CS303', subject: 'Computer Organization & Architecture', date: 'Oct 24, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 1 - Hall C', departmentId: 'dept-001', semester: 3 },
+  { id: 'ex-s3-04', collegeId: 'col-003', code: 'CS304', subject: 'Principles of Programming Languages', date: 'Oct 27, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 2 - Hall C', departmentId: 'dept-001', semester: 3 },
+
+  // Semester 4
   { id: 'ex-001', collegeId: 'col-003', code: 'CS401', subject: 'Operating Systems', date: 'Oct 20, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 1 - Hall A', departmentId: 'dept-001', semester: 4 },
   { id: 'ex-002', collegeId: 'col-003', code: 'CS402', subject: 'Database Systems', date: 'Oct 22, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 1 - Hall A', departmentId: 'dept-001', semester: 4 },
   { id: 'ex-003', collegeId: 'col-003', code: 'CS403', subject: 'Computer Networks', date: 'Oct 24, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 1 - Hall B', departmentId: 'dept-001', semester: 4 },
   { id: 'ex-004', collegeId: 'col-003', code: 'MA401', subject: 'Discrete Mathematics', date: 'Oct 27, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 2 - Hall C', departmentId: 'dept-001', semester: 4 },
+
+  // Semester 5
+  { id: 'ex-s5-01', collegeId: 'col-003', code: 'CS501', subject: 'Design & Analysis of Algorithms', date: 'Oct 19, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 2 - Hall B', departmentId: 'dept-001', semester: 5 },
+  { id: 'ex-s5-02', collegeId: 'col-003', code: 'CS502', subject: 'Compiler Design', date: 'Oct 21, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 2 - Hall B', departmentId: 'dept-001', semester: 5 },
+  { id: 'ex-s5-03', collegeId: 'col-003', code: 'CS503', subject: 'Web Technologies', date: 'Oct 23, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 3 - Hall A', departmentId: 'dept-001', semester: 5 },
+  { id: 'ex-s5-04', collegeId: 'col-003', code: 'CS504', subject: 'Artificial Intelligence', date: 'Oct 26, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 3 - Hall B', departmentId: 'dept-001', semester: 5 },
+
+  // Semester 6
+  { id: 'ex-s6-01', collegeId: 'col-003', code: 'CS601', subject: 'Machine Learning', date: 'Oct 20, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 3 - Hall A', departmentId: 'dept-001', semester: 6 },
+  { id: 'ex-s6-02', collegeId: 'col-003', code: 'CS602', subject: 'Distributed Systems', date: 'Oct 22, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 3 - Hall A', departmentId: 'dept-001', semester: 6 },
+  { id: 'ex-s6-03', collegeId: 'col-003', code: 'CS603', subject: 'Information Security', date: 'Oct 24, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 3 - Hall B', departmentId: 'dept-001', semester: 6 },
+  { id: 'ex-s6-04', collegeId: 'col-003', code: 'CS604', subject: 'Cloud Computing Architecture', date: 'Oct 27, 2026', time: '10:00 AM - 12:00 PM', hall: 'Academic Block 3 - Hall C', departmentId: 'dept-001', semester: 6 },
+
+  // Semester 7
+  { id: 'ex-s7-01', collegeId: 'col-003', code: 'CS701', subject: 'Deep Learning & Neural Networks', date: 'Oct 19, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 3 - Hall A', departmentId: 'dept-001', semester: 7 },
+  { id: 'ex-s7-02', collegeId: 'col-003', code: 'CS702', subject: 'Internet of Things', date: 'Oct 21, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 3 - Hall B', departmentId: 'dept-001', semester: 7 },
+  { id: 'ex-s7-03', collegeId: 'col-003', code: 'CS703', subject: 'Natural Language Processing', date: 'Oct 23, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 3 - Hall C', departmentId: 'dept-001', semester: 7 },
+  { id: 'ex-s7-04', collegeId: 'col-003', code: 'HS701', subject: 'Engineering Economics & Management', date: 'Oct 26, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 2 - Hall A', departmentId: 'dept-001', semester: 7 },
+
+  // Semester 8
+  { id: 'ex-s8-01', collegeId: 'col-003', code: 'CS801', subject: 'High Performance Computing', date: 'Oct 20, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 3 - Hall B', departmentId: 'dept-001', semester: 8 },
+  { id: 'ex-s8-02', collegeId: 'col-003', code: 'CS802', subject: 'Blockchain Technologies', date: 'Oct 22, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 3 - Hall C', departmentId: 'dept-001', semester: 8 },
+  { id: 'ex-s8-03', collegeId: 'col-003', code: 'CS803', subject: 'Quantum Computing Foundations', date: 'Oct 24, 2026', time: '02:00 PM - 04:00 PM', hall: 'Academic Block 1 - Hall A', departmentId: 'dept-001', semester: 8 },
+  { id: 'ex-s8-04', collegeId: 'col-003', code: 'CS894', subject: 'Comprehensive Technical Viva', date: 'Oct 27, 2026', time: '09:00 AM - 01:00 PM', hall: 'Seminar Hall A', departmentId: 'dept-001', semester: 8 },
 ]
 
 export const SEEDED_CALENDAR_EVENTS: AcademicCalendarEvent[] = [

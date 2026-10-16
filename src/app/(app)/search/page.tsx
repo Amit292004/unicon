@@ -192,9 +192,9 @@ export default function UnifiedSearchPage() {
               <div className="space-y-2">
                 {matchedNotices.map((n) => (
                   <Link key={n.id} href={`/notices/${n.id}`} className="block">
-                    <Card className="p-3.5 border shadow-card hover:bg-accent/40 transition flex items-center justify-between text-xs">
-                      <div>
-                        <p className="font-semibold text-foreground">{n.title}</p>
+                    <Card className="p-3.5 border shadow-card hover:bg-accent/40 transition flex items-center justify-between gap-3 text-xs">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold text-foreground truncate">{n.title}</p>
                         <p className="text-2xs text-muted-foreground line-clamp-1 mt-0.5">{n.content}</p>
                       </div>
                       <Badge variant="outline" className="text-2xs shrink-0 ml-3">
@@ -217,10 +217,10 @@ export default function UnifiedSearchPage() {
               <div className="space-y-2">
                 {matchedNotes.map((note) => (
                   <Link key={note.id} href="/notes" className="block">
-                    <Card className="p-3.5 border shadow-card hover:bg-accent/40 transition flex items-center justify-between text-xs">
-                      <div>
-                        <p className="font-semibold text-foreground">{note.title}</p>
-                        <p className="text-2xs text-muted-foreground mt-0.5">
+                    <Card className="p-3.5 border shadow-card hover:bg-accent/40 transition flex items-center justify-between gap-3 text-xs">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold text-foreground truncate">{note.title}</p>
+                        <p className="text-2xs text-muted-foreground mt-0.5 truncate">
                           {note.subject} &bull; Semester {note.semester}
                         </p>
                       </div>
@@ -244,10 +244,10 @@ export default function UnifiedSearchPage() {
               <div className="space-y-2">
                 {matchedPYQs.map((pyq) => (
                   <Link key={pyq.id} href="/pyqs" className="block">
-                    <Card className="p-3.5 border shadow-card hover:bg-accent/40 transition flex items-center justify-between text-xs">
-                      <div>
-                        <p className="font-semibold text-foreground">{pyq.title}</p>
-                        <p className="text-2xs text-muted-foreground mt-0.5">
+                    <Card className="p-3.5 border shadow-card hover:bg-accent/40 transition flex items-center justify-between gap-3 text-xs">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold text-foreground truncate">{pyq.title}</p>
+                        <p className="text-2xs text-muted-foreground mt-0.5 truncate">
                           {pyq.subject} &bull; Year {pyq.examYear}
                         </p>
                       </div>

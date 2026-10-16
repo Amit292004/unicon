@@ -12,7 +12,7 @@ export default function ProfileRedirectPage() {
     if (currentProfile?.username) {
       router.replace(`/profile/${currentProfile.username}`)
     } else {
-      router.replace('/home')
+      router.replace('/')
     }
   }, [currentProfile, router])
 

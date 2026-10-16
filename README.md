@@ -48,7 +48,7 @@ CampusConnect provides pre-configured evaluator presets on `/login` to allow ins
 ## 4. Key Modules & Navigation
 
 ### 8-Item Mobile Bottom Navigation & Desktop Sidebar:
-1. **Home (`/home`):** Institutional news ticker, quick-action utility cards, and active student stream.
+1. **Home (`/`):** Institutional news ticker, quick-action utility cards, and active student stream.
 2. **Notices (`/notices`):** Official bulletins with department and semester filters and attachment downloads.
 3. **Academics (`/academics`):** Class timetables, exam schedules, and academic milestones calendar.
 4. **Transport (`/transport`):** Bus routes, live stops, driver phone links, and complaint dispatch.
