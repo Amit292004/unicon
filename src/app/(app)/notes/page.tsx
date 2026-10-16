@@ -1,29 +1,26 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   FileText,
   Search,
   Download,
   Plus,
-  BookOpen,
-  Calendar,
-  User,
   CheckCircle2,
-  Filter,
-  Trash2
+  Trash2,
+  Upload,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { EmptyState } from '@/components/shared/empty-state'
 import { ResourceFileIcon } from '@/components/shared/resource-file-icon'
 import { useAppStore } from '@/lib/data/client-store'
 import { formatFileSize, formatDate } from '@/lib/utils'
 
 export default function NotesPage() {
-  const { currentProfile, notes, addNote, deleteNote } = useAppStore()
+  const { currentProfile, notes, addNote, deleteNote, updateNote } = useAppStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all')
 
@@ -33,8 +30,10 @@ export default function NotesPage() {
   const [subject, setSubject] = useState('')
   const [semester, setSemester] = useState<number>(4)
   const [description, setDescription] = useState('')
-  const [fileName, setFileName] = useState('')
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null)
+  const [fileError, setFileError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const collegeNotes = notes.filter((n) => n.collegeId === currentProfile.collegeId)
 
@@ -53,11 +52,39 @@ export default function NotesPage() {
     return true
   })
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null
+    setFileError(null)
+    if (file) {
+      const allowed = ['application/pdf', 'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'text/plain', 'image/png', 'image/jpeg']
+      if (!allowed.includes(file.type) && !file.name.match(/\.(pdf|doc|docx|ppt|pptx|txt|png|jpg|jpeg)$/i)) {
+        setFileError('Please select a PDF, Word, PowerPoint, text, or image file.')
+        setSelectedFile(null)
+        return
+      }
+      if (file.size > 20 * 1024 * 1024) {
+        setFileError('File size must be under 20 MB.')
+        setSelectedFile(null)
+        return
+      }
+    }
+    setSelectedFile(file)
+  }
+
   const handleUploadSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!title.trim() || !subject.trim()) return
+    if (!selectedFile) {
+      setFileError('Please select a file to upload.')
+      return
+    }
 
-    const actualFileName = fileName.trim() || `${subject.toLowerCase().replace(/\s+/g, '_')}_notes.pdf`
+    // Create an object URL so the browser can download it in-session
+    const objectUrl = URL.createObjectURL(selectedFile)
 
     addNote({
       collegeId: currentProfile.collegeId,
@@ -67,20 +94,50 @@ export default function NotesPage() {
       description: description.trim() || null,
       subject: subject.trim(),
       semester,
-      fileUrl: `/docs/samples/${actualFileName}`,
-      fileName: actualFileName,
-      fileSize: 1850000,
-      mimeType: 'application/pdf',
+      fileUrl: objectUrl,
+      fileName: selectedFile.name,
+      fileSize: selectedFile.size,
+      mimeType: selectedFile.type || 'application/octet-stream',
       isPublic: true,
     })
 
-    setUploadSuccess(`Note "${title}" uploaded successfully.`)
+    setUploadSuccess(`"${title}" uploaded successfully and is ready to download.`)
     setTitle('')
     setSubject('')
     setDescription('')
-    setFileName('')
+    setSelectedFile(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
     setShowUploadModal(false)
-    setTimeout(() => setUploadSuccess(null), 4000)
+    setTimeout(() => setUploadSuccess(null), 5000)
+  }
+
+  /**
+   * Handles download for both seeded notes (static /docs/samples/ paths)
+   * and user-uploaded notes (blob: object URLs).
+   * Also increments the download counter in the store.
+   */
+  const handleDownload = (note: (typeof notes)[0]) => {
+    // Increment download count
+    updateNote(note.id, { downloadCount: (note.downloadCount ?? 0) + 1 })
+
+    const link = document.createElement('a')
+    link.href = note.fileUrl
+    link.download = note.fileName
+    link.target = '_blank'
+    link.rel = 'noopener noreferrer'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const handleCloseModal = () => {
+    setShowUploadModal(false)
+    setTitle('')
+    setSubject('')
+    setDescription('')
+    setSelectedFile(null)
+    setFileError(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   return (
@@ -103,7 +160,7 @@ export default function NotesPage() {
       </div>
 
       {uploadSuccess && (
-        <div className="p-3 text-xs rounded-md bg-success-50 text-success-600 border border-success-500/20 flex items-center gap-2">
+        <div className="p-3 text-xs rounded-md bg-green-50 text-green-700 border border-green-200 flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span>{uploadSuccess}</span>
         </div>
@@ -214,9 +271,16 @@ export default function NotesPage() {
                     <span className="text-muted-foreground">Author:</span>
                     <span className="font-medium text-foreground">{note.author?.fullName || 'Student'}</span>
                   </span>
-                  <span className="font-mono bg-muted/60 px-1.5 py-0.5 rounded text-3xs border border-border/50">
-                    {note.fileSize ? formatFileSize(note.fileSize) : '1.8 MB'}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono bg-muted/60 px-1.5 py-0.5 rounded text-3xs border border-border/50">
+                      {note.fileSize ? formatFileSize(note.fileSize) : '—'}
+                    </span>
+                    {(note.downloadCount ?? 0) > 0 && (
+                      <span className="text-3xs text-muted-foreground">
+                        {note.downloadCount} download{note.downloadCount === 1 ? '' : 's'}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -242,17 +306,15 @@ export default function NotesPage() {
                       <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                     </Button>
                   )}
-                  <a
-                    href={note.fileUrl}
-                    download={note.fileName}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 gap-1.5 text-xs font-medium shadow-xs"
+                    onClick={() => handleDownload(note)}
                   >
-                    <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs font-medium shadow-xs">
-                      <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                      Download Note
-                    </Button>
-                  </a>
+                    <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                    Download
+                  </Button>
                 </div>
               </div>
             </Card>
@@ -271,7 +333,7 @@ export default function NotesPage() {
             <form onSubmit={handleUploadSubmit} className="space-y-3">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-foreground" htmlFor="note-title">
-                  Resource Title
+                  Resource Title <span className="text-destructive">*</span>
                 </label>
                 <Input
                   id="note-title"
@@ -285,7 +347,7 @@ export default function NotesPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-foreground" htmlFor="note-subject">
-                    Subject Name
+                    Subject Name <span className="text-destructive">*</span>
                   </label>
                   <Input
                     id="note-subject"
@@ -315,16 +377,39 @@ export default function NotesPage() {
                 </div>
               </div>
 
+              {/* Real file picker */}
               <div className="space-y-1">
-                <label className="text-xs font-medium text-foreground" htmlFor="note-filename">
-                  Document Filename
+                <label className="text-xs font-medium text-foreground" htmlFor="note-file">
+                  File <span className="text-destructive">*</span>
+                  <span className="ml-1 font-normal text-muted-foreground">(PDF, Word, PPT, image — max 20 MB)</span>
                 </label>
-                <Input
-                  id="note-filename"
-                  placeholder="os_lecture_notes_unit2.pdf"
-                  value={fileName}
-                  onChange={(e) => setFileName(e.target.value)}
+                <div
+                  className={`flex items-center gap-3 border rounded-md px-3 py-2 cursor-pointer hover:bg-muted/40 transition ${
+                    fileError ? 'border-destructive' : 'border-input'
+                  }`}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
+                  <span className={`text-xs truncate flex-1 ${selectedFile ? 'text-foreground' : 'text-muted-foreground'}`}>
+                    {selectedFile ? selectedFile.name : 'Click to browse and select a file…'}
+                  </span>
+                  {selectedFile && (
+                    <span className="text-3xs font-mono text-muted-foreground shrink-0">
+                      {formatFileSize(selectedFile.size)}
+                    </span>
+                  )}
+                </div>
+                <input
+                  ref={fileInputRef}
+                  id="note-file"
+                  type="file"
+                  accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.png,.jpg,.jpeg"
+                  onChange={handleFileChange}
+                  className="sr-only"
                 />
+                {fileError && (
+                  <p className="text-2xs text-destructive">{fileError}</p>
+                )}
               </div>
 
               <div className="space-y-1">
@@ -345,7 +430,7 @@ export default function NotesPage() {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => setShowUploadModal(false)}
+                  onClick={handleCloseModal}
                 >
                   Cancel
                 </Button>
